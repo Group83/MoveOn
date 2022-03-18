@@ -6,10 +6,10 @@ import Svg, { G, Circle } from 'react-native-svg';
 
 
 
-export default function Dashboard({ navigation }) {
+export default function Dashboard( props ) {
 
   //Terapist id
-  const [idTerapist, SetIdTerapist] = useState(5);
+  const idTerapist = props.route.params.id;
   //Patients list from DATA
   const [patients, setPatients] = useState([]);
 

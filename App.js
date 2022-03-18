@@ -16,22 +16,22 @@ import Dashboard from './Pages/Dashboard';
 
 const Stack = createNativeStackNavigator();
 
-export const languageRestart = async () => {
-  //changing language based on what was chosen
-  if (I18nManager.isRTL) {
-    await I18nManager.forceRTL(false);
-  } else {
-    if (!I18nManager.isRTL) {
-      await I18nManager.forceRTL(true);
-      await I18nManager.allowRTL(true);
-    }
-  }
-};
+// export const languageRestart = async () => {
+//   //changing language based on what was chosen
+//   if (I18nManager.isRTL) {
+//     await I18nManager.forceRTL(false);
+//   } else {
+//     if (!I18nManager.isRTL) {
+//       await I18nManager.forceRTL(true);
+//       await I18nManager.allowRTL(true);
+//     }
+//   }
+// };
 
 export default function App() {
 
-  //changing language based on what was chosen
-  languageRestart();
+  // //changing language based on what was chosen
+  // languageRestart();
 
   return (
     <NavigationContainer>

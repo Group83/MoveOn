@@ -1,9 +1,57 @@
 import { View, Text, ImageBackground, StyleSheet, TextInput, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { I18nManager } from "react-native";
 
 export default function Login({ navigation }) {
+
+  //user
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+
+  //answer terapistID from DATA
+  const [terapistId, setterapistId] = useState(0);
+
+  //DATA - url
+  const apiUrl = "https://proj.ruppin.ac.il//igroup83/test2/tar6/api/Terapist?email";
+
+  //check User function
+  const checkUser = () => {
+
+    console.log(email);
+    console.log(password);
+
+    //get all recipes from DB
+    fetch(apiUrl + "=" + email + "&password=" + password, {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json ; charset=UTP-8',
+        'Accept': 'application/json ; charset=UTP-8'
+      })
+    })
+      .then(res => {
+        console.log('res=', res);
+        console.log('res.status=', res.status);
+        console.log('res.ok=', res.ok);
+        return res.json();
+      })
+      .then(
+        (result) => {
+          console.log("fetch btnFetchGetRecipes=", result);
+
+          if (result) {
+             navigation.navigate('Dashboard', {id:result[0].IdTherapist});
+          }
+          else{
+            
+          }
+
+        },
+        (error) => {
+          console.log("err post=", error);
+        });
+  }
 
   return (
 
@@ -13,18 +61,17 @@ export default function Login({ navigation }) {
       <SafeAreaView style={{ top: -250 }}>
         <TextInput
           style={styles.emailinput}
-          // onChangeText={onChangeNumber}
+          onChangeText={newText => setEmail(newText)}
           // value={text}
           placeholder="example@gmail.com"
-          keyboardType="email-address"
         />
 
         <TextInput
           style={styles.passinput}
-          // onChangeText={onChangeNumber}
+          onChangeText={newText => setPassword(newText)}
           // value={text}
           placeholder="***********"
-          keyboardType="phone-pad"
+          keyboardType="ascii-capable"
         />
       </SafeAreaView>
 
@@ -39,7 +86,7 @@ export default function Login({ navigation }) {
         buttonStyle={styles.buttonStyle}
         titleStyle={styles.titleStyle}
         containerStyle={styles.containerStyle}
-        onPress={() => navigation.navigate('Dashboard')}
+        onPress={checkUser}
       />
 
       <View style={styles.iconContainerStyle}>
@@ -173,7 +220,7 @@ const styles = StyleSheet.create({
   text2: {
     fontSize: 20,
     color: '#07635D',
-    fontWeight:'400'
+    fontWeight: '400'
   },
 
   touchOp: {
