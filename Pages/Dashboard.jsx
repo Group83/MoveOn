@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Svg, { G, Circle } from 'react-native-svg';
 
 
+
 export default function Dashboard({ navigation }) {
 
   //Terapist id
@@ -15,12 +16,8 @@ export default function Dashboard({ navigation }) {
   //DATA - url
   const apiUrlPatients = "https://proj.ruppin.ac.il//igroup83/test2/tar6/api/Patient?id";
 
-  console.log('hi2');
-
   //EVERY RENDER
   useEffect(() => {
-
-    console.log('hi');
 
     //get all recipes from DB
     fetch(apiUrlPatients + "=" + idTerapist, {
@@ -60,8 +57,8 @@ export default function Dashboard({ navigation }) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const onChangeSearch = query => setSearchQuery(query);
 
-  //patiants
-  const [patiants1, SetPatiants1] = useState([
+  //patients
+  const [patients1, Setpatients1] = useState([
     { number: 251, name: 'אורין_דורה', complition: 0.5, key: '1' },
     { number: 251, name: 'אורין_דורה', complition: 0.5, key: '2' },
     { number: 251, name: 'אורין_דורה', complition: 0.5, key: '3' },
@@ -80,7 +77,10 @@ export default function Dashboard({ navigation }) {
   ]);
 
   return (
-    <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
+    <ImageBackground
+      source={require('../images/background1.png')}
+      resizeMode="cover" style={styles.image}
+    >
 
       <View style={styles.titleContainer}>
         <Text style={styles.title}>שלום דנה,</Text>
@@ -111,10 +111,13 @@ export default function Dashboard({ navigation }) {
           <View style={styles.coltitle}>
             <Text style={{ fontSize: 13, marginTop: 10, marginHorizontal: 14 }}>מספר</Text>
             <Text style={{ fontSize: 13, marginHorizontal: 14 }}>מטופל</Text>
-            {patiants.map((item) => {
+            {patients.length > 0 && patients.map((item) => {
               return (
                 <View style={styles.row}>
-                  <Text style={{ fontSize: 12, marginLeft: 5, marginTop: 11 }}>#{patiants1.number}</Text>
+                  <Text
+                    style={{ fontSize: 12, marginLeft: 5, marginTop: 11 }}>
+                    #{item?.IdPatient}
+                  </Text>
                 </View>
               )
             })}
@@ -125,7 +128,7 @@ export default function Dashboard({ navigation }) {
         <View style={styles.col}>
           <View style={styles.coltitle}>
             <Text style={{ fontSize: 13, marginTop: 15, marginHorizontal: 2 }}>כינוי</Text>
-            {patiants.map((item) => {
+            {patients.length > 0 && patients.map((item) => {
               return (
                 <View style={styles.row}>
                   <Text style={{ fontSize: 12, marginLeft: 2, marginTop: 18 }}>{item.name}</Text>
@@ -138,9 +141,12 @@ export default function Dashboard({ navigation }) {
 
         <View style={styles.col}>
           <View style={styles.coltitle}>
-            <Text style={{ fontSize: 13, marginTop: 15, marginHorizontal: 2 }}>רמת ביצוע</Text>
+            <Text
+              style={{ fontSize: 13, marginTop: 15, marginHorizontal: 2 }}>
+              רמת ביצוע
+            </Text>
 
-            {patiants.map((item) => {
+            {patients.length > 0 && patients.map((item) => {
               return (
                 <View style={styles.row}>
                   <Svg width={60} height={100} viewBox={'0 0 100 100'}>
@@ -175,7 +181,7 @@ export default function Dashboard({ navigation }) {
           <View style={styles.coltitle}>
             <Text style={{ fontSize: 13, marginTop: 10, marginHorizontal: 2 }}>מצב רוח</Text>
             <Text style={{ fontSize: 13, marginHorizontal: 2 }}>יחסי</Text>
-            {patiants.map((item) => {
+            {patients.length > 0 && patients.map((item) => {
               return (
                 <View style={styles.row}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7, marginLeft: 15 }}>
@@ -193,7 +199,7 @@ export default function Dashboard({ navigation }) {
           <View style={styles.coltitle}>
             <Text style={{ fontSize: 13, marginTop: 10, marginHorizontal: 2 }}>פעילות</Text>
             <Text style={{ fontSize: 13, marginHorizontal: 2 }}>חשודה</Text>
-            {patiants.map((item) => {
+            {patients.length > 0 && patients.map((item) => {
               return (
                 <View style={styles.row}>
                   <TouchableOpacity style={{ marginTop: 8, marginRight: 15 }} onPress={toggleOverlay}>
@@ -214,7 +220,7 @@ export default function Dashboard({ navigation }) {
 
         <View style={styles.col}>
           <View style={styles.coltitle} />
-          {patiants.map((item) => {
+          {patients.length > 0 && patients.map((item) => {
             return (
               <View style={styles.row}>
                 <TouchableOpacity style={styles.show} onPress={() => {

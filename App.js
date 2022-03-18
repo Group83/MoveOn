@@ -23,11 +23,14 @@ export const languageRestart = async () => {
   } else {
     if (!I18nManager.isRTL) {
       await I18nManager.forceRTL(true);
+      await I18nManager.allowRTL(true);
     }
   }
 };
 
 export default function App() {
+
+  languageRestart();
 
   return (
     <NavigationContainer>
