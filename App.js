@@ -30,6 +30,7 @@ export const languageRestart = async () => {
 
 export default function App() {
 
+  //changing language based on what was chosen
   languageRestart();
 
   return (
