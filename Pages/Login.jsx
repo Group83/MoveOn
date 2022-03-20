@@ -1,8 +1,12 @@
-import { View, Text, ImageBackground, StyleSheet, TextInput, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Button, Icon, Overlay } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
+import { TextInput } from 'react-native-paper';
 
 export default function Login({ navigation }) {
+
+  const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
+  const [passInput, setPassInput] = useState({ color: '#a9a9a9', text: '********' });
 
   //Overlay
   const [visible, setVisible] = useState(false);
@@ -23,8 +27,19 @@ export default function Login({ navigation }) {
   //check User function
   const checkUser = () => {
 
-    console.log(email);
-    console.log('hi');
+    //check empty fields
+    //Check for the Email TextInput
+    if (!email.trim()) {
+      let newobj = { color: 'red', text: 'חובה להזין כתובת אימייל' };
+      setMailInput(newobj)
+      return;
+    }
+    //Check for the Name TextInput
+    if (!password.trim()) {
+      let newobj = { color: 'red', text: 'חובה להזין סיסמה' };
+      setPassInput(newobj)
+      return;
+    }
 
     //get all recipes from DB
     fetch(apiUrl + "=" + email + "&password=" + password, {
@@ -41,9 +56,9 @@ export default function Login({ navigation }) {
         (result) => {
 
           if (result[0]) {
-            navigation.navigate('Dashboard', { id: result[0].IdTherapist, name: result[0].NicknameTherapist});
+            navigation.navigate('Dashboard', { id: result[0].IdTherapist, name: result[0].NicknameTherapist });
           }
-          else{
+          else {
             toggleOverlay();
           }
 
@@ -60,19 +75,22 @@ export default function Login({ navigation }) {
 
       <SafeAreaView style={{ top: -250 }}>
         <TextInput
-          style={styles.emailinput}
+          left={<TextInput.Icon name="email" color="grey" size={20}/>}
+          style={styles.input}
           onChangeText={newText => setEmail(newText)}
-          // value={text}
-          placeholder="example@gmail.com"
+          placeholder={mailInput.text}
+          placeholderTextColor={mailInput.color}
+          activeUnderlineColor="orange"
         />
 
         <TextInput
-          style={styles.passinput}
+          left={<TextInput.Icon name="key" color="grey" size={20}/>}
+          style={styles.input}
           onChangeText={newText => setPassword(newText)}
-          // value={text}
           secureTextEntry={true}
-          placeholder="***********"
-          keyboardType="ascii-capable"
+          placeholder={passInput.text}
+          placeholderTextColor={passInput.color}
+          activeUnderlineColor="orange"
         />
       </SafeAreaView>
 
@@ -185,20 +203,13 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
 
-  emailinput: {
+  input: {
     flexDirection: "row",
     height: 40,
     marginHorizontal: 30,
     marginVertical: 20,
-    borderBottomWidth: 1,
-  },
-
-  passinput: {
-    flexDirection: "row",
-    marginVertical: 20,
-    height: 40,
-    marginHorizontal: 30,
-    borderBottomWidth: 1,
+    // borderBottomWidth: 1,
+    backgroundColor: 'white'
   },
 
   text: {
