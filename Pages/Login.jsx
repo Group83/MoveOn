@@ -1,14 +1,18 @@
 import { View, Text, ImageBackground, StyleSheet, TextInput, SafeAreaView, TouchableOpacity } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { Button, Icon, Overlay } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
-import { I18nManager } from "react-native";
 
 export default function Login({ navigation }) {
+
+  //Overlay
+  const [visible, setVisible] = useState(false);
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  };
 
   //user
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
 
   //answer terapistID from DATA
   const [terapistId, setterapistId] = useState(0);
@@ -20,7 +24,7 @@ export default function Login({ navigation }) {
   const checkUser = () => {
 
     console.log(email);
-    console.log(password);
+    console.log('hi');
 
     //get all recipes from DB
     fetch(apiUrl + "=" + email + "&password=" + password, {
@@ -31,20 +35,16 @@ export default function Login({ navigation }) {
       })
     })
       .then(res => {
-        console.log('res=', res);
-        console.log('res.status=', res.status);
-        console.log('res.ok=', res.ok);
         return res.json();
       })
       .then(
         (result) => {
-          console.log("fetch btnFetchGetRecipes=", result);
 
-          if (result) {
-             navigation.navigate('Dashboard', {id:result[0].IdTherapist});
+          if (result[0]) {
+            navigation.navigate('Dashboard', { id: result[0].IdTherapist, name: result[0].NicknameTherapist});
           }
           else{
-            
+            toggleOverlay();
           }
 
         },
@@ -70,6 +70,7 @@ export default function Login({ navigation }) {
           style={styles.passinput}
           onChangeText={newText => setPassword(newText)}
           // value={text}
+          secureTextEntry={true}
           placeholder="***********"
           keyboardType="ascii-capable"
         />
@@ -81,13 +82,27 @@ export default function Login({ navigation }) {
         <Text style={styles.text}>שכחתי סיסמא</Text>
       </TouchableOpacity>
 
-      <Button
-        title="כניסה"
-        buttonStyle={styles.buttonStyle}
-        titleStyle={styles.titleStyle}
-        containerStyle={styles.containerStyle}
-        onPress={checkUser}
-      />
+      <View>
+        <Button
+          title="כניסה"
+          buttonStyle={styles.buttonStyle}
+          titleStyle={styles.titleStyle}
+          containerStyle={styles.containerStyle}
+          onPress={checkUser}
+        />
+        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+          <Icon name='warning' color='#ff4500' size={30} />
+          <Text style={styles.textSecondary}>
+            כתובת אימייל או סיסמה שהזנתם אינם תקינים
+          </Text>
+          <Button
+            title="אישור"
+            buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
+            titleStyle={{ color: 'white', marginHorizontal: 20 }}
+            onPress={toggleOverlay}
+          />
+        </Overlay>
+      </View>
 
       <View style={styles.iconContainerStyle}>
         <Button
@@ -144,6 +159,13 @@ export default function Login({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+
+  textSecondary: {
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'center',
+    fontSize: 17,
+  },
 
   image: {
     flex: 1,

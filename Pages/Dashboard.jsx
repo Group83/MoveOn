@@ -1,15 +1,17 @@
-import { View, Text, StyleSheet, ImageBackground, TextInput, ScrollView, TouchableOpacity, ViewPagerAndroidBase } from 'react-native';
-import { Button, Icon, Overlay } from 'react-native-elements';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ViewPagerAndroidBase } from 'react-native';
+import { Icon, Overlay } from 'react-native-elements';
 import { Searchbar } from 'react-native-paper';
 import React, { useEffect, useState } from 'react';
-import Svg, { G, Circle } from 'react-native-svg';
+import ProgressCircle from 'react-native-progress-circle-rtl';
 
-
-
-export default function Dashboard( props ) {
+export default function Dashboard(props) {
 
   //Terapist id
   const idTerapist = props.route.params.id;
+
+  //precent color
+  const [precentColor, setPrecentColor] = useState('lawngreen');
+
   //Patients list from DATA
   const [patients, setPatients] = useState([]);
 
@@ -19,7 +21,7 @@ export default function Dashboard( props ) {
   //EVERY RENDER
   useEffect(() => {
 
-    //get all recipes from DB
+    //get all terapist patients from DB
     fetch(apiUrlPatients + "=" + idTerapist, {
       method: 'GET',
       headers: new Headers({
@@ -28,15 +30,10 @@ export default function Dashboard( props ) {
       })
     })
       .then(res => {
-        console.log('res=', res);
-        console.log('res.status=', res.status);
-        console.log('res.ok=', res.ok);
         return res.json();
       })
       .then(
         (result) => {
-          console.log("fetch btnFetchGetRecipes=", result);
-
           var obj = result.map(patient => patient);
           console.log(obj);
           setPatients(obj);
@@ -47,7 +44,7 @@ export default function Dashboard( props ) {
 
   }, []);
 
-  //overFlow
+  //Overlay
   const [visible, setVisible] = useState(false);
   const toggleOverlay = () => {
     setVisible(!visible);
@@ -57,39 +54,21 @@ export default function Dashboard( props ) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const onChangeSearch = query => setSearchQuery(query);
 
-  //patients
-  const [patients1, Setpatients1] = useState([
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '1' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '2' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '3' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '4' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '5' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '6' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '7' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '8' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '9' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '10' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '11' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '12' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '13' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '14' },
-    { number: 251, name: 'אורין_דורה', complition: 0.5, key: '15' },
-  ]);
-
   return (
+
     <ImageBackground
       source={require('../images/background1.png')}
       resizeMode="cover" style={styles.image}
     >
 
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>שלום דנה,</Text>
+        <Text style={styles.title}>שלום {props.route.params.name},</Text>
       </View>
 
       <View style={styles.centerContainer}>
         <View>
           <TouchableOpacity style={styles.touchOp} onPress={() => {
-            navigation.navigate('Add Patient');
+            props.navigation.navigate('Add Patient', { id: idTerapist});
           }}>
             <Icon name='add' />
             <Text style={{ marginRight: 20, marginLeft: 20, fontSize: 17 }}>הוסף מטופל חדש</Text>
@@ -109,13 +88,12 @@ export default function Dashboard( props ) {
 
         <View style={styles.col}>
           <View style={styles.coltitle}>
-            <Text style={{ fontSize: 13, marginTop: 10, marginHorizontal: 14 }}>מספר</Text>
-            <Text style={{ fontSize: 13, marginHorizontal: 14 }}>מטופל</Text>
+            <Text style={{ fontSize: 14, marginTop: 18, marginHorizontal: 5 }}>מספר</Text>
             {patients.length > 0 && patients.map((item) => {
               return (
                 <View style={styles.row}>
                   <Text
-                    style={{ fontSize: 12, marginLeft: 5, marginTop: 11 }}>
+                    style={{ fontSize: 12, marginLeft: 5, marginTop: 15 }}>
                     #{item?.IdPatient}
                   </Text>
                 </View>
@@ -127,11 +105,11 @@ export default function Dashboard( props ) {
 
         <View style={styles.col}>
           <View style={styles.coltitle}>
-            <Text style={{ fontSize: 13, marginTop: 15, marginHorizontal: 2 }}>כינוי</Text>
+            <Text style={{ fontSize: 14, marginTop: 18, marginHorizontal: 2 }}>כינוי</Text>
             {patients.length > 0 && patients.map((item) => {
               return (
                 <View style={styles.row}>
-                  <Text style={{ fontSize: 12, marginLeft: 2, marginTop: 18 }}>{item.name}</Text>
+                  <Text style={{ fontSize: 12, marginLeft: 2, marginTop: 15 }}>{item?.NicknamePatient}</Text>
                 </View>
               )
             })}
@@ -142,33 +120,21 @@ export default function Dashboard( props ) {
         <View style={styles.col}>
           <View style={styles.coltitle}>
             <Text
-              style={{ fontSize: 13, marginTop: 15, marginHorizontal: 2 }}>
-              רמת ביצוע
-            </Text>
-
+              style={{ fontSize: 14, marginTop: 16, marginHorizontal: 2 }}>רמת ביצוע</Text>
             {patients.length > 0 && patients.map((item) => {
+              
               return (
-                <View style={styles.row}>
-                  <Svg width={60} height={100} viewBox={'0 0 100 100'}>
-                    <G rotation='-90' origin={'10 , 50'}>
-                      <Circle cx='50%' cy='40%' stroke={'grey'} strokeWidth={5} r={15} fill='transparent' strokeOpacity={0.2} />
-                      <Circle
-                        cx='50%'
-                        cy='40%'
-                        stroke={'lawngreen'}
-                        strokeWidth={5}
-                        r={15}
-                        fill='transparent'
-                        strokeDasharray={2 * Math.PI * 20}
-                        strokeDashoffset={(2 * Math.PI * 20) / 2}
-                        strokeLinecap='round'
-                      />
-                    </G>
-                    <TextInput
-                      defaultValue='75%'
-                      style={[StyleSheet.absoluteFillObject, { fontSize: 12, textAlign: 'center', marginTop: 25, marginLeft: 30 }]}
-                    />
-                  </Svg>
+                <View style={styles.circlerow}>
+                  <ProgressCircle
+                    percent={item?.ComplishionPresentae * 100}
+                    radius={10}
+                    borderWidth={4}
+                    color={item.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
+                    shadowColor="lightgrey"
+                    bgColor="#fff"
+                  >
+                  </ProgressCircle>
+                  <Text style={{ fontSize: 12, marginLeft: 5 }}>{item?.ComplishionPresentae * 100}%</Text>
                 </View>
               )
             })}
@@ -179,14 +145,13 @@ export default function Dashboard( props ) {
 
         <View style={styles.col}>
           <View style={styles.coltitle}>
-            <Text style={{ fontSize: 13, marginTop: 10, marginHorizontal: 2 }}>מצב רוח</Text>
-            <Text style={{ fontSize: 13, marginHorizontal: 2 }}>יחסי</Text>
+            <Text style={{ fontSize: 14, marginTop: 16, marginHorizontal: 2 }}>מצב רוח</Text>
             {patients.length > 0 && patients.map((item) => {
               return (
                 <View style={styles.row}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7, marginLeft: 15 }}>
-                    <Icon name='sentiment-satisfied' size={20} />
-                    <Icon name='north' size={20} color={'#7fff00'} />
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 11, marginLeft: 8 }}>
+                    <Icon name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
+                    <Icon name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={20} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
                   </View>
                 </View>
               )
@@ -196,26 +161,22 @@ export default function Dashboard( props ) {
         </View>
 
         <View style={styles.col}>
-          <View style={styles.coltitle}>
-            <Text style={{ fontSize: 13, marginTop: 10, marginHorizontal: 2 }}>פעילות</Text>
-            <Text style={{ fontSize: 13, marginHorizontal: 2 }}>חשודה</Text>
-            {patients.length > 0 && patients.map((item) => {
-              return (
-                <View style={styles.row}>
-                  <TouchableOpacity style={{ marginTop: 8, marginRight: 15 }} onPress={toggleOverlay}>
-                    <Icon name='warning' color='gold' />
-                  </TouchableOpacity>
-                  <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-                    <Icon name='warning' color='gold' />
-                    <Text style={styles.textSecondary}>
-                      Activities were marked before the execution time!
-                    </Text>
-                  </Overlay>
-                </View>
-              )
-            })}
-          </View>
-
+          <View style={styles.coltitle} />
+          {patients.length > 0 && patients.map((item) => {
+            return (
+              <View style={styles.row}>
+                <TouchableOpacity style={{ marginTop: 6, marginRight: 20 }} onPress={toggleOverlay}>
+                  <Icon name='warning' color='gold' size={22} />
+                </TouchableOpacity>
+                <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+                  <Icon name='warning' color='gold' />
+                  <Text style={styles.textSecondary}>
+                    סומנו מספר פעילויות ברצף !
+                  </Text>
+                </Overlay>
+              </View>
+            )
+          })}
         </View>
 
         <View style={styles.col}>
@@ -241,6 +202,14 @@ export default function Dashboard( props ) {
 
 const styles = StyleSheet.create({
 
+  circlerow: {
+    width: 60,
+    height: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 12
+  },
+
   textSecondary: {
     marginBottom: 10,
     textAlign: 'center',
@@ -258,7 +227,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#EFEFEF',
     height: 20,
-    marginTop: 5,
+    marginTop: 8,
     borderWidth: 1,
     borderRadius: 10,
     borderColor: '#EFEFEF',
@@ -266,7 +235,7 @@ const styles = StyleSheet.create({
 
   coltitle: {
     backgroundColor: '#F5F5F5',
-    height: 40,
+    height: 35,
     borderBottomWidth: 1,
   },
 
