@@ -75,7 +75,7 @@ export default function Login({ navigation }) {
 
       <SafeAreaView style={{ top: -250 }}>
         <TextInput
-          left={<TextInput.Icon name="email" color="grey" size={20}/>}
+          left={<TextInput.Icon name="email-outline" color="grey" size={20}/>}
           style={styles.input}
           onChangeText={newText => setEmail(newText)}
           placeholder={mailInput.text}
@@ -84,7 +84,7 @@ export default function Login({ navigation }) {
         />
 
         <TextInput
-          left={<TextInput.Icon name="key" color="grey" size={20}/>}
+          left={<TextInput.Icon name="key-outline" color="grey" size={20}/>}
           style={styles.input}
           onChangeText={newText => setPassword(newText)}
           secureTextEntry={true}

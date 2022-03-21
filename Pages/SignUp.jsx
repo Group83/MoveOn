@@ -1,10 +1,12 @@
-import { View, Text, ImageBackground, StyleSheet, TextInput, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Button, Overlay, Icon } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
+import { TextInput } from 'react-native-paper';
 
 export default function SignUp({ navigation }) {
 
-  const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם' });
+  //input
+  const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם משתמש' });
   const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
   const [pass1Input, setPass1Input] = useState({ color: '#a9a9a9', text: 'סיסמה' });
   const [pass2Input, setPass2Input] = useState({ color: '#a9a9a9', text: 'אימות סיסמה' });
@@ -14,7 +16,6 @@ export default function SignUp({ navigation }) {
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
-  const [terapist, setTerapist] = useState({});
 
   //DATA - url
   const apiUrl = "https://proj.ruppin.ac.il//igroup83/test2/tar6/api/Terapist";
@@ -25,7 +26,7 @@ export default function SignUp({ navigation }) {
     //check empty fields
     //Check for the Name TextInput
     if (!name.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין שם' };
+      let newobj = { color: 'red', text: 'חובה להזין שם משתמש' };
       setNameInput(newobj)
       return;
     }
@@ -68,19 +69,19 @@ export default function SignUp({ navigation }) {
         })
       })
         .then(res => {
-          
-          console.log('ok');
+
+          console.log(res);
 
           //if email exist
-          if(res==1){
+          if (res) {
             alert('המשתמש נוצר בהצלחה');
             navigation.navigate('Log in');
-          }else{
+          } else {
             alert('כתובת המייל נמצאת כבר במערכת');
           }
 
         }).catch(error => {
-          console.log('error')
+          console.log("err post=", error);
         })
     }
 
@@ -99,14 +100,18 @@ export default function SignUp({ navigation }) {
 
       <SafeAreaView style={{ top: 50 }}>
         <TextInput
-          style={styles.input}
+          left={<TextInput.Icon name="account-outline" color="grey" size={20} />}
+          style={styles.input}cc
           onChangeText={newText => setName(newText)}
           placeholder={nameInput.text}
           keyboardType="default"
           placeholderTextColor={nameInput.color}
+          activeUnderlineColor="orange"
         />
 
         <TextInput
+          left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
+          activeUnderlineColor="orange"
           style={styles.input}
           onChangeText={newText => setEmail(newText)}
           placeholder={mailInput.text}
@@ -115,6 +120,8 @@ export default function SignUp({ navigation }) {
         />
 
         <TextInput
+          left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
+          activeUnderlineColor="orange"
           style={styles.input}
           onChangeText={newText => setPassword1(newText)}
           placeholder={pass1Input.text}
@@ -124,6 +131,8 @@ export default function SignUp({ navigation }) {
         />
 
         <TextInput
+          left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
+          activeUnderlineColor="orange"
           style={styles.input}
           onChangeText={newText => setPassword2(newText)}
           placeholder={pass2Input.text}
@@ -191,7 +200,8 @@ const styles = StyleSheet.create({
     height: 40,
     marginHorizontal: 30,
     marginVertical: 20,
-    borderBottomWidth: 1,
+    // borderBottomWidth: 1,
+    backgroundColor: 'white'
   },
 
   buttonStyle: {

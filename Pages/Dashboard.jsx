@@ -35,7 +35,7 @@ export default function Dashboard(props) {
       .then(
         (result) => {
           var obj = result.map(patient => patient);
-          console.log(obj);
+          // console.log(obj);
           setPatients(obj);
         },
         (error) => {
