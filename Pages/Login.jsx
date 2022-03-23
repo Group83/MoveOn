@@ -30,13 +30,13 @@ export default function Login({ navigation }) {
     //check empty fields
     //Check for the Email TextInput
     if (!email.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין כתובת אימייל' };
+      let newobj = { color: 'red', text: 'נראה שחסרה כתובת אימייל' };
       setMailInput(newobj)
       return;
     }
     //Check for the Name TextInput
     if (!password.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין סיסמה' };
+      let newobj = { color: 'red', text: 'נראה שחסרה סיסמה' };
       setPassInput(newobj)
       return;
     }
@@ -111,7 +111,7 @@ export default function Login({ navigation }) {
         <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
           <Icon name='warning' color='#ff4500' size={30} />
           <Text style={styles.textSecondary}>
-            כתובת אימייל או סיסמה שהזנתם אינם תקינים
+            כתובת אימייל או הסיסמה שהזנתם אינם קיימים במערכת
           </Text>
           <Button
             title="אישור"
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     width: 258,
     height: 137,
     left: 50,
-    top: 250,
+    top: 180,
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',
@@ -208,8 +208,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginHorizontal: 30,
     marginVertical: 20,
-    // borderBottomWidth: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
 
   text: {

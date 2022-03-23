@@ -7,15 +7,16 @@ import { TextInput } from 'react-native-paper';
 export default function AddPatient(props) {
 
   //input
-  const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם משתמש' });
+  const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם המטופל' });
   const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
   const [phoneInput, setPhoneInput] = useState({ color: '#a9a9a9', text: '0500000000' });
   const [pass1Input, setPass1Input] = useState({ color: '#a9a9a9', text: 'סיסמה' });
   const [pass2Input, setPass2Input] = useState({ color: '#a9a9a9', text: 'אימות סיסמה' });
-
+  const myTextInput = React.createRef();
 
   //Terapist id
-  const idTerapist = props.route.params.id;
+  const idTerapist = props.route.params.idTerapist;
+  const nameTerapist = props.route.params.nameTerapist;
 
   //Patient
   const [name, setName] = useState('');
@@ -25,13 +26,6 @@ export default function AddPatient(props) {
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
 
-  //Overlay
-  const [visible, setVisible] = useState(false);
-  const toggleOverlay = () => {
-    setVisible(!visible);
-  };
-
-
   //toggleSwitch
   const [isEnabledMale, setIsEnabledMale] = useState(false);
   const [isEnabledFemale, setIsEnabledFemale] = useState(false);
@@ -39,7 +33,8 @@ export default function AddPatient(props) {
 
   const toggleSwitchMale = () => {
     setIsEnabledMale(previousState => !previousState);
-    if (isEnabledMale) {
+    console.log(isEnabledMale);
+    if (!isEnabledMale) {
       setGender('זכר');
     }
     else {
@@ -48,7 +43,7 @@ export default function AddPatient(props) {
   }
   const toggleSwitchFemale = () => {
     setIsEnabledFemale(previousState => !previousState);
-    if (isEnabledFemale) {
+    if (!isEnabledFemale) {
       setGender('נקבה');
     }
     else {
@@ -57,7 +52,7 @@ export default function AddPatient(props) {
   }
   const toggleSwitchOther = () => {
     setIsEnabled1Other(previousState => !previousState);
-    if (isEnabledOther) {
+    if (!isEnabledOther) {
       setGender('אחר');
     }
     else {
@@ -76,23 +71,22 @@ export default function AddPatient(props) {
     console.log(phone);
     console.log(gender);
 
-
     //check empty fields
     //Check for the Name TextInput
     if (!name.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין שם משתמש' };
+      let newobj = { color: 'red', text: 'נראה שחסר שם מטופל' };
       setNameInput(newobj)
       return;
     }
     //Check for the Email TextInput
     if (!email.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין כתובת אימייל' };
+      let newobj = { color: 'red', text: 'נראה שחסרה כתובת אימייל' };
       setMailInput(newobj)
       return;
     }
     //Check for the Phone TextInput
     if (!phone.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין מספר טלפון' };
+      let newobj = { color: 'red', text: 'נראה שחסר מספר טלפון' };
       setPhoneInput(newobj)
       return;
     }
@@ -103,20 +97,22 @@ export default function AddPatient(props) {
     }
     //Check for the Password TextInput
     if (!password1.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין סיסמה' };
+      let newobj = { color: 'red', text: 'נראה שחסרה סיסמה' };
       setPass1Input(newobj)
       return;
     }
     //Check for the Password TextInput
     if (!password2.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין אימות סיסמה' };
+      let newobj = { color: 'red', text: 'עליך לאמת את הסיסמה שהזנת' };
       setPass2Input(newobj)
       return;
     }
 
     //check password
     if (password1 !== password2) {
-      toggleOverlay();
+      let newobj = { color: 'red', text: 'הסיסמה אינה זהה לסיסמה שבחרת' };
+      setPass2Input(newobj)
+      myTextInput.current.clear();
     }
     else {
 
@@ -135,22 +131,27 @@ export default function AddPatient(props) {
           'Accept': 'application/json ; charset=UTP-8'
         })
       })
-        .then(res => {
+      .then(res => {
+        return res.json();
+      })
+      .then(
+        (result) => {
 
-          console.log(res);
+          console.log(result);
+
           alert('המשתמש נוצר בהצלחה');
-          navigation.navigate('Dashboard');
+          props.navigation.navigate('Dashboard', { id: idTerapist, name: nameTerapist });
 
-          //if email exist
-          // if (res == 1) {
+          // //if email exist
+          // if (result==1) {
           //   alert('המשתמש נוצר בהצלחה');
-          //   navigation.navigate('Dashboard');
+          //   navigation.navigate('Log in');
           // } else {
-          //   alert('כתובת המייל נמצאת כבר במערכת');
+          //   alert('כתובת האיימל כבר קיימת במערכת');
           // }
 
-        }).catch(error => {
-          console.log('error')
+        }, error => {
+          console.log("err post=", error);
         })
 
     }
@@ -173,7 +174,7 @@ export default function AddPatient(props) {
 
         <TextInput
           style={styles.input}
-          nChangeText={newText => setEmail(newText)}
+          onChangeText={newText => setEmail(newText)}
           placeholder={mailInput.text}
           placeholderTextColor={mailInput.color}
           left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
@@ -187,6 +188,7 @@ export default function AddPatient(props) {
           placeholderTextColor={phoneInput.color}
           left={<TextInput.Icon name="phone-outline" color="grey" size={20} />}
           activeUnderlineColor="orange"
+          keyboardType="name-phone-pad"
         />
 
         <View style={styles.genderinput}>
@@ -234,11 +236,11 @@ export default function AddPatient(props) {
           left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
           activeUnderlineColor="orange"
           secureTextEntry={true}
+          ref={myTextInput}
         />
 
       </SafeAreaView>
 
-      <View>
         <Button
           title="אישור"
           buttonStyle={styles.buttonStyle}
@@ -246,22 +248,6 @@ export default function AddPatient(props) {
           containerStyle={styles.containerStyle}
           onPress={addPatient}
         />
-        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-          <Icon name='warning' color='#ff4500' size={30} />
-          <Text style={styles.textSecondary}>
-            אימות סיסמה נכשל!
-          </Text>
-          <Text style={styles.textSecondary}>
-            הסיסמאות אינן זהות, אנא נסה שנית
-          </Text>
-          <Button
-            title="אישור"
-            buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
-            titleStyle={{ color: 'white', marginHorizontal: 20 }}
-            onPress={toggleOverlay}
-          />
-        </Overlay>
-      </View>
 
     </ImageBackground>
   )

@@ -9,9 +9,6 @@ export default function Dashboard(props) {
   //Terapist id
   const idTerapist = props.route.params.id;
 
-  //precent color
-  const [precentColor, setPrecentColor] = useState('lawngreen');
-
   //Patients list from DATA
   const [patients, setPatients] = useState([]);
 
@@ -42,7 +39,7 @@ export default function Dashboard(props) {
           console.log("err post=", error);
         });
 
-  }, []);
+  }, [[patients]]);
 
   //Overlay
   const [visible, setVisible] = useState(false);
@@ -68,7 +65,7 @@ export default function Dashboard(props) {
       <View style={styles.centerContainer}>
         <View>
           <TouchableOpacity style={styles.touchOp} onPress={() => {
-            props.navigation.navigate('Add Patient', { id: idTerapist});
+            props.navigation.navigate('Add Patient', { idTerapist: idTerapist, nameTerapist:props.route.params.name});
           }}>
             <Icon name='add' />
             <Text style={{ marginRight: 20, marginLeft: 20, fontSize: 17 }}>הוסף מטופל חדש</Text>

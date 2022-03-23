@@ -1,5 +1,5 @@
-import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
-import { Button, Overlay, Icon } from 'react-native-elements';
+import { View, Text, ImageBackground, StyleSheet, SafeAreaView } from 'react-native';
+import { Button } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import { TextInput } from 'react-native-paper';
 
@@ -10,6 +10,7 @@ export default function SignUp({ navigation }) {
   const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
   const [pass1Input, setPass1Input] = useState({ color: '#a9a9a9', text: 'סיסמה' });
   const [pass2Input, setPass2Input] = useState({ color: '#a9a9a9', text: 'אימות סיסמה' });
+  const myTextInput = React.createRef();
 
   //Terapist
   const [name, setName] = useState("");
@@ -26,38 +27,38 @@ export default function SignUp({ navigation }) {
     //check empty fields
     //Check for the Name TextInput
     if (!name.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין שם משתמש' };
+      let newobj = { color: 'red', text: 'נראה שחסר שם משתמש' };
       setNameInput(newobj)
       return;
     }
     //Check for the Email TextInput
     if (!email.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין כתובת אימייל' };
+      let newobj = { color: 'red', text: 'נראה שחסרה כתובת אימייל' };
       setMailInput(newobj)
       return;
     }
     //Check for the Password TextInput
     if (!password1.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין סיסמה' };
-      setPass1Input(newobj)
+      let newobj = { color: 'red', text: 'נראה שחסרה סיסמה' };
+      setPass1Input(newobj);
       return;
     }
     //Check for the Password TextInput
     if (!password2.trim()) {
-      let newobj = { color: 'red', text: 'חובה להזין אימות סיסמה' };
+      let newobj = { color: 'red', text: 'עליך לאמת את הסיסמה שבחרת' };
       setPass2Input(newobj)
       return;
     }
 
     //check password
     if (password1 !== password2) {
-      toggleOverlay();
+      let newobj = { color: 'red', text: 'הסיסמה אינה זהה לסיסמה שבחרת' };
+      setPass2Input(newobj)
+      myTextInput.current.clear();
     }
     else {
 
       let obj = [{ NicknameTherapist: name, EmailTherapist: email, PasswordTherapist: password1 }];
-
-      console.log(obj);
 
       //send terapist to DB
       fetch(apiUrl, {
@@ -69,28 +70,26 @@ export default function SignUp({ navigation }) {
         })
       })
         .then(res => {
-
-          console.log(res);
-
-          //if email exist
-          if (res) {
-            alert('המשתמש נוצר בהצלחה');
-            navigation.navigate('Log in');
-          } else {
-            alert('כתובת המייל נמצאת כבר במערכת');
-          }
-
-        }).catch(error => {
-          console.log("err post=", error);
+          return res.json();
         })
+        .then(
+          (result) => {
+
+            console.log(result);
+
+            //if email exist
+            if (result==1) {
+              alert('המשתמש נוצר בהצלחה');
+              navigation.navigate('Log in');
+            } else {
+              alert('כתובת האיימל כבר קיימת במערכת');
+            }
+
+          }, error => {
+            console.log("err post=", error);
+          })
     }
 
-  };
-
-  //Overlay
-  const [visible, setVisible] = useState(false);
-  const toggleOverlay = () => {
-    setVisible(!visible);
   };
 
   return (
@@ -101,7 +100,7 @@ export default function SignUp({ navigation }) {
       <SafeAreaView style={{ top: 50 }}>
         <TextInput
           left={<TextInput.Icon name="account-outline" color="grey" size={20} />}
-          style={styles.input}cc
+          style={styles.input} cc
           onChangeText={newText => setName(newText)}
           placeholder={nameInput.text}
           keyboardType="default"
@@ -139,34 +138,17 @@ export default function SignUp({ navigation }) {
           keyboardType="ascii-capable"
           secureTextEntry={true}
           placeholderTextColor={pass2Input.color}
+          ref={myTextInput}
         />
       </SafeAreaView>
 
-      <View>
-        <Button
-          title="התחבר"
-          buttonStyle={styles.buttonStyle}
-          titleStyle={styles.titleStyle}
-          containerStyle={styles.containerStyle}
-          onPress={connect}
-        />
-        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-          <Icon name='warning' color='#ff4500' size={30} />
-          <Text style={styles.textSecondary}>
-            אימות סיסמה נכשל!
-          </Text>
-          <Text style={styles.textSecondary}>
-            הסיסמאות אינן זהות, אנא נסה שנית
-          </Text>
-          <Button
-            title="אישור"
-            buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
-            titleStyle={{ color: 'white', marginHorizontal: 20 }}
-            onPress={toggleOverlay}
-          />
-        </Overlay>
-
-      </View>
+      <Button
+        title="התחבר"
+        buttonStyle={styles.buttonStyle}
+        titleStyle={styles.titleStyle}
+        containerStyle={styles.containerStyle}
+        onPress={connect}
+      />
 
     </ImageBackground>
   )
@@ -200,7 +182,6 @@ const styles = StyleSheet.create({
     height: 40,
     marginHorizontal: 30,
     marginVertical: 20,
-    // borderBottomWidth: 1,
     backgroundColor: 'white'
   },
 
