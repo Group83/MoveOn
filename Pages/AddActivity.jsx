@@ -1,10 +1,20 @@
-import { View, Text, StyleSheet, ImageBackground, TextInput, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, Switch } from 'react-native';
 import { Button } from 'react-native-elements';
-import React, { useState } from 'react';
-import { Searchbar } from 'react-native-paper';
-import ToggleSwitch from 'toggle-switch-react-native';
+import React, { useEffect, useState } from 'react';
+import { TextInput } from 'react-native-paper';
 
 export default function AddActivity({ navigation }) {
+
+  //Data Activity List
+  const [DataActivities, SetDataActivities] = useState([
+    { name: 'ריצה', key: '1' },
+    { name: 'עיסוי צלקת', key: '2' },
+    { name: 'תרגול ידיים', key: '3' },
+    { name: 'נעילת נעליים', key: '4' },
+    { name: 'סודוקו', key: '5' },
+    { name: 'הליכה', key: '6' },
+    { name: 'שחייה', key: '7' },
+  ]);
 
   //Activity List
   const [Activities, SetActivities] = useState([
@@ -17,9 +27,64 @@ export default function AddActivity({ navigation }) {
     { name: 'שחייה', key: '7' },
   ]);
 
+  //Activity
+  const [name, setName] = useState('');
+  const [link, setLink] = useState('');
+  const [about, setAbout] = useState('');
+  const [sets, setSets] = useState('');
+  const [repit, setRepit] = useState('');
+  const [isEnabledMoved, setIsEnabledMoved] = useState(false);
+  const [isEnabledRequired, setIsEnabledRequired] = useState(false);
+
+  //input
+  const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם הפעילות' });
+  const [aboutInput, setAboutInput] = useState({ color: '#a9a9a9', text: 'אודות' });
+
   //Search Bar
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const onChangeSearch = query => setSearchQuery(query);
+  const onChangeSearch = query => {
+    console.log(query);
+    if (query) {
+      var filterData = DataActivities.filter(item => item.name.includes(query));
+      console.log(filterData);
+      SetActivities(filterData);
+    }
+    else {
+      SetActivities(DataActivities);
+    }
+  }
+
+  //toggleSwitch
+  const toggleSwitchMoved = () => {
+    setIsEnabledMoved(previousState => !previousState);
+    console.log(isEnabledMoved);
+  }
+  const toggleSwitchRequired = () => {
+    setIsEnabledRequired(previousState => !previousState);
+    console.log(isEnabledRequired);
+  }
+
+  const addActivity = () => {
+    //check empty fields
+    //Check for the Name TextInput
+    if (!name.trim()) {
+      let newobj = { color: 'red', text: 'נראה שחסרה שם פעילות' };
+      setNameInput(newobj)
+      return;
+    }
+    //Check for the about TextInput
+    if (!about.trim()) {
+      let newobj = { color: 'red', text: 'נראה שחסר טקסט אודות' };
+      setAboutInput(newobj)
+      return;
+    }
+  }
+
+  // //EVERY RENDER
+  // useEffect(() => {
+
+
+
+  // }, [[DataActivities]]);
 
   return (
     <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
@@ -31,65 +96,84 @@ export default function AddActivity({ navigation }) {
           <Text style={styles.text}>הוסף פעילות חדשה</Text>
           <TextInput
             style={styles.input}
-            // onChangeText={onChangeNumber}
-            // value={text}
-            placeholder="שם הפעילות"
-            keyboardType="default"
+            placeholder={nameInput.text}
+            onChangeText={newText => setName(newText)}
+            placeholderTextColor={nameInput.color}
+            activeUnderlineColor="orange"
           />
           <TextInput
             style={styles.input}
-            // onChangeText={onChangeNumber}
-            // value={text}
+            onChangeText={newText => setLink(newText)}
             placeholder="כתובת סרטון"
-            keyboardType="default"
+            placeholderTextColor="#a9a9a9"
+            activeUnderlineColor="orange"
           />
           <TextInput
             style={styles.inputDisc}
-            // onChangeText={onChangeNumber}
-            // value={text}
-            placeholder="אודות"
-            keyboardType="default"
-            multiline={true}
+            onChangeText={newText => setAbout(newText)}
+            placeholder={aboutInput.text}
+            placeholderTextColor={aboutInput.color}
+            activeUnderlineColor="orange"
           />
-          <ToggleSwitch
-            onColor="black"
-            offColor="gray"
-            label="פעילות ניתנת להזזה"
-            labelStyle={{ color: "black", fontWeight: "400" }}
-            size="small"
-            onToggle={isOn => console.log("changed to : ", isOn)}
-            style={{ top: 40, marginTop: 30, flexDirection: 'row' }}
+          <TextInput
+            style={styles.input}
+            onChangeText={newText => setSets(newText)}
+            placeholder="מספר סטים"
+            placeholderTextColor="#a9a9a9"
+            activeUnderlineColor="orange"
+            keyboardType="name-phone-pad"
           />
-          <ToggleSwitch
-            onColor="black"
-            offColor="gray"
-            label="פעילות חובה"
-            labelStyle={{ color: "black", fontWeight: "400" }}
-            size="small"
-            onToggle={isOn => console.log("changed to : ", isOn)}
-            style={{ top: 40, marginTop: 30, flexDirection: 'row' }}
+          <TextInput
+            style={styles.input}
+            onChangeText={newText => setRepit(newText)}
+            placeholder="מספר חזרות"
+            placeholderTextColor="#a9a9a9"
+            activeUnderlineColor="orange"
+            keyboardType="name-phone-pad"
           />
+          <View style={styles.toggleMoved}>
+            <Text style={styles.toggleinput}>פעילות ניתנת להזזה</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#dcdcdc" }}
+              thumbColor={isEnabledMoved ? "#D3DE32" : "#f4f3f4"}
+              ios_backgroundColor="#a9a9a9"
+              onValueChange={toggleSwitchMoved}
+              value={isEnabledMoved}
+            />
+          </View>
+          <View style={styles.toggleRequired}>
+            <Text style={styles.toggleinput}>פעילות חובה</Text>
+            <Switch
+              trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
+              thumbColor={isEnabledRequired ? "#D3DE32" : "#f4f3f4"}
+              ios_backgroundColor="#a9a9a9"
+              onValueChange={toggleSwitchRequired}
+              value={isEnabledRequired}
+            />
+          </View>
         </View>
 
         {/* right container */}
         <View style={styles.rightcontainer}>
           <Text style={styles.text}>רשימת פעילויות</Text>
           <View style={styles.Searchbar}>
-            <Searchbar
-              placeholder=""
+            <TextInput
+              left={<TextInput.Icon name="magnify" color="grey" size={20} />}
+              style={styles.searchinput}
               onChangeText={onChangeSearch}
-              value={searchQuery}
-              fontSize={15}
+              placeholder="חיפוש"
+              placeholderTextColor="#a9a9a9"
+              activeUnderlineColor="orange"
             />
             <View style={styles.scrollView}>
               <ScrollView>
-              {Activities.map((item) => { 
-                return(
-                  <View>
-                    <Text style={styles.activity}>{item.name}</Text>
-                  </View>
-                )
-              })}
+                {Activities.map((item) => {
+                  return (
+                    <View>
+                      <Text style={styles.activity}>{item.name}</Text>
+                    </View>
+                  )
+                })}
               </ScrollView>
             </View>
           </View>
@@ -100,7 +184,7 @@ export default function AddActivity({ navigation }) {
         buttonStyle={styles.buttonStyle}
         titleStyle={styles.titleStyle}
         containerStyle={styles.containerStyle}
-        onPress={() => navigation.navigate('Activity Board')}
+        onPress={addActivity}
       />
     </ImageBackground>
   )
@@ -108,25 +192,52 @@ export default function AddActivity({ navigation }) {
 
 const styles = StyleSheet.create({
 
-  activity:{
-    marginTop:3,
-    padding:30,
-    backgroundColor:'rgba(139, 92, 246, 0.1)',
-    display:'flex',
-    borderWidth:1,
-    borderColor:'#8B5CF6',
+  toggleinput: {
+    marginRight: 15,
+    marginTop: 5,
+    fontSize:15
+  },
+
+  toggleRequired: {
+    flexDirection: "row",
+    marginTop: 15,
+    marginLeft: 15
+  },
+
+  toggleMoved: {
+    flexDirection: "row",
+    marginTop: 45,
+    marginLeft: 15
+  },
+
+  searchinput: {
+    flexDirection: "row",
+    height: 40,
+    marginHorizontal: 0,
+    marginVertical: 0,
+    backgroundColor: 'white',
+    marginTop: 25
+  },
+
+  activity: {
+    marginTop: 3,
+    padding: 30,
+    backgroundColor: 'rgba(255, 189, 115, 0.27)',
+    display: 'flex',
+    borderWidth: 1,
+    borderColor: '#FFBD73',
   },
 
   Searchbar: {
-    top: 40,
+    top: 10,
     margin: 3,
   },
 
   inputDisc: {
     flexDirection: "row",
-    height: 200,
+    height: 160,
     width: 190,
-    top: 40,
+    top: 25,
     marginTop: 20,
     left: 10,
     borderBottomWidth: 1,
@@ -134,15 +245,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: 'white',
-    textAlignVertical: 'top',
   },
 
   input: {
     flexDirection: "row",
     height: 40,
     width: 190,
-    top: 40,
-    marginTop: 20,
+    top: 30,
+    marginTop: 10,
     left: 10,
     borderBottomWidth: 1,
     backgroundColor: 'white',

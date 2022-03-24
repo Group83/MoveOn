@@ -18,9 +18,6 @@ export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  //answer terapistID from DATA
-  const [terapistId, setterapistId] = useState(0);
-
   //DATA - url
   const apiUrl = "https://proj.ruppin.ac.il//igroup83/test2/tar6/api/Terapist?email";
 
@@ -166,7 +163,7 @@ export default function Login({ navigation }) {
       </View>
 
       <TouchableOpacity style={styles.touchOp} onPress={() => {
-        navigation.navigate('Sign Up');
+        navigation.navigate('Activity Board');
       }}>
         <Text style={styles.text1}>עדיין אין לך חשבון ?</Text>
         <Text style={styles.text2}>משתמש חדש</Text>
@@ -195,7 +192,7 @@ const styles = StyleSheet.create({
     width: 258,
     height: 137,
     left: 50,
-    top: 180,
+    top: 100,
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',

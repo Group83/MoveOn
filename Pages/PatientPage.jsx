@@ -1,14 +1,14 @@
-import { View, Text, StyleSheet, ImageBackground, TextInput, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TextInput, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Svg, { G, Circle } from 'react-native-svg';
-// import { ProgressBar } from 'react-native-paper';
-// import { StatusBar } from 'expo-status-bar';
-import ProgressBar from 'react-native-progress/Bar';
 import * as Progress from 'react-native-progress';
 
-export default function PatientPage({ navigation }) {
+export default function PatientPage(props) {
+
+  const patient = props.route.params.patient;
+  console.log(patient);
 
   //Review List
   const [Activities, SetActivities] = useState([
@@ -25,6 +25,51 @@ export default function PatientPage({ navigation }) {
     { name: 'שחייה', key: '11' },
   ]);
 
+  //permissions
+  const [update, setUpdate] = useState();
+  const [alert, setAlert] = useState();
+  const [activ, setActiv] = useState();
+
+  //toggle Switch
+  const [isEnabledUpdate, setIsEnableUpdate] = useState(useState(patient.UpdatePermissionPatient));
+  const [isEnabledAlert, setIsEnabledAlert] = useState(patient.ReceiveAlertsPermissionPatient);
+  const [isEnabledActiv, setIsEnabledActiv] = useState(patient.PatientStatus);
+  console.log(isEnabledUpdate[0]);
+  console.log(isEnabledAlert);
+  console.log(isEnabledActiv);
+
+
+  const toggleSwitchUpdate = () => {
+    setIsEnableUpdate(previousState => !previousState);
+    console.log(isEnabledUpdate);
+    // if (!isEnabledMale) {
+    //   setGender('זכר');
+    // }
+    // else {
+    //   setGender('');
+    // }
+  }
+  const toggleSwitchAlert= () => {
+    setIsEnabledAlert(previousState => !previousState);
+    console.log(isEnabledAlert);
+    // if (!isEnabledFemale) {
+    //   setGender('נקבה');
+    // }
+    // else {
+    //   setGender('');
+    // }
+  }
+  const toggleSwitchActiv= () => {
+    setIsEnabledActiv(previousState => !previousState);
+    console.log(isEnabledActiv);
+    // if (!isEnabledOther) {
+    //   setGender('אחר');
+    // }
+    // else {
+    //   setGender('');
+    // }
+  }
+
   return (
     <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
 
@@ -35,12 +80,12 @@ export default function PatientPage({ navigation }) {
 
           <View style={styles.left1}>
             <View>
-              <Text style={styles.name}>אורין_83</Text>
-              <Text style={styles.name}>#2458</Text>
+              <Text style={styles.name}>{patient.NicknamePatient}</Text>
+              <Text style={styles.name}>#{patient.IdPatient}</Text>
             </View>
             <View style={styles.left1}>
-              <Icon name='sentiment-satisfied' size={45} style={{ paddingLeft: 15 }} />
-              <Icon name='north' size={40} color={'#7fff00'} />
+              <Icon name={patient.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={45} style={{ paddingLeft: 25 }} />
+              <Icon name={patient.RelativeMood == 'DOUN' ? 'south' : 'north'} size={40} color={patient.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
             </View>
           </View>
           <View style={styles.left2}>
@@ -48,7 +93,7 @@ export default function PatientPage({ navigation }) {
               <Text style={{ fontSize: 20, marginRight: 45, marginLeft: 10 }}>מצב התקדמות</Text>
               <Icon name='stacked-line-chart' size={35} />
             </View>
-            <View style={{ marginLeft:8,backgroundColor: 'white', height:170,width:190, marginTop:30, borderWidth:1, borderColor:'white', borderRadius:15 }}>
+            <View style={{ marginLeft: 8, backgroundColor: 'white', height: 170, width: 190, marginTop: 30, borderWidth: 1, borderColor: 'white', borderRadius: 15 }}>
               <View>
                 <Text style={{ fontSize: 15, textAlign: 'center', marginTop: 20 }}>סה"כ ביצועים :</Text>
               </View>
@@ -120,37 +165,42 @@ export default function PatientPage({ navigation }) {
             </View>
 
           </View>
+
           <View style={styles.left3}>
-            <Text style={{ fontSize: 20, paddingLeft: 10, paddingTop: 20 }}>הרשאות :</Text>
-            <ToggleSwitch
-              onColor="black"
-              offColor="gray"
-              label="עדכון מרשם עיסוקים"
-              labelStyle={{ color: "black", fontWeight: "400", fontSize: 15 }}
-              size="small"
-              onToggle={isOn => console.log("changed to : ", isOn)}
-              style={{ marginTop: 30, flexDirection: 'row' }}
-            />
-            <ToggleSwitch
-              onColor="black"
-              offColor="gray"
-              label="קבלת התראות"
-              labelStyle={{ color: "black", fontWeight: "400", fontSize: 15 }}
-              size="small"
-              onToggle={isOn => console.log("changed to : ", isOn)}
-              style={{ marginTop: 30, flexDirection: 'row' }}
-            />
+            <Text style={{ fontSize: 20, paddingLeft: 10, paddingTop: 20, paddingBottom: 10 }}>הרשאות :</Text>
+            <View style={styles.toggle}>
+              <Text style={styles.toggleinput}>עדכון מרשם עיסוקים</Text>
+              <Switch
+                trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
+                thumbColor={isEnabledUpdate[0] ? "#D3DE32" : "#f4f3f4"}
+                ios_backgroundColor="#a9a9a9"
+                onValueChange={toggleSwitchUpdate}
+                value={isEnabledUpdate[0] ? true : false}
+              />
+            </View>
+            <View style={styles.toggle}>
+              <Text style={styles.toggleinput}>קבלת התראות</Text>
+              <Switch
+                trackColor={{ false: "#767577", true: "#dcdcdc" }}
+                thumbColor={isEnabledAlert ? "#D3DE32" : "#f4f3f4"}
+                ios_backgroundColor="#a9a9a9"
+                onValueChange={toggleSwitchAlert}
+                value={isEnabledAlert ? true : false}
+              />
+            </View>
           </View>
+
           <View style={styles.left4}>
-            <ToggleSwitch
-              onColor="black"
-              offColor="gray"
-              label="משתמש פעיל ?"
-              labelStyle={{ color: "black", fontWeight: "400", fontSize: 15 }}
-              size="small"
-              onToggle={isOn => console.log("changed to : ", isOn)}
-              style={{ marginTop: 30, flexDirection: 'row' }}
-            />
+            <View style={styles.toggleActiv}>
+              <Text style={styles.toggleinput}>משתמש פעיל</Text>
+              <Switch
+                trackColor={{ false: "#767577", true: "#dcdcdc" }}
+                thumbColor={isEnabledActiv ? "#D3DE32" : "#f4f3f4"}
+                ios_backgroundColor="#a9a9a9"
+                onValueChange={toggleSwitchActiv}
+                value={isEnabledActiv ? true : false}
+              />
+            </View>
           </View>
         </View>
 
@@ -201,6 +251,23 @@ export default function PatientPage({ navigation }) {
 
 const styles = StyleSheet.create({
 
+  toggleActiv: {
+    flexDirection: "row",
+    marginTop: 35
+  },
+
+  toggle: {
+    flexDirection: "row",
+    marginTop: 18
+  },
+
+  toggleinput: {
+    marginRight: 15,
+    marginTop: 5,
+    fontSize: 16,
+    marginLeft: 10
+  },
+
   fillcontainer: {
     marginTop: 10,
     display: 'flex',
@@ -217,7 +284,7 @@ const styles = StyleSheet.create({
 
   left4: {
     backgroundColor: '#EFEFEF',
-    height: 80,
+    height: 95,
     width: 210,
     marginTop: 3,
     top: 10,
@@ -228,7 +295,7 @@ const styles = StyleSheet.create({
 
   left3: {
     backgroundColor: '#EFEFEF',
-    height: 200,
+    height: 180,
     width: 210,
     marginTop: 3,
     top: 10,
@@ -326,7 +393,7 @@ const styles = StyleSheet.create({
     height: 800,
     width: 210,
     marginHorizontal: 2,
-    top: 40
+
   },
 
   rightcontainer: {
@@ -335,7 +402,7 @@ const styles = StyleSheet.create({
     height: 800,
     width: 210,
     marginHorizontal: 2,
-    top: 40
+
   },
 
 

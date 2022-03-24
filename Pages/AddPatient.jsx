@@ -26,7 +26,7 @@ export default function AddPatient(props) {
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
 
-  //toggleSwitch
+  //toggle Switch
   const [isEnabledMale, setIsEnabledMale] = useState(false);
   const [isEnabledFemale, setIsEnabledFemale] = useState(false);
   const [isEnabledOther, setIsEnabled1Other] = useState(false);
@@ -140,7 +140,7 @@ export default function AddPatient(props) {
           console.log(result);
 
           alert('המשתמש נוצר בהצלחה');
-          props.navigation.navigate('Dashboard', { id: idTerapist, name: nameTerapist });
+          props.navigation.navigate('Dashboard', { id: idTerapist, name: nameTerapist, back: true });
 
           // //if email exist
           // if (result==1) {

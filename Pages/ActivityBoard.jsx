@@ -118,8 +118,8 @@ export default function ActivityBoard({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    height: 550,
-    top: 60,
+    height: 600,
+    top: 8,
     marginHorizontal: 5,
     shadowColor: 'black',
     shadowOpacity: 0.8,
@@ -136,8 +136,8 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    top: 10,
-    left: 50,
+    top:-15,
+    left: 90,
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',
@@ -165,15 +165,15 @@ const styles = StyleSheet.create({
   },
 
   containerStyle: {
-    marginHorizontal: 25,
+    marginHorizontal: 20,
     width: 380,
-    top: 85,
+    top: 20,
   },
 
   iconContainerStyle: {
     flexDirection: "row",
     flexWrap: "wrap",
-    top: 50,
+    top: 10,
     marginHorizontal: 2,
   },
 

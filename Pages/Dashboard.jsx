@@ -1,15 +1,19 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ViewPagerAndroidBase } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { Icon, Overlay } from 'react-native-elements';
-import { Searchbar } from 'react-native-paper';
 import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
+import { TextInput } from 'react-native-paper';
 
 export default function Dashboard(props) {
 
   //Terapist id
   const idTerapist = props.route.params.id;
 
+  //Back
+  const back = props.route.params.back;
+
   //Patients list from DATA
+  const [DataPatients, setDataPatients] = useState([]);
   const [patients, setPatients] = useState([]);
 
   //DATA - url
@@ -32,14 +36,14 @@ export default function Dashboard(props) {
       .then(
         (result) => {
           var obj = result.map(patient => patient);
-          // console.log(obj);
           setPatients(obj);
+          setDataPatients(obj);
         },
         (error) => {
           console.log("err post=", error);
         });
 
-  }, [[patients]]);
+  }, [back]);
 
   //Overlay
   const [visible, setVisible] = useState(false);
@@ -48,8 +52,17 @@ export default function Dashboard(props) {
   };
 
   //Search Bar
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const onChangeSearch = query => setSearchQuery(query);
+  const onChangeSearch = query => {
+    console.log(query);
+    if (query) {
+      var filterData = DataPatients.filter(item => item.IdPatient.toString().includes(query));
+      console.log(filterData);
+      setPatients(filterData);
+    }
+    else {
+      setPatients(DataPatients);
+    }
+  }
 
   return (
 
@@ -65,18 +78,20 @@ export default function Dashboard(props) {
       <View style={styles.centerContainer}>
         <View>
           <TouchableOpacity style={styles.touchOp} onPress={() => {
-            props.navigation.navigate('Add Patient', { idTerapist: idTerapist, nameTerapist:props.route.params.name});
+            props.navigation.navigate('Add Patient', { idTerapist: idTerapist, nameTerapist: props.route.params.name, back:false });
           }}>
             <Icon name='add' />
             <Text style={{ marginRight: 20, marginLeft: 20, fontSize: 17 }}>הוסף מטופל חדש</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.Searchbar}>
-          <Searchbar
-            placeholder=""
+          <TextInput
+            left={<TextInput.Icon name="magnify" color="grey" size={20} />}
+            style={styles.searchinput}
             onChangeText={onChangeSearch}
-            value={searchQuery}
-            fontSize={17}
+            placeholder="מספר מטופל"
+            placeholderTextColor="#a9a9a9"
+            activeUnderlineColor="orange"
           />
         </View>
       </View>
@@ -119,7 +134,7 @@ export default function Dashboard(props) {
             <Text
               style={{ fontSize: 14, marginTop: 16, marginHorizontal: 2 }}>רמת ביצוע</Text>
             {patients.length > 0 && patients.map((item) => {
-              
+
               return (
                 <View style={styles.circlerow}>
                   <ProgressCircle
@@ -182,7 +197,7 @@ export default function Dashboard(props) {
             return (
               <View style={styles.row}>
                 <TouchableOpacity style={styles.show} onPress={() => {
-                  navigation.navigate('Patient Page');
+                  props.navigation.navigate('Patient Page', {patient:item});
                 }}>
                   <Text style={{ fontSize: 12, marginLeft: 20 }}>הצג</Text>
                 </TouchableOpacity>
@@ -198,6 +213,14 @@ export default function Dashboard(props) {
 }
 
 const styles = StyleSheet.create({
+
+  searchinput: {
+    flexDirection: "row",
+    height: 50,
+    backgroundColor: '#EFEFEF',
+    marginLeft: 10,
+    width: 200,
+  },
 
   circlerow: {
     width: 60,
@@ -306,11 +329,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     borderColor: '#EFEFEF',
-  },
-
-  Searchbar: {
-    width: 200,
-    marginLeft: 17,
   },
 
 });
