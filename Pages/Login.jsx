@@ -61,7 +61,7 @@ export default function Login({ navigation }) {
 
         },
         (error) => {
-          console.log("err post=", error);
+          console.log("err GET=", error);
         });
   }
 
