@@ -100,6 +100,8 @@ export default function ActivityBoard({ navigation }) {
           formatDateHeader="ddd DD"
           // fixedHorizontally={true}
           weekStartsOn={0}
+          //onEventPress={} //לחיצה על אירוע
+          onGridClick={() => navigation.navigate('Add Activity')} //לחיצה לשיבוץ פעילות
         />
       </View>
 

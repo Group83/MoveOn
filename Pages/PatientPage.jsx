@@ -134,7 +134,7 @@ export default function PatientPage(props) {
   });
 
   const handleEndConcert = async () => {
-    await fildName.map((item) => {
+    fildName.map((item) => {
       if (item == 'updatePermissionPatient') {
         var val = (isEnabledUpdate ? true : false);
       }
@@ -164,7 +164,7 @@ export default function PatientPage(props) {
             console.log('OK');
           }, error => {
             console.log("err put =", error);
-          })
+          });
     })
   }
 
