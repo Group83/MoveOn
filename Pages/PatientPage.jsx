@@ -7,22 +7,26 @@ import * as Progress from 'react-native-progress';
 export default function PatientPage(props) {
 
   const [patient, setPatient] = useState(props.route.params.patient);
+  console.log(patient);
   const totalPercent = patient.ComplishionPresentae * 100;
 
+  //Reviews from DATA
+  const [reviews, SetReviews] = useState([]);
+
   //Review List
-  const [Activities, SetActivities] = useState([
-    { name: 'ריצה', key: '1' },
-    { name: 'עיסוי צלקת', key: '2' },
-    { name: 'תרגול ידיים', key: '3' },
-    { name: 'נעילת נעליים', key: '4' },
-    { name: 'סודוקו', key: '5' },
-    { name: 'הליכה', key: '6' },
-    { name: 'שחייה', key: '7' },
-    { name: 'נעילת נעליים', key: '8' },
-    { name: 'סודוקו', key: '9' },
-    { name: 'הליכה', key: '10' },
-    { name: 'שחייה', key: '11' },
-  ]);
+  // const [Activities, SetActivities] = useState([
+  //   { name: 'ריצה', key: '1' },
+  //   { name: 'עיסוי צלקת', key: '2' },
+  //   { name: 'תרגול ידיים', key: '3' },
+  //   { name: 'נעילת נעליים', key: '4' },
+  //   { name: 'סודוקו', key: '5' },
+  //   { name: 'הליכה', key: '6' },
+  //   { name: 'שחייה', key: '7' },
+  //   { name: 'נעילת נעליים', key: '8' },
+  //   { name: 'סודוקו', key: '9' },
+  //   { name: 'הליכה', key: '10' },
+  //   { name: 'שחייה', key: '11' },
+  // ]);
 
   //toggle Switch
   const [isEnabledUpdate, setIsEnableUpdate] = useState(useState(patient.UpdatePermissionPatient[0]));
@@ -65,7 +69,7 @@ export default function PatientPage(props) {
         })
       })
         .then(res => {
-          return res.json();
+          return res;
         })
         .then(
           (result) => {
@@ -85,56 +89,43 @@ export default function PatientPage(props) {
             })
           },
           (error) => {
-            console.log("err get=", error);
+            console.log("err GET percent=", error);
           });
     })
 
+    //GET Reviews
+    fetch(apiUrlpercent + "=" + patient.IdPatient + '&clasification=' + item, {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json ; charset=UTP-8',
+        'Accept': 'application/json ; charset=UTP-8'
+      })
+    })
+      .then(res => {
+        return res;
+      })
+      .then(
+        (result) => {
+          var obj = result.map(review => review);
+          console.log(obj);
+          SetReviews(obj);
+        },
+        (error) => {
+          console.log("err GET percent=", error);
+        });
+
     return () => handleEndConcert();
 
-    // return () => { //componentWillUnmount 
+  }, []);
 
-    // console.log('cleaning up...');
-
-    // //insert premosions to data
-    // fildName.map((item) => {
-
-    //   if(item=='updatePermissionPatient'){
-    //     var val = (isEnabledUpdate ? true : false);
-    //   }
-    //   if(item=='receiveAlertsPermissionPatient'){
-    //     var val = (isEnabledAlert ? true : false);
-    //   }
-    //   if(item=='patientStatus'){
-    //     var val = (isEnabledActiv ? true : false);
-    //   }
-
-    //   console.log('id=', patient.IdPatient);
-    //   console.log('name=', item);
-    //   console.log('val=', val);
-
-    //   fetch(apiUrlpermissions + '=' + patient.IdPatient + "&fildName=" + item + "&val=" + val, {
-    //     method: 'PUT',
-    //     headers: new Headers({
-    //       'Content-Type': 'application/json ; charset=UTP-8',
-    //       'Accept': 'application/json ; charset=UTP-8'
-    //     })
-    //   })
-    //     .then(res => {
-    //       return res;
-    //     })
-    //     .then(
-    //       (result) => {
-    //         console.log('OK');
-    //       }, error => {
-    //         console.log("err put =", error);
-    //       })
-    // })
-    // };
-
-  });
-
+  //finally function
   const handleEndConcert = async () => {
-    fildName.map((item) => {
+
+    console.log('cleaning up...');
+
+    //insert premosions to data
+    await fildName.map((item) => {
+
       if (item == 'updatePermissionPatient') {
         var val = (isEnabledUpdate ? true : false);
       }
@@ -163,9 +154,10 @@ export default function PatientPage(props) {
           (result) => {
             console.log('OK');
           }, error => {
-            console.log("err put =", error);
-          });
+            console.log("err PUT =", error);
+          })
     })
+
   }
 
   return (
