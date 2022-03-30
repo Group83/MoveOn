@@ -68,6 +68,7 @@ export default function Login({ navigation }) {
   return (
 
     <ImageBackground source={require('../images/background.png')} resizeMode="cover" style={styles.image}>
+      
       <Text style={styles.title}>כניסה לחשבון</Text>
 
       <SafeAreaView style={{ top: -250 }}>

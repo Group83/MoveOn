@@ -1,9 +1,21 @@
-import { View, Text, StyleSheet, ImageBackground, ScrollView, Switch } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, Switch, LogBox } from 'react-native';
 import { Button } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import { TextInput } from 'react-native-paper';
+import SelectDropdown from 'react-native-select-dropdown';
+import { isVisible } from 'dom-helpers';
 
-export default function AddActivity({ navigation }) {
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
+
+export default function AddActivity(props) {
+
+  console.log(props.route.params.Date);
+  console.log(props.route.params.StartHour);
+
+  //select options
+  const activityType = ["תרגול", "פנאי", "תפקוד"]
 
   //Data Activity List
   const [DataActivities, SetDataActivities] = useState([
@@ -33,8 +45,11 @@ export default function AddActivity({ navigation }) {
   const [about, setAbout] = useState('');
   const [sets, setSets] = useState('');
   const [repit, setRepit] = useState('');
+  const [type, setType] = useState('');
   const [isEnabledMoved, setIsEnabledMoved] = useState(false);
   const [isEnabledRequired, setIsEnabledRequired] = useState(false);
+  console.log(isEnabledMoved);
+  console.log(isEnabledRequired);
 
   //input
   const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם הפעילות' });
@@ -56,11 +71,9 @@ export default function AddActivity({ navigation }) {
   //toggleSwitch
   const toggleSwitchMoved = () => {
     setIsEnabledMoved(previousState => !previousState);
-    console.log(isEnabledMoved);
   }
   const toggleSwitchRequired = () => {
     setIsEnabledRequired(previousState => !previousState);
-    console.log(isEnabledRequired);
   }
 
   const addActivity = () => {
@@ -75,6 +88,11 @@ export default function AddActivity({ navigation }) {
     if (!about.trim()) {
       let newobj = { color: 'red', text: 'נראה שחסר טקסט אודות' };
       setAboutInput(newobj)
+      return;
+    }
+    //Check for the about TextInput
+    if (!type.trim()) {
+      alert('נראה שלא בחרת סוג פעילות');
       return;
     }
   }
@@ -93,7 +111,26 @@ export default function AddActivity({ navigation }) {
 
         {/* left container */}
         <View style={styles.leftcontainer}>
-          <Text style={styles.text}>הוסף פעילות חדשה</Text>
+          <SelectDropdown
+            rowTextStyle={{ fontSize: 16 }}
+            data={activityType}
+            defaultButtonText={'לחץ לבחירת סוג פעילות'}
+            buttonStyle={{ height: 40, width: 200, borderColor: "#FFBD73", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 3, marginTop: 15, backgroundColor: 'rgba(255, 189, 115, 0.27)' }}
+            onSelect={(selectedItem, index) => {
+              setType(selectedItem);
+              console.log(selectedItem)
+            }}
+            buttonTextAfterSelection={(selectedItem, index) => {
+              // text represented after item is selected
+              // if data array is an array of objects then return selectedItem.property to render after item is selected
+              return selectedItem
+            }}
+            rowTextForSelection={(item, index) => {
+              // text represented for each item in dropdown
+              // if data array is an array of objects then return item.property to represent item in dropdown
+              return item
+            }}
+          />
           <TextInput
             style={styles.input}
             placeholder={nameInput.text}
@@ -195,7 +232,7 @@ const styles = StyleSheet.create({
   toggleinput: {
     marginRight: 15,
     marginTop: 5,
-    fontSize:15
+    fontSize: 15
   },
 
   toggleRequired: {
@@ -206,7 +243,7 @@ const styles = StyleSheet.create({
 
   toggleMoved: {
     flexDirection: "row",
-    marginTop: 45,
+    marginTop: 30,
     marginLeft: 15
   },
 
@@ -235,24 +272,25 @@ const styles = StyleSheet.create({
 
   inputDisc: {
     flexDirection: "row",
-    height: 160,
+    height: 170,
     width: 190,
-    top: 25,
-    marginTop: 20,
+    top: 10,
+    marginTop: 10,
     left: 10,
     borderBottomWidth: 1,
     backgroundColor: 'white',
     borderWidth: 1,
     borderRadius: 5,
     borderColor: 'white',
+    textAlign: 'center'
   },
 
   input: {
     flexDirection: "row",
     height: 40,
     width: 190,
-    top: 30,
-    marginTop: 10,
+    top: 10,
+    marginTop: 5,
     left: 10,
     borderBottomWidth: 1,
     backgroundColor: 'white',
@@ -281,7 +319,7 @@ const styles = StyleSheet.create({
     height: 550,
     width: 210,
     marginHorizontal: 2,
-    top: 50
+    top: 40
   },
 
   rightcontainer: {
@@ -293,7 +331,7 @@ const styles = StyleSheet.create({
     height: 550,
     width: 210,
     marginHorizontal: 2,
-    top: 50
+    top: 40
   },
 
   scrollView: {
@@ -344,7 +382,7 @@ const styles = StyleSheet.create({
   containerStyle: {
     marginHorizontal: 25,
     width: 380,
-    top: 80,
+    top: 60,
   },
 
 });

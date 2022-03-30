@@ -37,6 +37,7 @@ export default function Dashboard(props) {
         (result) => {
           var obj = result.map(patient => patient);
           setPatients(obj);
+          console.log(obj);
           setDataPatients(obj);
         },
         (error) => {
@@ -197,7 +198,7 @@ export default function Dashboard(props) {
             return (
               <View style={styles.row}>
                 <TouchableOpacity style={styles.show} onPress={() => {
-                  props.navigation.navigate('Patient Page', {patient:item});
+                  props.navigation.navigate('Patient Page', {patient:item, terapistId:idTerapist});
                 }}>
                   <Text style={{ fontSize: 12, marginLeft: 20 }}>הצג</Text>
                 </TouchableOpacity>

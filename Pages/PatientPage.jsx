@@ -3,38 +3,31 @@ import { Icon } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import * as Progress from 'react-native-progress';
+import { set } from 'date-fns';
 
 export default function PatientPage(props) {
 
   const [patient, setPatient] = useState(props.route.params.patient);
-  console.log(patient);
+  const terapistId = props.route.params.terapistId
+  //console.log(patient);
   const totalPercent = patient.ComplishionPresentae * 100;
 
   //Reviews from DATA
   const [reviews, SetReviews] = useState([]);
 
-  //Review List
-  // const [Activities, SetActivities] = useState([
-  //   { name: 'ריצה', key: '1' },
-  //   { name: 'עיסוי צלקת', key: '2' },
-  //   { name: 'תרגול ידיים', key: '3' },
-  //   { name: 'נעילת נעליים', key: '4' },
-  //   { name: 'סודוקו', key: '5' },
-  //   { name: 'הליכה', key: '6' },
-  //   { name: 'שחייה', key: '7' },
-  //   { name: 'נעילת נעליים', key: '8' },
-  //   { name: 'סודוקו', key: '9' },
-  //   { name: 'הליכה', key: '10' },
-  //   { name: 'שחייה', key: '11' },
-  // ]);
+  //DATA url - reviews
+  const apiUrlReviews = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/ActualPatientActivity?id";
 
   //toggle Switch
-  const [isEnabledUpdate, setIsEnableUpdate] = useState(useState(patient.UpdatePermissionPatient[0]));
-  const [isEnabledAlert, setIsEnabledAlert] = useState(patient.ReceiveAlertsPermissionPatient);
-  const [isEnabledActiv, setIsEnabledActiv] = useState(patient.PatientStatus);
-  const fildName = ['updatePermissionPatient', 'receiveAlertsPermissionPatient', 'patientStatus']
+  const [isEnabledUpdate, setIsEnableUpdate] = useState(patient.UpdatePermissionPatient[0]?true:false);
+  const [isEnabledAlert, setIsEnabledAlert] = useState(patient.ReceiveAlertsPermissionPatient?true:false);
+  const [isEnabledActiv, setIsEnabledActiv] = useState(patient.PatientStatus?true:false);
+  console.log('update : ',isEnabledUpdate);
+  console.log('alert : ',isEnabledAlert);
+  console.log('activ : ',isEnabledActiv);
 
-  const apiUrlpermissions = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Patient?id";
+  //DATA url - update permissions
+  const apiUrlpermissions = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Patient";
 
   const toggleSwitchUpdate = () => {
     setIsEnableUpdate(previousState => !previousState);
@@ -51,9 +44,9 @@ export default function PatientPage(props) {
   const [tirgul, setTirgul] = useState();
   const [pnai, setPnai] = useState();
   const [tifkud, setTifkud] = useState();
-  const [types, setTypes] = useState(['תרגול', 'פנאי', 'תפקוד']);
+  const [types] = useState(['תרגול', 'פנאי', 'תפקוד']);
 
-  //DATA - url
+  //DATA - url percent
   const apiUrlpercent = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Patient?id";
 
   //EVERY RENDER
@@ -73,20 +66,25 @@ export default function PatientPage(props) {
         })
         .then(
           (result) => {
-            var obj = result.map(percent => percent);
-            obj.map((percent) => {
-              if (percent) {
-                if (item == 'תרגול') {
-                  setTirgul(percent.ComplishionPresentae);
+            console.log('OK Percent', result.json());
+            if (result) {
+              var obj = result.map(percent => percent);
+              obj.map((percent) => {
+                if (percent) {
+                  if (item == 'תרגול') {
+                    setTirgul(percent.ComplishionPresentae);
+                  }
+                  if (item == 'תפקוד') {
+                    setTifkud(percent.ComplishionPresentae);
+                  }
+                  if (item == 'פנאי') {
+                    setPnai(percent.ComplishionPresentae);
+                  }
                 }
-                if (item == 'תפקוד') {
-                  setTifkud(percent.ComplishionPresentae);
-                }
-                if (item == 'פנאי') {
-                  setPnai(percent.ComplishionPresentae);
-                }
-              }
-            })
+              })
+            } else {
+              console.log('percent in empty');
+            }
           },
           (error) => {
             console.log("err GET percent=", error);
@@ -94,7 +92,7 @@ export default function PatientPage(props) {
     })
 
     //GET Reviews
-    fetch(apiUrlpercent + "=" + patient.IdPatient + '&clasification=' + item, {
+    fetch(apiUrlReviews + "=" + patient.IdPatient, {
       method: 'GET',
       headers: new Headers({
         'Content-Type': 'application/json ; charset=UTP-8',
@@ -106,58 +104,47 @@ export default function PatientPage(props) {
       })
       .then(
         (result) => {
-          var obj = result.map(review => review);
-          console.log(obj);
-          SetReviews(obj);
+          console.log('OK Reviews', result.json());
+          if (result) {
+            var obj = result.map(review => review);
+            console.log(obj);
+            SetReviews(obj);
+          } else {
+            console.log('Reviews in empty');
+          }
         },
         (error) => {
-          console.log("err GET percent=", error);
+          console.log("err GET reviews=", error);
         });
 
     return () => handleEndConcert();
 
-  }, []);
+  }, [patient]);
 
   //finally function
-  const handleEndConcert = async () => {
+  const handleEndConcert = () => {
 
-    console.log('cleaning up...');
+    console.log('exit update : ', isEnabledUpdate);
+    console.log('exit alert : ', isEnabledAlert);
+    console.log('exit activ : ', isEnabledActiv);
 
     //insert premosions to data
-    await fildName.map((item) => {
+    let updatearr = [{ IdPatient: patient.IdPatient, PatientStatus: isEnabledActiv, UpdatePermissionPatient: isEnabledUpdate, ReceiveAlertsPermissionPatient: isEnabledAlert, IdTherapist : terapistId}];
+    console.log(updatearr[0]);
 
-      if (item == 'updatePermissionPatient') {
-        var val = (isEnabledUpdate ? true : false);
-      }
-      if (item == 'receiveAlertsPermissionPatient') {
-        var val = (isEnabledAlert ? true : false);
-      }
-      if (item == 'patientStatus') {
-        var val = (isEnabledActiv ? true : false);
-      }
-
-      console.log('id=', patient.IdPatient);
-      console.log('name=', item);
-      console.log('val=', val);
-
-      fetch(apiUrlpermissions + '=' + patient.IdPatient + "&fildName=" + item + "&val=" + val, {
-        method: 'PUT',
-        headers: new Headers({
-          'Content-Type': 'application/json ; charset=UTP-8',
-          'Accept': 'application/json ; charset=UTP-8'
-        })
+    fetch(apiUrlpermissions, {
+      method: 'PUT',
+      body: JSON.stringify(updatearr[0]),
+      headers: new Headers({
+        'Content-Type': 'application/json ; charset=UTP-8',
+        'Accept': 'application/json ; charset=UTP-8'
       })
-        .then(res => {
-          return res;
-        })
-        .then(
-          (result) => {
-            console.log('OK');
-          }, error => {
-            console.log("err PUT =", error);
-          })
     })
-
+      .then(res => {
+        console.log('OK Permissions', res.json());
+      }).catch(error => {
+        console.log('err PUT =', error)
+      })
   }
 
   return (
@@ -290,7 +277,7 @@ export default function PatientPage(props) {
             </View>
             <View style={styles.scrollView}>
               <ScrollView>
-                {Activities.map((item) => {
+                {reviews.map((item) => {
                   return (
                     <View>
                       <Text style={styles.review}>{item.name}</Text>

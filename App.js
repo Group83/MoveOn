@@ -4,6 +4,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { I18nManager } from "react-native";
+import { Header } from 'react-native-elements';
+
 
 //Pages
 import Login from './Pages/Login';
@@ -35,8 +37,23 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: true }} initialRouteName='Login'>
-        <Stack.Screen name='Log in' component={Login} />
+      {/* <Header
+        leftComponent={{ icon: 'arrow-back-ios', color: 'black', size: 25, marginLeft: 5 }}
+        rightComponent={{ icon: 'home', color: 'blck', size: 25, marginRight: 5 }}
+        containerStyle={{
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          justifyContent: 'space-around',
+        }}
+        
+        onPress={() => alert('This is a button!')}
+      /> */}
+      <Stack.Navigator screenOptions={{ headerShown: true }} initialRouteName='Login'
+      options={{
+        headerBackColor: 'white',
+      }}
+      
+      >
+        <Stack.Screen name='Log in' component={Login} options={{ headerShown: true }} />
         <Stack.Screen name='Sign Up' component={SignUp} />
         <Stack.Screen name='Add Patient' component={AddPatient} />
         <Stack.Screen name='Activity Board' component={ActivityBoard} />
