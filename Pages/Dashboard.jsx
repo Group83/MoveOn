@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
-import { Icon, Overlay } from 'react-native-elements';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
+import { Icon, Overlay, Header} from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import { TextInput } from 'react-native-paper';
@@ -65,107 +65,160 @@ export default function Dashboard(props) {
     }
   }
 
+  const headerfunc = () => {
+    props.navigation.goBack();
+  }
+
   return (
+    <View style={styles.topContainer}>
 
-    <ImageBackground
-      source={require('../images/background1.png')}
-      resizeMode="cover" style={styles.image}
-    >
-
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>שלום {props.route.params.name},</Text>
-      </View>
-
-      <View style={styles.centerContainer}>
-        <View>
-          <TouchableOpacity style={styles.touchOp} onPress={() => {
-            props.navigation.navigate('Add Patient', { idTerapist: idTerapist, nameTerapist: props.route.params.name, back:false });
-          }}>
-            <Icon name='add' />
-            <Text style={{ marginRight: 20, marginLeft: 20, fontSize: 17 }}>הוסף מטופל חדש</Text>
+      <Header
+        leftComponent={<View>
+          <TouchableOpacity style={{ marginTop: 6, marginRight: 20 }} onPress={headerfunc}>
+            <Icon name='arrow-back-ios' color='black' size={25} />
           </TouchableOpacity>
-        </View>
-        <View style={styles.Searchbar}>
-          <TextInput
-            left={<TextInput.Icon name="magnify" color="grey" size={20} />}
-            style={styles.searchinput}
-            onChangeText={onChangeSearch}
-            placeholder="מספר מטופל"
-            placeholderTextColor="#a9a9a9"
-            activeUnderlineColor="orange"
-          />
-        </View>
-      </View>
+        </View>}
+        containerStyle={{
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          justifyContent: 'space-around',
+        }}
+      />
 
-      <View style={styles.dashboardContainer}>
+      <ImageBackground
+        source={require('../images/background1.png')}
+        resizeMode="cover" style={styles.image}
+      >
 
-        <View style={styles.col}>
-          <View style={styles.coltitle}>
-            <Text style={{ fontSize: 14, marginTop: 18, marginHorizontal: 5 }}>מספר</Text>
-            {patients.length > 0 && patients.map((item) => {
-              return (
-                <View style={styles.row}>
-                  <Text
-                    style={{ fontSize: 12, marginLeft: 5, marginTop: 15 }}>
-                    #{item?.IdPatient}
-                  </Text>
-                </View>
-              )
-            })}
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>שלום {props.route.params.name},</Text>
+        </View>
+
+        <View style={styles.centerContainer}>
+          <View>
+            <TouchableOpacity style={styles.touchOp} onPress={() => {
+              props.navigation.navigate('Add Patient', { idTerapist: idTerapist, name: props.route.params.name, back: false });
+            }}>
+              <Icon name='add' />
+              <Text style={{ marginRight: 20, marginLeft: 20, fontSize: 17 }}>הוסף מטופל חדש</Text>
+            </TouchableOpacity>
           </View>
-
-        </View>
-
-        <View style={styles.col}>
-          <View style={styles.coltitle}>
-            <Text style={{ fontSize: 14, marginTop: 18, marginHorizontal: 2 }}>כינוי</Text>
-            {patients.length > 0 && patients.map((item) => {
-              return (
-                <View style={styles.row}>
-                  <Text style={{ fontSize: 12, marginLeft: 2, marginTop: 15 }}>{item?.NicknamePatient}</Text>
-                </View>
-              )
-            })}
+          <View style={styles.Searchbar}>
+            <TextInput
+              left={<TextInput.Icon name="magnify" color="grey" size={20} />}
+              style={styles.searchinput}
+              onChangeText={onChangeSearch}
+              placeholder="מספר מטופל"
+              placeholderTextColor="#a9a9a9"
+              activeUnderlineColor="orange"
+            />
           </View>
-
         </View>
 
-        <View style={styles.col}>
-          <View style={styles.coltitle}>
-            <Text
-              style={{ fontSize: 14, marginTop: 16, marginHorizontal: 2 }}>רמת ביצוע</Text>
-            {patients.length > 0 && patients.map((item) => {
+        <View style={styles.dashboardContainer}>
 
-              return (
-                <View style={styles.circlerow}>
-                  <ProgressCircle
-                    percent={item?.ComplishionPresentae * 100}
-                    radius={10}
-                    borderWidth={4}
-                    color={item.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
-                    shadowColor="lightgrey"
-                    bgColor="#fff"
-                  >
-                  </ProgressCircle>
-                  <Text style={{ fontSize: 12, marginLeft: 5 }}>{item?.ComplishionPresentae * 100}%</Text>
-                </View>
-              )
-            })}
-
-          </View>
-
-        </View>
-
-        <View style={styles.col}>
-          <View style={styles.coltitle}>
-            <Text style={{ fontSize: 14, marginTop: 16, marginHorizontal: 2 }}>מצב רוח</Text>
-            {patients.length > 0 && patients.map((item) => {
-              return (
-                <View style={styles.row}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 11, marginLeft: 8 }}>
-                    <Icon name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
-                    <Icon name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={20} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
+          <View style={styles.col}>
+            <View style={styles.coltitle}>
+              <Text style={{ fontSize: 14, marginTop: 18, marginHorizontal: 5 }}>מספר</Text>
+              {patients.length > 0 && patients.map((item) => {
+                return (
+                  <View style={styles.row}>
+                    <Text
+                      style={{ fontSize: 12, marginLeft: 5, marginTop: 15 }}>
+                      #{item?.IdPatient}
+                    </Text>
                   </View>
+                )
+              })}
+            </View>
+
+          </View>
+
+          <View style={styles.col}>
+            <View style={styles.coltitle}>
+              <Text style={{ fontSize: 14, marginTop: 18, marginHorizontal: 2 }}>כינוי</Text>
+              {patients.length > 0 && patients.map((item) => {
+                return (
+                  <View style={styles.row}>
+                    <Text style={{ fontSize: 12, marginLeft: 2, marginTop: 15 }}>{item?.NicknamePatient}</Text>
+                  </View>
+                )
+              })}
+            </View>
+
+          </View>
+
+          <View style={styles.col}>
+            <View style={styles.coltitle}>
+              <Text
+                style={{ fontSize: 14, marginTop: 16, marginHorizontal: 2 }}>רמת ביצוע</Text>
+              {patients.length > 0 && patients.map((item) => {
+
+                return (
+                  <View style={styles.circlerow}>
+                    <ProgressCircle
+                      percent={item?.ComplishionPresentae * 100}
+                      radius={10}
+                      borderWidth={4}
+                      color={item.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
+                      shadowColor="lightgrey"
+                      bgColor="#fff"
+                    >
+                    </ProgressCircle>
+                    <Text style={{ fontSize: 12, marginLeft: 5 }}>{item?.ComplishionPresentae * 100}%</Text>
+                  </View>
+                )
+              })}
+
+            </View>
+
+          </View>
+
+          <View style={styles.col}>
+            <View style={styles.coltitle}>
+              <Text style={{ fontSize: 14, marginTop: 16, marginHorizontal: 2 }}>מצב רוח</Text>
+              {patients.length > 0 && patients.map((item) => {
+                return (
+                  <View style={styles.row}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 11, marginLeft: 8 }}>
+                      <Icon name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
+                      <Icon name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={20} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
+                    </View>
+                  </View>
+                )
+              })}
+            </View>
+
+          </View>
+
+          <View style={styles.col}>
+            <View style={styles.coltitle} />
+            {patients.length > 0 && patients.map((item) => {
+              return (
+                <View style={styles.row}>
+                  <TouchableOpacity style={{ marginTop: 6, marginRight: 20 }} onPress={toggleOverlay}>
+                    <Icon name='warning' color='gold' size={22} />
+                  </TouchableOpacity>
+                  <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+                    <Icon name='warning' color='gold' />
+                    <Text style={styles.textSecondary}>
+                      סומנו מספר פעילויות ברצף !
+                    </Text>
+                  </Overlay>
+                </View>
+              )
+            })}
+          </View>
+
+          <View style={styles.col}>
+            <View style={styles.coltitle} />
+            {patients.length > 0 && patients.map((item) => {
+              return (
+                <View style={styles.row}>
+                  <TouchableOpacity style={styles.show} onPress={() => {
+                    props.navigation.navigate('Patient Page', { patient: item, terapistId: idTerapist, name: props.route.params.name });
+                  }}>
+                    <Text style={{ fontSize: 12, marginLeft: 20 }}>הצג</Text>
+                  </TouchableOpacity>
                 </View>
               )
             })}
@@ -173,47 +226,16 @@ export default function Dashboard(props) {
 
         </View>
 
-        <View style={styles.col}>
-          <View style={styles.coltitle} />
-          {patients.length > 0 && patients.map((item) => {
-            return (
-              <View style={styles.row}>
-                <TouchableOpacity style={{ marginTop: 6, marginRight: 20 }} onPress={toggleOverlay}>
-                  <Icon name='warning' color='gold' size={22} />
-                </TouchableOpacity>
-                <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-                  <Icon name='warning' color='gold' />
-                  <Text style={styles.textSecondary}>
-                    סומנו מספר פעילויות ברצף !
-                  </Text>
-                </Overlay>
-              </View>
-            )
-          })}
-        </View>
-
-        <View style={styles.col}>
-          <View style={styles.coltitle} />
-          {patients.length > 0 && patients.map((item) => {
-            return (
-              <View style={styles.row}>
-                <TouchableOpacity style={styles.show} onPress={() => {
-                  props.navigation.navigate('Patient Page', {patient:item, terapistId:idTerapist});
-                }}>
-                  <Text style={{ fontSize: 12, marginLeft: 20 }}>הצג</Text>
-                </TouchableOpacity>
-              </View>
-            )
-          })}
-        </View>
-
-      </View>
-
-    </ImageBackground >
+      </ImageBackground >
+    </View >
   )
 }
 
 const styles = StyleSheet.create({
+
+  topContainer: {
+    flex: 1,
+  },
 
   searchinput: {
     flexDirection: "row",

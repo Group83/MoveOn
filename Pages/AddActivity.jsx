@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ImageBackground, ScrollView, Switch, LogBox, TouchableOpacity } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Icon, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -12,10 +12,15 @@ LogBox.ignoreLogs([
 export default function AddActivity(props) {
 
   //set date and time
-  const time = moment(props.route.params.Date).format("YYYY-MM-DDThh:mm");
+  const time = moment(props.route.params.Date).format("YYYY-MM-DDTHH:mm");
+  console.log('---------------------------------')
+  console.log('time = ', time);
   const sec = parseInt(time.substring(14, 16));
+  console.log('sec = ',sec);
   const newSecStart = (sec < 30 ? '00' : '30');
+  console.log('newSecStart = ',newSecStart);
   const startTime = time.substring(0, 14) + newSecStart;
+  console.log('startTime = ',startTime);
   const endTime = moment(startTime, "YYYY-MM-DDThh:mm").add(30, 'minutes').format('YYYY-MM-DDThh:mm');
   const idPatient = props.route.params.patient.IdPatient;
 
@@ -107,6 +112,7 @@ export default function AddActivity(props) {
       ActivityClassification: type,
       DescriptionActivity: about
     }];
+
     console.log(obj);
 
     //send activity to DB
@@ -123,8 +129,8 @@ export default function AddActivity(props) {
       })
       .then(
         (result) => {
-          alert('הפעילות נוספה בהצלחה');
           props.navigation.navigate('Activity Board', { patient: props.route.params.patient, back: true });
+          //alert('הפעילות נוספה בהצלחה');
         }, error => {
           console.log("err post=", error);
         })
@@ -173,7 +179,27 @@ export default function AddActivity(props) {
 
   }
 
+  const headerfunc = () => {
+    props.navigation.goBack();
+    //props.navigation.navigate('Activity Board', { patient: props.route.params.patient, back: false, terapistId:props.route.params.patient.IdTherapist});
+  }
+
   return (
+
+    <View style={styles.topContainer}>
+
+    <Header
+      leftComponent={<View>
+        <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
+          <Icon name='arrow-back-ios' color='black' size={25} />
+        </TouchableOpacity>
+      </View>}
+      containerStyle={{
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        justifyContent: 'space-around',
+      }}
+    />
+
     <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
       <Text style={styles.title}>פעילות חדשה</Text>
       <View style={styles.container}>
@@ -208,6 +234,7 @@ export default function AddActivity(props) {
             placeholder="כתובת סרטון"
             placeholderTextColor="#a9a9a9"
             activeUnderlineColor="orange"
+            multiline={true}
           />
           <TextInput
             defaultValue={fillAbout}
@@ -216,6 +243,7 @@ export default function AddActivity(props) {
             placeholder={aboutInput.text}
             placeholderTextColor={aboutInput.color}
             activeUnderlineColor="orange"
+            multiline={true}
           />
           <TextInput
             style={styles.input}
@@ -289,10 +317,15 @@ export default function AddActivity(props) {
         onPress={addActivity}
       />
     </ImageBackground>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+
+  topContainer: {
+    flex: 1,
+  },
 
   toggleinput: {
     marginRight: 15,

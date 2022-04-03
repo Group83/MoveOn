@@ -37,23 +37,13 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      {/* <Header
-        leftComponent={{ icon: 'arrow-back-ios', color: 'black', size: 25, marginLeft: 5 }}
-        rightComponent={{ icon: 'home', color: 'blck', size: 25, marginRight: 5 }}
-        containerStyle={{
-          backgroundColor: 'rgba(0, 0, 0, 0)',
-          justifyContent: 'space-around',
-        }}
-        
-        onPress={() => alert('This is a button!')}
-      /> */}
-      <Stack.Navigator screenOptions={{ headerShown: true }} initialRouteName='Login'
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='Login'
       options={{
         headerBackColor: 'white',
       }}
       
       >
-        <Stack.Screen name='Log in' component={Login} options={{ headerShown: true }} />
+        <Stack.Screen name='Log in' component={Login} options={{ headerShown: false }} />
         <Stack.Screen name='Sign Up' component={SignUp} />
         <Stack.Screen name='Add Patient' component={AddPatient} />
         <Stack.Screen name='Activity Board' component={ActivityBoard} />

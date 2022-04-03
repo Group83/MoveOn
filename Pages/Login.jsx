@@ -1,5 +1,5 @@
-import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
-import { Button, Icon, Overlay } from 'react-native-elements';
+import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import { Button, Icon, Overlay, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import { TextInput } from 'react-native-paper';
 
@@ -65,116 +65,96 @@ export default function Login({ navigation }) {
         });
   }
 
+
   return (
 
-    <ImageBackground source={require('../images/background.png')} resizeMode="cover" style={styles.image}>
-      
-      <Text style={styles.title}>כניסה לחשבון</Text>
+    <View style={styles.topContainer}>
 
-      <SafeAreaView style={{ top: -250 }}>
-        <TextInput
-          left={<TextInput.Icon name="email-outline" color="grey" size={20}/>}
-          style={styles.input}
-          onChangeText={newText => setEmail(newText)}
-          placeholder={mailInput.text}
-          placeholderTextColor={mailInput.color}
-          activeUnderlineColor="orange"
-        />
-
-        <TextInput
-          left={<TextInput.Icon name="key-outline" color="grey" size={20}/>}
-          style={styles.input}
-          onChangeText={newText => setPassword(newText)}
-          secureTextEntry={true}
-          placeholder={passInput.text}
-          placeholderTextColor={passInput.color}
-          activeUnderlineColor="orange"
-        />
-      </SafeAreaView>
-
-      <TouchableOpacity onPress={() => {
-        navigation.navigate('Sign Up');
-      }}>
-        <Text style={styles.text}>שכחתי סיסמא</Text>
-      </TouchableOpacity>
-
-      <View>
-        <Button
-          title="כניסה"
-          buttonStyle={styles.buttonStyle}
-          titleStyle={styles.titleStyle}
-          containerStyle={styles.containerStyle}
-          onPress={checkUser}
-        />
-        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-          <Icon name='warning' color='#ff4500' size={30} />
-          <Text style={styles.textSecondary}>
-            כתובת אימייל או הסיסמה שהזנתם אינם קיימים במערכת
-          </Text>
-          <Button
-            title="אישור"
-            buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
-            titleStyle={{ color: 'white', marginHorizontal: 20 }}
-            onPress={toggleOverlay}
+      <Header
+        centerComponent={
+          <Image
+            source={require('../images/newlogo.jpeg')}
+            resizeMode="center"
+            style={{ width: 230, alignSelf: 'center', height: 45 }}
           />
-        </Overlay>
-      </View>
+        }
+        containerStyle={{
+          backgroundColor: 'white',
+          justifyContent: 'space-around',
+        }}
+      />
 
-      <View style={styles.iconContainerStyle}>
-        <Button
-          icon={{
-            name: 'google',
-            type: 'font-awesome',
-            size: 20,
-            color: 'black',
-          }}
-          iconContainerStyle={{ marginRight: 10 }}
-          buttonStyle={{
-            backgroundColor: '#E5E5E5',
-            borderColor: '#E5E5E5',
-            borderWidth: 5,
-            borderRadius: 15,
-          }}
-          containerStyle={{
-            marginHorizontal: 50,
-            marginHorizontal: 32,
-            width: 150,
-          }}
-        />
+      <ImageBackground source={require('../images/background.png')} resizeMode="cover" style={styles.image}>
 
-        <Button
-          icon={{
-            name: 'facebook',
-            type: 'font-awesome',
-            size: 20,
-            color: 'black',
-          }}
-          iconContainerStyle={{ marginRight: 10 }}
-          buttonStyle={{
-            backgroundColor: '#E5E5E5',
-            borderColor: '#E5E5E5',
-            borderWidth: 5,
-            borderRadius: 15,
-          }}
-          containerStyle={{
-            marginHorizontal: 32,
-            width: 150,
-          }}
-        />
-      </View>
+        <Text style={styles.title}>כניסה לחשבון</Text>
 
-      <TouchableOpacity style={styles.touchOp} onPress={() => {
-        navigation.navigate('Sign Up');
-      }}>
-        <Text style={styles.text1}>עדיין אין לך חשבון ?</Text>
-        <Text style={styles.text2}>משתמש חדש</Text>
-      </TouchableOpacity>
+        <SafeAreaView style={{ top: -250 }}>
+          <TextInput
+            left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
+            style={styles.input}
+            onChangeText={newText => setEmail(newText)}
+            placeholder={mailInput.text}
+            placeholderTextColor={mailInput.color}
+            activeUnderlineColor="orange"
+          />
 
-    </ImageBackground>
+          <TextInput
+            left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
+            style={styles.input}
+            onChangeText={newText => setPassword(newText)}
+            //multiline={true}
+            secureTextEntry={true}
+            placeholder={passInput.text}
+            placeholderTextColor={passInput.color}
+            activeUnderlineColor="orange"
+          />
+        </SafeAreaView>
+
+        <TouchableOpacity onPress={() => {
+          navigation.navigate('Sign Up');
+        }}>
+          <Text style={styles.text}>שכחתי סיסמא</Text>
+        </TouchableOpacity>
+
+        <View>
+          <Button
+            title="כניסה"
+            buttonStyle={styles.buttonStyle}
+            titleStyle={styles.titleStyle}
+            containerStyle={styles.containerStyle}
+            onPress={checkUser}
+          />
+          <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+            <Icon name='warning' color='#ff4500' size={30} />
+            <Text style={styles.textSecondary}>
+              כתובת אימייל או הסיסמה שהזנתם אינם קיימים במערכת
+            </Text>
+            <Button
+              title="אישור"
+              buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
+              titleStyle={{ color: 'white', marginHorizontal: 20 }}
+              onPress={toggleOverlay}
+            />
+          </Overlay>
+        </View>
+
+        <TouchableOpacity style={styles.touchOp} onPress={() => {
+          navigation.navigate('Sign Up');
+        }}>
+          <Text style={styles.text1}>עדיין אין לך חשבון ?</Text>
+          <Text style={styles.text2}>משתמש חדש</Text>
+        </TouchableOpacity>
+
+      </ImageBackground>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+
+  topContainer: {
+    flex: 1,
+  },
 
   textSecondary: {
     marginBottom: 10,
@@ -207,6 +187,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
     marginVertical: 20,
     backgroundColor: 'white',
+    flexShrink:1,
+    flexWrap: 'wrap'
   },
 
   text: {

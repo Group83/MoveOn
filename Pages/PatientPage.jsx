@@ -1,9 +1,8 @@
 import { View, Text, StyleSheet, ImageBackground, ScrollView, TouchableOpacity, Switch } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Icon, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import * as Progress from 'react-native-progress';
-import moment from 'moment';
 
 
 export default function PatientPage(props) {
@@ -20,12 +19,9 @@ export default function PatientPage(props) {
   const apiUrlReviews = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/ActualPatientActivity?id";
 
   //toggle Switch
-  const [isEnabledUpdate, setIsEnableUpdate] = useState(patient.UpdatePermissionPatient[0] ? true : false);
-  const [isEnabledAlert, setIsEnabledAlert] = useState(patient.ReceiveAlertsPermissionPatient ? true : false);
-  const [isEnabledActiv, setIsEnabledActiv] = useState(patient.PatientStatus ? true : false);
-  console.log('update : ', isEnabledUpdate);
-  console.log('alert : ', isEnabledAlert);
-  console.log('activ : ', isEnabledActiv);
+  const [isEnabledUpdate, setIsEnableUpdate] = useState(patient.UpdatePermissionPatient);
+  const [isEnabledAlert, setIsEnabledAlert] = useState(patient.ReceiveAlertsPermissionPatient);
+  const [isEnabledActiv, setIsEnabledActiv] = useState(patient.PatientStatus);
 
   //DATA url - update permissions
   const apiUrlpermissions = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Patient";
@@ -116,20 +112,22 @@ export default function PatientPage(props) {
       console.log("err GET reviews=", error);
     }).done();
 
-    return () => handleEndConcert();
-
   }, [patient]);
 
-  //finally function
-  const handleEndConcert = () => {
 
-    console.log('exit update : ', isEnabledUpdate);
-    console.log('exit alert : ', isEnabledAlert);
-    console.log('exit activ : ', isEnabledActiv);
+  const headerfunc = () => {
+
+    var update = (isEnabledUpdate?1:0);
+    var alert = (isEnabledAlert?1:0);
+    var activ = (isEnabledActiv?1:0);
+
+    console.log('exit update : ', update);
+    console.log('exit alert : ', alert);
+    console.log('exit activ : ', activ);
 
     //insert premosions to data
-    let updatearr = [{ IdPatient: patient.IdPatient, PatientStatus: isEnabledActiv, UpdatePermissionPatient: isEnabledUpdate, ReceiveAlertsPermissionPatient: isEnabledAlert, IdTherapist: terapistId }];
-    console.log(updatearr[0]);
+    let updatearr = [{ IdPatient: patient.IdPatient, PatientStatus: activ, UpdatePermissionPatient: update, ReceiveAlertsPermissionPatient: alert, IdTherapist: terapistId }];
+    console.log('update payient = ', updatearr[0]);
 
     fetch(apiUrlpermissions, {
       method: 'PUT',
@@ -140,164 +138,185 @@ export default function PatientPage(props) {
       })
     })
       .then(res => {
-        console.log('OK Permissions', res.json());
+        console.log('OK Permissions !');
+        props.navigation.navigate('Dashboard', { id: terapistId, name: props.route.params.name, back: true});
       }).catch(error => {
         console.log('err PUT =', error)
       })
   }
 
   return (
-    <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
 
-      <View style={styles.container}>
+    <View style={styles.topContainer}>
 
-        {/* leftcontainer */}
-        <View style={styles.leftcontainer}>
+      <Header
+        leftComponent={<View>
+          <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
+            <Icon name='arrow-back-ios' color='black' size={25} />
+          </TouchableOpacity>
+        </View>}
+        containerStyle={{
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          justifyContent: 'space-around',
+        }}
+      />
 
-          <View style={styles.left1}>
-            <View>
-              <Text style={styles.name}>{patient.NicknamePatient}</Text>
-              <Text style={styles.name}>#{patient.IdPatient}</Text>
-            </View>
+      <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
+
+        <View style={styles.container}>
+
+          {/* leftcontainer */}
+          <View style={styles.leftcontainer}>
+
             <View style={styles.left1}>
-              <Icon name={patient.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={40} style={{ paddingLeft: 25 }} />
-              <Icon name={patient.RelativeMood == 'DOUN' ? 'south' : 'north'} size={35} color={patient.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
-            </View>
-          </View>
-          <View style={styles.left2}>
-            <View style={styles.touchOp}>
-              <Text style={{ fontSize: 20, marginRight: 40, marginLeft: 10 }}>מצב התקדמות</Text>
-              <Icon name='stacked-line-chart' size={35} />
-            </View>
-            <View style={{ marginLeft: 8, backgroundColor: 'white', height: 170, width: 190, marginTop: 30, borderWidth: 1, borderColor: 'white', borderRadius: 15 }}>
               <View>
-                <Text style={{ fontSize: 15, textAlign: 'center', marginTop: 12 }}>סה"כ ביצועים :</Text>
+                <Text style={styles.name}>{patient.NicknamePatient}</Text>
+                <Text style={styles.name}>#{patient.IdPatient}</Text>
               </View>
-              <View style={{ marginTop: 15 }}>
-                <ProgressCircle
-                  percent={patient.ComplishionPresentae * 100}
-                  radius={52}
-                  borderWidth={18}
-                  color={patient.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
-                  shadowColor="#EFEFEF"
-                  bgColor="#fff"
-                  outerCircleStyle={{ marginLeft: 42 }}
+              <View style={styles.left1}>
+                <Icon name={patient.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={40} style={{ paddingLeft: 25 }} />
+                <Icon name={patient.RelativeMood == 'DOUN' ? 'south' : 'north'} size={35} color={patient.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
+              </View>
+            </View>
+            <View style={styles.left2}>
+              <View style={styles.touchOp}>
+                <Text style={{ fontSize: 20, marginRight: 40, marginLeft: 10 }}>מצב התקדמות</Text>
+                <Icon name='stacked-line-chart' size={35} />
+              </View>
+              <View style={{ marginLeft: 8, backgroundColor: 'white', height: 170, width: 190, marginTop: 30, borderWidth: 1, borderColor: 'white', borderRadius: 15 }}>
+                <View>
+                  <Text style={{ fontSize: 15, textAlign: 'center', marginTop: 12 }}>סה"כ ביצועים :</Text>
+                </View>
+                <View style={{ marginTop: 15 }}>
+                  <ProgressCircle
+                    percent={patient.ComplishionPresentae * 100}
+                    radius={52}
+                    borderWidth={18}
+                    color={patient.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
+                    shadowColor="#EFEFEF"
+                    bgColor="#fff"
+                    outerCircleStyle={{ marginLeft: 42 }}
+                  />
+                  <Text
+                    style={[StyleSheet.absoluteFillObject, { fontSize: 20, fontWeight: '900', textAlign: 'center', marginTop: 40 }]}
+                  >{totalPercent}%</Text>
+                </View>
+              </View>
+              <View style={styles.precent}>
+                <View style={{ backgroundColor: '#FDA551', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#FDA551', marginLeft: 2 }}>
+                  <Text style={{ textAlign: 'center', top: -20 }}>תרגול</Text>
+                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tirgul ? tirgul * 100 : 0}%</Text>
+                </View>
+                <View style={{ backgroundColor: '#F9677C', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#F9677C', marginLeft: 3 }}>
+                  <Text style={{ textAlign: 'center', top: -20 }}>תפקוד</Text>
+                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tifkud ? tifkud * 100 : 0}%</Text>
+                </View>
+                <View style={{ backgroundColor: '#9E82F6', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#9E82F6', marginLeft: 3 }}>
+                  <Text style={{ textAlign: 'center', top: -20 }}>פנאי</Text>
+                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{pnai ? pnai * 100 : 0}%</Text>
+                </View>
+              </View>
+              <View style={styles.fillcontainer}>
+                <Progress.Bar progress={tirgul ? tirgul : 0} width={65} color={tirgul < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginLeft={2} />
+                <Progress.Bar progress={tifkud ? tifkud : 0} width={65} color={tifkud < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginLeft={3} />
+                <Progress.Bar progress={pnai ? pnai : 0} width={65} color={pnai < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginLeft={3} />
+              </View>
+
+            </View>
+
+            <View style={styles.left3}>
+              <Text style={{ fontSize: 20, paddingLeft: 10, paddingTop: 20, paddingBottom: 10 }}>הרשאות :</Text>
+              <View style={styles.toggle}>
+                <Text style={styles.toggleinput}>עדכון מרשם עיסוקים</Text>
+                <Switch
+                  trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
+                  thumbColor={isEnabledUpdate ? "#D3DE32" : "#f4f3f4"}
+                  ios_backgroundColor="#a9a9a9"
+                  onValueChange={toggleSwitchUpdate}
+                  value={isEnabledUpdate ? true : false}
                 />
-                <Text
-                  style={[StyleSheet.absoluteFillObject, { fontSize: 20, fontWeight: '900', textAlign: 'center', marginTop: 40 }]}
-                >{totalPercent}%</Text>
               </View>
-            </View>
-            <View style={styles.precent}>
-              <View style={{ backgroundColor: '#FDA551', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#FDA551', marginLeft: 2 }}>
-                <Text style={{ textAlign: 'center', top: -20 }}>תרגול</Text>
-                <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tirgul ? tirgul * 100 : 0}%</Text>
+              <View style={styles.toggle}>
+                <Text style={styles.toggleinput}>קבלת התראות</Text>
+                <Switch
+                  trackColor={{ false: "#767577", true: "#dcdcdc" }}
+                  thumbColor={isEnabledAlert ? "#D3DE32" : "#f4f3f4"}
+                  ios_backgroundColor="#a9a9a9"
+                  onValueChange={toggleSwitchAlert}
+                  value={isEnabledAlert ? true : false}
+                />
               </View>
-              <View style={{ backgroundColor: '#F9677C', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#F9677C', marginLeft: 3 }}>
-                <Text style={{ textAlign: 'center', top: -20 }}>תפקוד</Text>
-                <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tifkud ? tifkud * 100 : 0}%</Text>
-              </View>
-              <View style={{ backgroundColor: '#9E82F6', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#9E82F6', marginLeft: 3 }}>
-                <Text style={{ textAlign: 'center', top: -20 }}>פנאי</Text>
-                <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{pnai ? pnai * 100 : 0}%</Text>
-              </View>
-            </View>
-            <View style={styles.fillcontainer}>
-              <Progress.Bar progress={tirgul ? tirgul : 0} width={65} color={tirgul < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginLeft={2} />
-              <Progress.Bar progress={tifkud ? tifkud : 0} width={65} color={tifkud < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginLeft={3} />
-              <Progress.Bar progress={pnai ? pnai : 0} width={65} color={pnai < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginLeft={3} />
             </View>
 
-          </View>
-
-          <View style={styles.left3}>
-            <Text style={{ fontSize: 20, paddingLeft: 10, paddingTop: 20, paddingBottom: 10 }}>הרשאות :</Text>
-            <View style={styles.toggle}>
-              <Text style={styles.toggleinput}>עדכון מרשם עיסוקים</Text>
-              <Switch
-                trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
-                thumbColor={isEnabledUpdate ? "#D3DE32" : "#f4f3f4"}
-                ios_backgroundColor="#a9a9a9"
-                onValueChange={toggleSwitchUpdate}
-                value={isEnabledUpdate ? true : false}
-              />
-            </View>
-            <View style={styles.toggle}>
-              <Text style={styles.toggleinput}>קבלת התראות</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#dcdcdc" }}
-                thumbColor={isEnabledAlert ? "#D3DE32" : "#f4f3f4"}
-                ios_backgroundColor="#a9a9a9"
-                onValueChange={toggleSwitchAlert}
-                value={isEnabledAlert ? true : false}
-              />
+            <View style={styles.left4}>
+              <View style={styles.toggleActiv}>
+                <Text style={styles.toggleinput}>משתמש פעיל</Text>
+                <Switch
+                  trackColor={{ false: "#767577", true: "#dcdcdc" }}
+                  thumbColor={isEnabledActiv ? "#D3DE32" : "#f4f3f4"}
+                  ios_backgroundColor="#a9a9a9"
+                  onValueChange={toggleSwitchActiv}
+                  value={isEnabledActiv ? true : false}
+                />
+              </View>
             </View>
           </View>
 
-          <View style={styles.left4}>
-            <View style={styles.toggleActiv}>
-              <Text style={styles.toggleinput}>משתמש פעיל</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#dcdcdc" }}
-                thumbColor={isEnabledActiv ? "#D3DE32" : "#f4f3f4"}
-                ios_backgroundColor="#a9a9a9"
-                onValueChange={toggleSwitchActiv}
-                value={isEnabledActiv ? true : false}
-              />
+          {/* right container */}
+          <View style={styles.rightcontainer}>
+
+            <View style={styles.board}>
+              <TouchableOpacity style={styles.touchOp} onPress={() => {
+                props.navigation.navigate('Activity Board', { patient: patient, back: false, terapistId:terapistId });
+              }}>
+                <Text style={{ marginRight: 57, marginLeft: 10, fontSize: 17 }}>מרשם העיסוקים</Text>
+                <Icon name='event-note' />
+              </TouchableOpacity>
             </View>
-          </View>
-        </View>
 
-        {/* right container */}
-        <View style={styles.rightcontainer}>
-
-          <View style={styles.board}>
-            <TouchableOpacity style={styles.touchOp} onPress={() => {
-              props.navigation.navigate('Activity Board',{patient:patient, back: false});
-            }}>
-              <Text style={{ marginRight: 57, marginLeft: 10, fontSize: 17 }}>מרשם העיסוקים</Text>
-              <Icon name='event-note' />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.rateContainer}>
-            <View style={styles.touchOp}>
-              <Text style={{ fontSize: 20, marginRight: 45, marginLeft: 10 }}>משו"ב פעילויות</Text>
-              <Icon name='note' />
-            </View>
-            <View style={styles.scrollView}>
-              <ScrollView>
-                {reviews.map((item) => {
-                  return (
-                    <View style={styles.review}>
-                      <View style={styles.container}>
-                        <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(0, 9)} ,</Text>
-                        <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(10, 15)}</Text>
+            <View style={styles.rateContainer}>
+              <View style={styles.touchOp}>
+                <Text style={{ fontSize: 20, marginRight: 45, marginLeft: 10 }}>משו"ב פעילויות</Text>
+                <Icon name='note' />
+              </View>
+              <View style={styles.scrollView}>
+                <ScrollView>
+                  {reviews.map((item) => {
+                    return (
+                      <View style={styles.review}>
+                        <View style={styles.container}>
+                          <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(0, 9)} ,</Text>
+                          <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(10, 15)}</Text>
+                        </View>
+                        <Text style={styles.reviewtitle}>{item.ActivityName}</Text>
+                        <Text style={styles.reviewText}>רמת קושי : {item.DifficultyActualPatientActivity}</Text>
+                        <Text style={styles.reviewText} >דירוג : {item.LikeTheActivityActualPatientActivity}</Text>
+                        <Text style={styles.reviewText}>רמת ביצוע : {item.ActualLevelOfPerformanceActualPatientActivity}</Text>
                       </View>
-                      <Text style={styles.reviewtitle}>{item.ActivityName}</Text>
-                      <Text style={styles.reviewText}>רמת קושי : {item.DifficultyActualPatientActivity}</Text>
-                      <Text style={styles.reviewText} >דירוג : {item.LikeTheActivityActualPatientActivity}</Text>
-                      <Text style={styles.reviewText}>רמת ביצוע : {item.ActualLevelOfPerformanceActualPatientActivity}</Text>
-                    </View>
-                  )
-                })}
-              </ScrollView>
+                    )
+                  })}
+                </ScrollView>
+              </View>
             </View>
-          </View>
 
+          </View>
         </View>
-      </View>
-    </ImageBackground >
+      </ImageBackground >
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
 
+  topContainer: {
+    flex: 1,
+  },
+
   reviewDate: {
     marginTop: 5,
-    color: '#BE123C',
+    color: 'black',
     fontSize: 10,
-    marginHorizontal:2
+    marginHorizontal: 2
   },
 
   reviewtitle: {
@@ -307,14 +326,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontWeight: '500',
     fontSize: 18,
-    color: '#BE123C'
+    color: 'black'
   },
 
   reviewText: {
     textAlign: 'right',
     marginHorizontal: 5,
     marginTop: 5,
-    color: '#BE123C'
+    color: 'black'
   },
 
   toggleActiv: {
@@ -408,7 +427,7 @@ const styles = StyleSheet.create({
   review: {
     marginTop: 3,
     padding: 10,
-    backgroundColor: '#FFE4E6',
+    backgroundColor: 'rgba(211, 222, 50, 0.3)',
     display: 'flex',
     borderWidth: 1,
     borderColor: 'grey',

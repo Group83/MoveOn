@@ -1,9 +1,10 @@
-import { View, Text, ImageBackground, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { Button } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import { TextInput } from 'react-native-paper';
+import { Header, Icon } from 'react-native-elements';
 
-export default function SignUp({ navigation }) {
+export default function SignUp(props) {
 
   //input
   const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם משתמש' });
@@ -78,7 +79,7 @@ export default function SignUp({ navigation }) {
             console.log(result);
 
             //if email exist
-            if (result==1) {
+            if (result == 1) {
               alert('המשתמש נוצר בהצלחה');
               navigation.navigate('Log in');
             } else {
@@ -92,65 +93,85 @@ export default function SignUp({ navigation }) {
 
   };
 
+  const headerfunc = () => {
+    props.navigation.goBack();
+  }
+
   return (
-    <ImageBackground source={require('../images/background.png')} resizeMode="cover" style={styles.image}>
-      <Text style={styles.title}>משתמש</Text>
-      <Text style={styles.title}>חדש</Text>
+    <View style={styles.topContainer}>
 
-      <SafeAreaView style={{ top: 50 }}>
-        <TextInput
-          left={<TextInput.Icon name="account-outline" color="grey" size={20} />}
-          style={styles.input} cc
-          onChangeText={newText => setName(newText)}
-          placeholder={nameInput.text}
-          keyboardType="default"
-          placeholderTextColor={nameInput.color}
-          activeUnderlineColor="orange"
-        />
-
-        <TextInput
-          left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
-          activeUnderlineColor="orange"
-          style={styles.input}
-          onChangeText={newText => setEmail(newText)}
-          placeholder={mailInput.text}
-          placeholderTextColor={mailInput.color}
-          keyboardType="email-address"
-        />
-
-        <TextInput
-          left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
-          activeUnderlineColor="orange"
-          style={styles.input}
-          onChangeText={newText => setPassword1(newText)}
-          placeholder={pass1Input.text}
-          keyboardType="ascii-capable"
-          secureTextEntry={true}
-          placeholderTextColor={pass1Input.color}
-        />
-
-        <TextInput
-          left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
-          activeUnderlineColor="orange"
-          style={styles.input}
-          onChangeText={newText => setPassword2(newText)}
-          placeholder={pass2Input.text}
-          keyboardType="ascii-capable"
-          secureTextEntry={true}
-          placeholderTextColor={pass2Input.color}
-          ref={myTextInput}
-        />
-      </SafeAreaView>
-
-      <Button
-        title="התחבר"
-        buttonStyle={styles.buttonStyle}
-        titleStyle={styles.titleStyle}
-        containerStyle={styles.containerStyle}
-        onPress={connect}
+      <Header
+        leftComponent={<View>
+          <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
+            <Icon name='arrow-back-ios' color='black' size={25} />
+          </TouchableOpacity>
+        </View>}
+        containerStyle={{
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          justifyContent: 'space-around',
+        }}
       />
 
-    </ImageBackground>
+      <ImageBackground source={require('../images/background.png')} style={styles.image}>
+
+        <Text style={styles.title}>משתמש</Text>
+        <Text style={styles.title}>חדש</Text>
+
+        <SafeAreaView style={{ top: 50 }}>
+          <TextInput
+            left={<TextInput.Icon name="account-outline" color="grey" size={20} />}
+            style={styles.input} cc
+            onChangeText={newText => setName(newText)}
+            placeholder={nameInput.text}
+            keyboardType="default"
+            placeholderTextColor={nameInput.color}
+            activeUnderlineColor="orange"
+          />
+
+          <TextInput
+            left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
+            activeUnderlineColor="orange"
+            style={styles.input}
+            onChangeText={newText => setEmail(newText)}
+            placeholder={mailInput.text}
+            placeholderTextColor={mailInput.color}
+            keyboardType="email-address"
+          />
+
+          <TextInput
+            left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
+            activeUnderlineColor="orange"
+            style={styles.input}
+            onChangeText={newText => setPassword1(newText)}
+            placeholder={pass1Input.text}
+            keyboardType="ascii-capable"
+            secureTextEntry={true}
+            placeholderTextColor={pass1Input.color}
+          />
+
+          <TextInput
+            left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
+            activeUnderlineColor="orange"
+            style={styles.input}
+            onChangeText={newText => setPassword2(newText)}
+            placeholder={pass2Input.text}
+            keyboardType="ascii-capable"
+            secureTextEntry={true}
+            placeholderTextColor={pass2Input.color}
+            ref={myTextInput}
+          />
+        </SafeAreaView>
+
+        <Button
+          title="התחבר"
+          buttonStyle={styles.buttonStyle}
+          titleStyle={styles.titleStyle}
+          containerStyle={styles.containerStyle}
+          onPress={connect}
+        />
+      </ImageBackground>
+
+    </View>
   )
 }
 
@@ -210,6 +231,10 @@ const styles = StyleSheet.create({
     height: 43,
     width: 380,
     top: 70
+  },
+
+  topContainer: {
+    flex: 1,
   },
 
 });

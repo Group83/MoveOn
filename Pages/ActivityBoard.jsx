@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'react-native-elements';
 import WeekView, { createFixedWeekDate } from 'react-native-week-view';
-import { Icon, Overlay } from 'react-native-elements';
+import { Icon, Overlay, Header } from 'react-native-elements';
 
 export default function ActivityBoard(props) {
 
@@ -59,7 +59,6 @@ export default function ActivityBoard(props) {
   useEffect(() => {
 
     let id = props.route.params.patient.IdPatient;
-    console.log(id);
 
     //get events from DATA
     fetch(apiUrlEvents + "=" + id, {
@@ -82,7 +81,7 @@ export default function ActivityBoard(props) {
             description: event.ActivityName,
             startDate: new Date(event.StartPatientActivity),
             endDate: new Date(event.EndPatientActivity),
-            color: '#BE123C',
+            color: (event.ActivityClassification=='פנאי'?'#9E82F6':event.ActivityClassification=='תרגול'?'#FDA551':'#F9677C'),
             type: event.ActivityClassification,
             link: event.ActivityLink,
             about: event.DescriptionActivity,
@@ -103,10 +102,28 @@ export default function ActivityBoard(props) {
       console.log("err GET Events=", error);
     }).done();
 
-  }, [back]);
+  }, [back, props.route.params.back]);
 
+  const headerfunc = () => {
+    props.navigation.goBack();
+  }
 
   return (
+
+    <View style={styles.topContainer}>
+
+    <Header
+      leftComponent={<View>
+        <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
+          <Icon name='arrow-back-ios' color='black' size={25} />
+        </TouchableOpacity>
+      </View>}
+      containerStyle={{
+        backgroundColor: 'rgba(0, 0, 0, 0)',
+        justifyContent: 'space-around',
+      }}
+    />
+
     <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
       <Text style={styles.title}>מרשם עיסוקים</Text>
 
@@ -165,7 +182,7 @@ export default function ActivityBoard(props) {
           //fixedHorizontally={true}
           weekStartsOn={6}
           onEventPress={toggleOverlay} //לחיצה על אירוע
-          onGridClick={(startHour, date) => { props.navigation.navigate('Add Activity', { Date: date, StartHour: startHour, patient: props.route.params.patient }) }} //לחיצה לשיבוץ פעילות
+          onGridClick={(pressEvent,startHour, date) => { props.navigation.navigate('Add Activity', { Date: date, StartHour: startHour, patient: props.route.params.patient, terapistId:props.route.params.patient.terapistId }) }} //לחיצה לשיבוץ פעילות
         />
       </View>
 
@@ -191,10 +208,15 @@ export default function ActivityBoard(props) {
       />
 
     </ImageBackground>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+
+  topContainer: {
+    flex: 1,
+  },
 
   textSecondary: {
     marginBottom: 10,

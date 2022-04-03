@@ -1,6 +1,6 @@
-import { View, Text, ImageBackground, StyleSheet, SafeAreaView, Switch } from 'react-native';
-import { Button, Overlay, Icon } from 'react-native-elements';
-import React, { useEffect, useState } from 'react';
+import { View, Text, ImageBackground, StyleSheet, SafeAreaView, Switch, TouchableOpacity } from 'react-native';
+import { Button, Icon, Header } from 'react-native-elements';
+import React, {useState } from 'react';
 import { TextInput } from 'react-native-paper';
 
 
@@ -129,115 +129,131 @@ export default function AddPatient(props) {
           'Accept': 'application/json ; charset=UTP-8'
         })
       })
-      .then(res => {
-        return res.json();
-      })
-      .then(
-        (result) => {
-
-          console.log(result);
-
-          alert('המשתמש נוצר בהצלחה');
-          props.navigation.navigate('Dashboard', { id: idTerapist, name: nameTerapist, back: true });
-
-          // //if email exist
-          // if (result==1) {
-          //   alert('המשתמש נוצר בהצלחה');
-          //   navigation.navigate('Log in');
-          // } else {
-          //   alert('כתובת האיימל כבר קיימת במערכת');
-          // }
-
-        }, error => {
-          console.log("err post=", error);
+        .then(res => {
+          return res.json();
         })
+        .then(
+          (result) => {
+
+            console.log(result);
+            
+            //if email exist
+            if (result==1) {
+              alert('המשתמש נוצר בהצלחה');
+              props.navigation.navigate('Dashboard', { id: idTerapist, name: nameTerapist, back: true });
+            } else {
+              alert('כתובת האיימל כבר קיימת במערכת');
+            }
+
+          }, error => {
+            console.log("err post=", error);
+          })
 
     }
   }
 
+  const headerfunc = () => {
+    props.navigation.goBack();
+  }
 
   return (
-    <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
-      <Text style={styles.title}>מטופל חדש</Text>
 
-      <SafeAreaView style={{ top: 90 }}>
-        <TextInput
-          style={styles.input}
-          onChangeText={newText => setName(newText)}
-          placeholder={nameInput.text}
-          placeholderTextColor={nameInput.color}
-          left={<TextInput.Icon name="account-outline" color="grey" size={20} />}
-          activeUnderlineColor="orange"
-        />
 
-        <TextInput
-          style={styles.input}
-          onChangeText={newText => setEmail(newText)}
-          placeholder={mailInput.text}
-          placeholderTextColor={mailInput.color}
-          left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
-          activeUnderlineColor="orange"
-        />
+    <View style={styles.topContainer}>
 
-        <TextInput
-          style={styles.input}
-          onChangeText={newText => setPhone(newText)}
-          placeholder={phoneInput.text}
-          placeholderTextColor={phoneInput.color}
-          left={<TextInput.Icon name="phone-outline" color="grey" size={20} />}
-          activeUnderlineColor="orange"
-          keyboardType="name-phone-pad"
-        />
+      <Header
+        leftComponent={<View>
+          <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
+            <Icon name='arrow-back-ios' color='black' size={25} />
+          </TouchableOpacity>
+        </View>}
+        containerStyle={{
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          justifyContent: 'space-around',
+        }}
+      />
 
-        <View style={styles.genderinput}>
-          <Text style={styles.gender}>זכר</Text>
-          <Switch
-            trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
-            thumbColor={isEnabledMale ? "#D3DE32" : "#f4f3f4"}
-            ios_backgroundColor="#a9a9a9"
-            onValueChange={toggleSwitchMale}
-            value={isEnabledMale}
+      <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
+        <Text style={styles.title}>מטופל חדש</Text>
+
+        <SafeAreaView style={{ top: 90 }}>
+          <TextInput
+            style={styles.input}
+            onChangeText={newText => setName(newText)}
+            placeholder={nameInput.text}
+            placeholderTextColor={nameInput.color}
+            left={<TextInput.Icon name="account-outline" color="grey" size={20} />}
+            activeUnderlineColor="orange"
           />
-          <Text style={styles.gender}>נקבה</Text>
-          <Switch
-            trackColor={{ false: "#767577", true: "#dcdcdc" }}
-            thumbColor={isEnabledFemale ? "#D3DE32" : "#f4f3f4"}
-            ios_backgroundColor="#a9a9a9"
-            onValueChange={toggleSwitchFemale}
-            value={isEnabledFemale}
+
+          <TextInput
+            style={styles.input}
+            onChangeText={newText => setEmail(newText)}
+            placeholder={mailInput.text}
+            placeholderTextColor={mailInput.color}
+            left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
+            activeUnderlineColor="orange"
           />
-          <Text style={styles.gender}>אחר</Text>
-          <Switch
-            trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
-            thumbColor={isEnabledOther ? "#D3DE32" : "#f4f3f4"}
-            ios_backgroundColor="#a9a9a9"
-            onValueChange={toggleSwitchOther}
-            value={isEnabledOther}
+
+          <TextInput
+            style={styles.input}
+            onChangeText={newText => setPhone(newText)}
+            placeholder={phoneInput.text}
+            placeholderTextColor={phoneInput.color}
+            left={<TextInput.Icon name="phone-outline" color="grey" size={20} />}
+            activeUnderlineColor="orange"
+            keyboardType="name-phone-pad"
           />
-        </View>
 
-        <TextInput
-          style={styles.input}
-          onChangeText={newText => setPassword1(newText)}
-          placeholder={pass1Input.text}
-          placeholderTextColor={pass1Input.color}
-          left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
-          activeUnderlineColor="orange"
-          secureTextEntry={true}
-        />
+          <View style={styles.genderinput}>
+            <Text style={styles.gender}>זכר</Text>
+            <Switch
+              trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
+              thumbColor={isEnabledMale ? "#D3DE32" : "#f4f3f4"}
+              ios_backgroundColor="#a9a9a9"
+              onValueChange={toggleSwitchMale}
+              value={isEnabledMale}
+            />
+            <Text style={styles.gender}>נקבה</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#dcdcdc" }}
+              thumbColor={isEnabledFemale ? "#D3DE32" : "#f4f3f4"}
+              ios_backgroundColor="#a9a9a9"
+              onValueChange={toggleSwitchFemale}
+              value={isEnabledFemale}
+            />
+            <Text style={styles.gender}>אחר</Text>
+            <Switch
+              trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
+              thumbColor={isEnabledOther ? "#D3DE32" : "#f4f3f4"}
+              ios_backgroundColor="#a9a9a9"
+              onValueChange={toggleSwitchOther}
+              value={isEnabledOther}
+            />
+          </View>
 
-        <TextInput
-          style={styles.input}
-          onChangeText={newText => setPassword2(newText)}
-          placeholder={pass2Input.text}
-          placeholderTextColor={pass2Input.color}
-          left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
-          activeUnderlineColor="orange"
-          secureTextEntry={true}
-          ref={myTextInput}
-        />
+          <TextInput
+            style={styles.input}
+            onChangeText={newText => setPassword1(newText)}
+            placeholder={pass1Input.text}
+            placeholderTextColor={pass1Input.color}
+            left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
+            activeUnderlineColor="orange"
+            secureTextEntry={true}
+          />
 
-      </SafeAreaView>
+          <TextInput
+            style={styles.input}
+            onChangeText={newText => setPassword2(newText)}
+            placeholder={pass2Input.text}
+            placeholderTextColor={pass2Input.color}
+            left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
+            activeUnderlineColor="orange"
+            secureTextEntry={true}
+            ref={myTextInput}
+          />
+
+        </SafeAreaView>
 
         <Button
           title="אישור"
@@ -247,11 +263,16 @@ export default function AddPatient(props) {
           onPress={addPatient}
         />
 
-    </ImageBackground>
+      </ImageBackground>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+
+  topContainer: {
+    flex: 1,
+  },
 
   genderinput: {
     flexDirection: "row",
