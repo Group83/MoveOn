@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet, ImageBackground, ScrollView, Switch, LogBox } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, Switch, LogBox, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import SelectDropdown from 'react-native-select-dropdown';
-import { isVisible } from 'dom-helpers';
+import moment from 'moment';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -11,62 +11,52 @@ LogBox.ignoreLogs([
 
 export default function AddActivity(props) {
 
-  console.log(props.route.params.Date);
-  console.log(props.route.params.StartHour);
+  //set date and time
+  const time = moment(props.route.params.Date).format("YYYY-MM-DDThh:mm");
+  const sec = parseInt(time.substring(14, 16));
+  const newSecStart = (sec < 30 ? '00' : '30');
+  const startTime = time.substring(0, 14) + newSecStart;
+  const endTime = moment(startTime, "YYYY-MM-DDThh:mm").add(30, 'minutes').format('YYYY-MM-DDThh:mm');
+  const idPatient = props.route.params.patient.IdPatient;
 
   //select options
   const activityType = ["תרגול", "פנאי", "תפקוד"]
 
   //Data Activity List
-  const [DataActivities, SetDataActivities] = useState([
-    { name: 'ריצה', key: '1' },
-    { name: 'עיסוי צלקת', key: '2' },
-    { name: 'תרגול ידיים', key: '3' },
-    { name: 'נעילת נעליים', key: '4' },
-    { name: 'סודוקו', key: '5' },
-    { name: 'הליכה', key: '6' },
-    { name: 'שחייה', key: '7' },
-  ]);
-
-  //Activity List
-  const [Activities, SetActivities] = useState([
-    { name: 'ריצה', key: '1' },
-    { name: 'עיסוי צלקת', key: '2' },
-    { name: 'תרגול ידיים', key: '3' },
-    { name: 'נעילת נעליים', key: '4' },
-    { name: 'סודוקו', key: '5' },
-    { name: 'הליכה', key: '6' },
-    { name: 'שחייה', key: '7' },
-  ]);
-
-  //Activity
-  const [name, setName] = useState('');
-  const [link, setLink] = useState('');
-  const [about, setAbout] = useState('');
-  const [sets, setSets] = useState('');
-  const [repit, setRepit] = useState('');
-  const [type, setType] = useState('');
-  const [isEnabledMoved, setIsEnabledMoved] = useState(false);
-  const [isEnabledRequired, setIsEnabledRequired] = useState(false);
-  console.log(isEnabledMoved);
-  console.log(isEnabledRequired);
-
-  //input
-  const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם הפעילות' });
-  const [aboutInput, setAboutInput] = useState({ color: '#a9a9a9', text: 'אודות' });
+  const [DataActivities, SetDataActivities] = useState([]);
+  const [activityes, setActivityes] = useState([]);
 
   //Search Bar
   const onChangeSearch = query => {
     console.log(query);
     if (query) {
-      var filterData = DataActivities.filter(item => item.name.includes(query));
-      console.log(filterData);
-      SetActivities(filterData);
+      var filterData = DataActivities.filter(item => item.ActivityName.includes(query));
+      setActivityes(filterData);
     }
     else {
-      SetActivities(DataActivities);
+      setActivityes(DataActivities);
     }
   }
+
+  //Activity
+  const [name, setName] = useState('');
+  const [link, setLink] = useState('');
+  const [about, setAbout] = useState('');
+  const [idActivity, setIdActivity] = useState(0);
+  const [sets, setSets] = useState('');
+  const [repit, setRepit] = useState('');
+  const [type, setType] = useState('');
+  const [isEnabledMoved, setIsEnabledMoved] = useState(0);
+  const [isEnabledRequired, setIsEnabledRequired] = useState(0);
+
+  //exist Activity
+  const [fillName, setFillName] = useState();
+  const [fillLink, setFillLink] = useState();
+  const [fillAbout, setFillAbout] = useState();
+
+  //input
+  const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם הפעילות' });
+  const [aboutInput, setAboutInput] = useState({ color: '#a9a9a9', text: 'אודות' });
 
   //toggleSwitch
   const toggleSwitchMoved = () => {
@@ -75,6 +65,8 @@ export default function AddActivity(props) {
   const toggleSwitchRequired = () => {
     setIsEnabledRequired(previousState => !previousState);
   }
+
+  const apiUrlAddActivity = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/PatientActivity";
 
   const addActivity = () => {
     //check empty fields
@@ -95,14 +87,91 @@ export default function AddActivity(props) {
       alert('נראה שלא בחרת סוג פעילות');
       return;
     }
+
+    let moved = (isEnabledMoved ? 1 : 0);
+    let required = (isEnabledRequired ? 1 : 0);
+
+    //set patient object
+    let obj = [{
+      StartPatientActivity: startTime,
+      EndPatientActivity: endTime,
+      RepetitionPatientActivity: repit,
+      SetsPatientActivity: sets,
+      IsMoveablePatientActivity: moved,
+      IsMandatoryPatientActivity: required,
+      IdPatient: idPatient,
+      IdActivity: idActivity,
+      StatusPatientActivity: 1,
+      ActivityLink: link,
+      ActivityName: name,
+      ActivityClassification: type,
+      DescriptionActivity: about
+    }];
+    console.log(obj);
+
+    //send activity to DB
+    fetch(apiUrlAddActivity, {
+      method: 'PUT',
+      body: JSON.stringify(obj[0]),
+      headers: new Headers({
+        'Content-Type': 'application/json ; charset=UTP-8',
+        'Accept': 'application/json ; charset=UTP-8'
+      })
+    })
+      .then(res => {
+        return res;
+      })
+      .then(
+        (result) => {
+          alert('הפעילות נוספה בהצלחה');
+          props.navigation.navigate('Activity Board', { patient: props.route.params.patient, back: true });
+        }, error => {
+          console.log("err post=", error);
+        })
   }
 
-  // //EVERY RENDER
-  // useEffect(() => {
+  //fill exists activity
+  const fillActivity = (e) => {
+    setFillName(e.ActivityName);
+    setName(e.ActivityName);
+    setFillLink(e.ActivityLink);
+    setLink(e.ActivityLink);
+    setFillAbout(e.DescriptionActivity);
+    setAbout(e.DescriptionActivity);
+    setIdActivity(e.IdActivity);
+  }
 
+  const apiUrlEvents = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Activity?activityClassification";
 
+  //render exist activityes
+  const changeActivityType = type => {
+    console.log(type);
+    setType(type);
 
-  // }, [[DataActivities]]);
+    //get type activity
+    fetch(apiUrlEvents + "=" + type, {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json ; charset=UTP-8',
+        'Accept': 'application/json ; charset=UTP-8'
+      })
+    }).then(
+      (response) => response.json()
+    ).then((res) => {
+      console.log('OK Activityes', res);
+      if (res) {
+        var obj = res.map(activity => activity);
+        SetDataActivities(obj);
+        setActivityes(obj);
+      } else {
+        console.log('Activityes in empty');
+      }
+      return res;
+    }).catch((error) => {
+      console.log("err GET Activityes=", error);
+    }).done();
+
+  }
 
   return (
     <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
@@ -116,22 +185,16 @@ export default function AddActivity(props) {
             data={activityType}
             defaultButtonText={'לחץ לבחירת סוג פעילות'}
             buttonStyle={{ height: 40, width: 200, borderColor: "#FFBD73", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 3, marginTop: 15, backgroundColor: 'rgba(255, 189, 115, 0.27)' }}
-            onSelect={(selectedItem, index) => {
-              setType(selectedItem);
-              console.log(selectedItem)
-            }}
+            onSelect={changeActivityType}
             buttonTextAfterSelection={(selectedItem, index) => {
-              // text represented after item is selected
-              // if data array is an array of objects then return selectedItem.property to render after item is selected
               return selectedItem
             }}
             rowTextForSelection={(item, index) => {
-              // text represented for each item in dropdown
-              // if data array is an array of objects then return item.property to represent item in dropdown
               return item
             }}
           />
           <TextInput
+            defaultValue={fillName}
             style={styles.input}
             placeholder={nameInput.text}
             onChangeText={newText => setName(newText)}
@@ -139,6 +202,7 @@ export default function AddActivity(props) {
             activeUnderlineColor="orange"
           />
           <TextInput
+            defaultValue={fillLink}
             style={styles.input}
             onChangeText={newText => setLink(newText)}
             placeholder="כתובת סרטון"
@@ -146,6 +210,7 @@ export default function AddActivity(props) {
             activeUnderlineColor="orange"
           />
           <TextInput
+            defaultValue={fillAbout}
             style={styles.inputDisc}
             onChangeText={newText => setAbout(newText)}
             placeholder={aboutInput.text}
@@ -204,11 +269,11 @@ export default function AddActivity(props) {
             />
             <View style={styles.scrollView}>
               <ScrollView>
-                {Activities.map((item) => {
+                {activityes.map((item, key) => {
                   return (
-                    <View>
-                      <Text style={styles.activity}>{item.name}</Text>
-                    </View>
+                    <TouchableOpacity onPress={() => fillActivity(item)}>
+                      <Text style={styles.activity}>{item.ActivityName}</Text>
+                    </TouchableOpacity>
                   )
                 })}
               </ScrollView>

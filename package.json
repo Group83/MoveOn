@@ -21,6 +21,8 @@
     "expo-status-bar": "~1.2.0",
     "global": "^4.4.0",
     "kalend": "^0.9.5",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
     "react": "17.0.1",
     "react-bootstrap": "^2.2.2",
     "react-dom": "17.0.1",

@@ -1,23 +1,19 @@
-import { View, Text, StyleSheet, ImageBackground, LogBox } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'react-native-elements';
 import WeekView, { createFixedWeekDate } from 'react-native-week-view';
-
-// LogBox.ignoreWarnings([
-//   'Non-serializable values were found in the navigation state',
-// ]);
+import { Icon, Overlay } from 'react-native-elements';
 
 export default function ActivityBoard(props) {
 
-  //send to new activity
-  const [date, SetDate] = useState();
-  const [startHour, SetStartHour] = useState();
+  //color types
+  const colors = { 'תרגול': '#FDA551', 'תפקוד': '#F9677C', 'פנאי': '#9E82F6' };
+  const [idAct, setIdAct] = useState(0);
 
   //Events
-  const [types] = useState(['תרגול', 'פנאי', 'תפקוד']);
+  //DATA - url
+  const apiUrlEvents = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/PatientActivity?id";
   const [myEvents, setMyEvents] = useState([]);
-
-  apiUrlEvents = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Activity?activityClassification";
 
   //Number of days in calender
   const [daysNumber, SetDaysNumber] = useState(7);
@@ -25,88 +21,87 @@ export default function ActivityBoard(props) {
     <Text style={[textStyle, { fontWeight: 'bold' }]}>{formattedDate}</Text>
   );
 
-  //Back
-  //const back = props.route.params.back;
-  const back = false; //זמני
+  const [back, setBack] = useState(props.route.params.back);
 
-  // const myEvents = [
-  //   {
-  //     id: 0,
-  //     key: 0,
-  //     description: 'Event1',
-  //     startDate: new Date("2022-03-27T01:00:00"),
-  //     endDate: new Date("2022-03-27T02:00:00"),
-  //     color: 'blue',
-  //     // ... more properties if needed,
-  //   },
-  //   {
-  //     id: 0,
-  //     key: 0,
-  //     description: 'Event1',
-  //     startDate: createFixedWeekDate('Monday', 7),
-  //     endDate: createFixedWeekDate('Monday', 8),
-  //     color: 'blue',
-  //     // ... more properties if needed,
-  //   },
-  //   {
-  //     id: 1,
-  //     key: 1,
-  //     description: 'Event1',
-  //     startDate: createFixedWeekDate('Monday', 0),
-  //     endDate: createFixedWeekDate('Monday', 2),
-  //     color: 'pink',
-  //     // ... more properties if needed,
-  //   },
-  //   {
-  //     id: 2,
-  //     key: 2,
-  //     description: 'Event1',
-  //     startDate: createFixedWeekDate('Monday', 3),
-  //     endDate: createFixedWeekDate('Monday', 5),
-  //     color: 'yellow',
-  //     // ... more properties if needed,
-  //   },
-  //   // More events...
-  // ];
+  //Overlay
+  const [visible, setVisible] = useState(false);
+  const toggleOverlay = (e) => {
+    setVisible(!visible);
+    setIdAct(e.id);
+  };
+
+  const urlDelete = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/PatientActivity?id";
+
+  const deleteActivity = () => {
+
+    setVisible(!visible);
+
+    //delete activity from data
+    fetch(urlDelete + "=" + idAct, {
+      method: 'DELETE',
+      headers: new Headers({
+        'Content-Type': 'application/json ; charset=UTP-8',
+        'Accept': 'application/json ; charset=UTP-8'
+      })
+    }).then(res => {
+      return res;
+    }).then((result) => {
+      alert('הפעילות נמחקה');
+      return result;
+    }).catch((error) => {
+      console.log("err GET Activityes=", error);
+    }).done();
+
+    setBack(!back);
+  }
 
   //EVERY RENDER
   useEffect(() => {
 
-    types.map((item) => {
-      //get type percent
-      fetch(apiUrlEvents + "=" + item, {
-        method: 'GET',
-        headers: new Headers({
-          'Content-Type': 'application/json ; charset=UTP-8',
-          'Accept': 'application/json ; charset=UTP-8'
-        })
+    let id = props.route.params.patient.IdPatient;
+    console.log(id);
+
+    //get events from DATA
+    fetch(apiUrlEvents + "=" + id, {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json ; charset=UTP-8',
+        'Accept': 'application/json ; charset=UTP-8'
       })
-        .then(res => {
-          return res;
-        })
-        .then(
-          (result) => {
-
-            console.log('OK Events', item, result.json());
-
-            if (result) {
-              var obj = result.map(event => event);
-              obj.map((event) => {
-                let newObj = [...myEvents,event];
-                setMyEvents(newObj);
-              })
-            } else {
-              console.log('Events in empty');
-            }
-
-          },
-          (error) => {
-            console.log("err GET events=", error);
-          });
-    })
-
-
-
+    }).then(
+      (response) => response.json()
+    ).then((res) => {
+      console.log('OK Events');
+      var arr = [];
+      if (res) {
+        console.log(res);
+        res.map((event, key) => {
+          let obj = {
+            id: event.IdPatientActivity,
+            key: key,
+            description: event.ActivityName,
+            startDate: new Date(event.StartPatientActivity),
+            endDate: new Date(event.EndPatientActivity),
+            color: '#BE123C',
+            type: event.ActivityClassification,
+            link: event.ActivityLink,
+            about: event.DescriptionActivity,
+            isMoved: event.IsMoveablePatientActivity,
+            isRequired: event.IsMandatoryPatientActivity,
+            repetition: event.RepetitionPatientActivity,
+            sets: event.SetsPatientActivity,
+          };
+          console.log(obj);
+          arr = [...arr, obj];
+        });
+        setMyEvents(arr);
+      } else {
+        console.log('Events in empty');
+      }
+      return res;
+    }).catch((error) => {
+      console.log("err GET Events=", error);
+    }).done();
 
   }, [back]);
 
@@ -157,27 +152,42 @@ export default function ActivityBoard(props) {
 
       <View style={styles.container}>
         <WeekView
+          startHour={7}
+          timeStep={30}
           events={myEvents}
           selectedDate={new Date()}
           numberOfDays={daysNumber} //מספר הימים המוצגים
           showTitle={true}
           headerStyle={{ backgroundColor: '#EFEFEF', borderColor: '#EFEFEF' }}
-          hoursInDisplay={14} //מקטין את המרווחים בין השעות
+          hoursInDisplay={8} //מקטין את המרווחים בין השעות
           TodayHeaderComponent={MyTodayComponent}
           formatDateHeader="ddd DD"
-          // fixedHorizontally={true}
+          //fixedHorizontally={true}
           weekStartsOn={6}
-          //onEventPress={} //לחיצה על אירוע
-          onGridClick={(pressEvent, startHour, date) => { SetDate(date), SetStartHour(startHour), props.navigation.navigate('Add Activity', { Date: date, StartHour: startHour }) }} //לחיצה לשיבוץ פעילות
+          onEventPress={toggleOverlay} //לחיצה על אירוע
+          onGridClick={(startHour, date) => { props.navigation.navigate('Add Activity', { Date: date, StartHour: startHour, patient: props.route.params.patient }) }} //לחיצה לשיבוץ פעילות
         />
       </View>
+
+      <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Icon name='warning' color='#ff4500' size={30} />
+        <Text style={styles.textSecondary}>
+          האם למחוק את הפעילות ?
+        </Text>
+        <Button
+          title="מחק"
+          buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
+          titleStyle={{ color: 'white', marginHorizontal: 20 }}
+          onPress={deleteActivity}
+        />
+      </Overlay>
 
       <Button
         title="אישור"
         buttonStyle={styles.buttonStyle}
         titleStyle={styles.titleStyle}
         containerStyle={styles.containerStyle}
-        onPress={() => props.navigation.navigate('Add Activity')}
+        onPress={() => props.navigation.navigate('Patient Page', { patient: props.route.params.patient })}
       />
 
     </ImageBackground>
@@ -185,6 +195,14 @@ export default function ActivityBoard(props) {
 }
 
 const styles = StyleSheet.create({
+
+  textSecondary: {
+    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'center',
+    fontSize: 17,
+  },
+
   container: {
     backgroundColor: '#fff',
     height: 600,

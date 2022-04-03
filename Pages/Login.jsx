@@ -164,7 +164,7 @@ export default function Login({ navigation }) {
       </View>
 
       <TouchableOpacity style={styles.touchOp} onPress={() => {
-        navigation.navigate('Activity Board');
+        navigation.navigate('Sign Up');
       }}>
         <Text style={styles.text1}>עדיין אין לך חשבון ?</Text>
         <Text style={styles.text2}>משתמש חדש</Text>

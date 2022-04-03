@@ -118,8 +118,6 @@ export default function AddPatient(props) {
 
       //set patient object
       let obj = [{ NicknamePatient: name, PasswordPatient: password1, EmailPatient: email, PhoneNumberPatient: phone, PatientStatus: 1, PatientGender: gender, UpdatePermissionPatient: 0, ReceiveAlertsPermissionPatient: 1, IdTherapist: idTerapist }];
-      //let obj = [{ NicknamePatient: 'אביב', PasswordPatient: '1234', EmailPatient: 'aviv@gmail.com', PhoneNumberPatient: '0545954582', PatientStatus: 1, PatientGender: 'זכר', UpdatePermissionPatient: 0, ReceiveAlertsPermissionPatient: 1, IdTherapist: idTerapist }];
-
       console.log(obj);
 
       //send terapist to DB

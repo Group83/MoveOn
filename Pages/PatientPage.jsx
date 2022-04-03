@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, ImageBackground, TextInput, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { Icon } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import * as Progress from 'react-native-progress';
-import { set } from 'date-fns';
+import moment from 'moment';
+
 
 export default function PatientPage(props) {
 
@@ -19,12 +20,12 @@ export default function PatientPage(props) {
   const apiUrlReviews = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/ActualPatientActivity?id";
 
   //toggle Switch
-  const [isEnabledUpdate, setIsEnableUpdate] = useState(patient.UpdatePermissionPatient[0]?true:false);
-  const [isEnabledAlert, setIsEnabledAlert] = useState(patient.ReceiveAlertsPermissionPatient?true:false);
-  const [isEnabledActiv, setIsEnabledActiv] = useState(patient.PatientStatus?true:false);
-  console.log('update : ',isEnabledUpdate);
-  console.log('alert : ',isEnabledAlert);
-  console.log('activ : ',isEnabledActiv);
+  const [isEnabledUpdate, setIsEnableUpdate] = useState(patient.UpdatePermissionPatient[0] ? true : false);
+  const [isEnabledAlert, setIsEnabledAlert] = useState(patient.ReceiveAlertsPermissionPatient ? true : false);
+  const [isEnabledActiv, setIsEnabledActiv] = useState(patient.PatientStatus ? true : false);
+  console.log('update : ', isEnabledUpdate);
+  console.log('alert : ', isEnabledAlert);
+  console.log('activ : ', isEnabledActiv);
 
   //DATA url - update permissions
   const apiUrlpermissions = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Patient";
@@ -54,41 +55,41 @@ export default function PatientPage(props) {
 
     types.map((item) => {
       //get type percent
-      fetch(apiUrlpercent + "=" + patient.IdPatient + '&clasification=' + item, {
+      console.log(patient.IdPatient);
+      console.log(item);
+      let id = patient.IdPatient;
+      fetch(apiUrlpercent + '=' + id + '&clasification=' + item, {
         method: 'GET',
         headers: new Headers({
           'Content-Type': 'application/json ; charset=UTP-8',
           'Accept': 'application/json ; charset=UTP-8'
         })
-      })
-        .then(res => {
-          return res;
-        })
-        .then(
-          (result) => {
-            console.log('OK Percent', result.json());
-            if (result) {
-              var obj = result.map(percent => percent);
-              obj.map((percent) => {
-                if (percent) {
-                  if (item == 'תרגול') {
-                    setTirgul(percent.ComplishionPresentae);
-                  }
-                  if (item == 'תפקוד') {
-                    setTifkud(percent.ComplishionPresentae);
-                  }
-                  if (item == 'פנאי') {
-                    setPnai(percent.ComplishionPresentae);
-                  }
-                }
-              })
-            } else {
-              console.log('percent in empty');
+      }).then(
+        (response) => response.json()
+      ).then((res) => {
+        console.log('OK Percent', item, res);
+        if (res) {
+          var obj = res.map(percent => percent);
+          obj.map((percent) => {
+            if (percent) {
+              if (item == 'תרגול') {
+                setTirgul(percent.ComplishionPresentae);
+              }
+              if (item == 'תפקוד') {
+                setTifkud(percent.ComplishionPresentae);
+              }
+              if (item == 'פנאי') {
+                setPnai(percent.ComplishionPresentae);
+              }
             }
-          },
-          (error) => {
-            console.log("err GET percent=", error);
-          });
+          })
+        } else {
+          console.log('percent in empty');
+        }
+        return res;
+      }).catch((error) => {
+        console.log('percent in empty');
+      }).done();
     })
 
     //GET Reviews
@@ -98,24 +99,22 @@ export default function PatientPage(props) {
         'Content-Type': 'application/json ; charset=UTP-8',
         'Accept': 'application/json ; charset=UTP-8'
       })
-    })
-      .then(res => {
-        return res;
-      })
-      .then(
-        (result) => {
-          console.log('OK Reviews', result.json());
-          if (result) {
-            var obj = result.map(review => review);
-            console.log(obj);
-            SetReviews(obj);
-          } else {
-            console.log('Reviews in empty');
-          }
-        },
-        (error) => {
-          console.log("err GET reviews=", error);
-        });
+    }).then(
+      (response) => response.json()
+    ).then((res) => {
+      // result data
+      console.log('OK Reviews', res);
+      if (res) {
+        var obj = res.map(review => review);
+        console.log(obj);
+        SetReviews(obj);
+      } else {
+        console.log('Reviews in empty');
+      }
+      return res;
+    }).catch((error) => {
+      console.log("err GET reviews=", error);
+    }).done();
 
     return () => handleEndConcert();
 
@@ -129,7 +128,7 @@ export default function PatientPage(props) {
     console.log('exit activ : ', isEnabledActiv);
 
     //insert premosions to data
-    let updatearr = [{ IdPatient: patient.IdPatient, PatientStatus: isEnabledActiv, UpdatePermissionPatient: isEnabledUpdate, ReceiveAlertsPermissionPatient: isEnabledAlert, IdTherapist : terapistId}];
+    let updatearr = [{ IdPatient: patient.IdPatient, PatientStatus: isEnabledActiv, UpdatePermissionPatient: isEnabledUpdate, ReceiveAlertsPermissionPatient: isEnabledAlert, IdTherapist: terapistId }];
     console.log(updatearr[0]);
 
     fetch(apiUrlpermissions, {
@@ -195,7 +194,7 @@ export default function PatientPage(props) {
                 <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tirgul ? tirgul * 100 : 0}%</Text>
               </View>
               <View style={{ backgroundColor: '#F9677C', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#F9677C', marginLeft: 3 }}>
-                <Text style={{ textAlign: 'center', top: -20 }}>חזרתיות</Text>
+                <Text style={{ textAlign: 'center', top: -20 }}>תפקוד</Text>
                 <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tifkud ? tifkud * 100 : 0}%</Text>
               </View>
               <View style={{ backgroundColor: '#9E82F6', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#9E82F6', marginLeft: 3 }}>
@@ -254,19 +253,10 @@ export default function PatientPage(props) {
 
           <View style={styles.board}>
             <TouchableOpacity style={styles.touchOp} onPress={() => {
-              navigation.navigate('Log in');
+              props.navigation.navigate('Activity Board',{patient:patient, back: false});
             }}>
-              <Text style={{ marginRight: 15, marginLeft: 10, fontSize: 15 }}>יצירת מרשם עיסוקים חדש</Text>
-              <Icon name='add' />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.board}>
-            <TouchableOpacity style={styles.touchOp} onPress={() => {
-              navigation.navigate('Log in');
-            }}>
-              <Text style={{ marginRight: 35, marginLeft: 10, fontSize: 15 }}>עדכון מרשם העיסוקים</Text>
-              <Icon name='update' />
+              <Text style={{ marginRight: 57, marginLeft: 10, fontSize: 17 }}>מרשם העיסוקים</Text>
+              <Icon name='event-note' />
             </TouchableOpacity>
           </View>
 
@@ -279,8 +269,15 @@ export default function PatientPage(props) {
               <ScrollView>
                 {reviews.map((item) => {
                   return (
-                    <View>
-                      <Text style={styles.review}>{item.name}</Text>
+                    <View style={styles.review}>
+                      <View style={styles.container}>
+                        <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(0, 9)} ,</Text>
+                        <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(10, 15)}</Text>
+                      </View>
+                      <Text style={styles.reviewtitle}>{item.ActivityName}</Text>
+                      <Text style={styles.reviewText}>רמת קושי : {item.DifficultyActualPatientActivity}</Text>
+                      <Text style={styles.reviewText} >דירוג : {item.LikeTheActivityActualPatientActivity}</Text>
+                      <Text style={styles.reviewText}>רמת ביצוע : {item.ActualLevelOfPerformanceActualPatientActivity}</Text>
                     </View>
                   )
                 })}
@@ -295,6 +292,30 @@ export default function PatientPage(props) {
 }
 
 const styles = StyleSheet.create({
+
+  reviewDate: {
+    marginTop: 5,
+    color: '#BE123C',
+    fontSize: 10,
+    marginHorizontal:2
+  },
+
+  reviewtitle: {
+    textAlign: 'right',
+    marginHorizontal: 5,
+    marginTop: 8,
+    marginBottom: 8,
+    fontWeight: '500',
+    fontSize: 18,
+    color: '#BE123C'
+  },
+
+  reviewText: {
+    textAlign: 'right',
+    marginHorizontal: 5,
+    marginTop: 5,
+    color: '#BE123C'
+  },
 
   toggleActiv: {
     flexDirection: "row",
@@ -386,13 +407,13 @@ const styles = StyleSheet.create({
 
   review: {
     marginTop: 3,
-    padding: 30,
+    padding: 10,
     backgroundColor: '#FFE4E6',
     display: 'flex',
     borderWidth: 1,
     borderColor: 'grey',
     borderRadius: 4,
-    marginTop: 5
+    marginTop: 5,
   },
 
   rateContainer: {
@@ -419,7 +440,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   image: {
@@ -447,7 +468,7 @@ const styles = StyleSheet.create({
     height: 800,
     width: 210,
     marginHorizontal: 2,
-
+    top: 60
   },
 
 });
