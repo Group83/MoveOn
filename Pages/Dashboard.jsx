@@ -37,7 +37,6 @@ export default function Dashboard(props) {
         (result) => {
           var obj = result.map(patient => patient);
           setPatients(obj);
-          console.log(obj);
           setDataPatients(obj);
         },
         (error) => {
@@ -57,7 +56,6 @@ export default function Dashboard(props) {
     console.log(query);
     if (query) {
       var filterData = DataPatients.filter(item => item.IdPatient.toString().includes(query));
-      console.log(filterData);
       setPatients(filterData);
     }
     else {
@@ -156,7 +154,7 @@ export default function Dashboard(props) {
                 return (
                   <View style={styles.circlerow}>
                     <ProgressCircle
-                      percent={item?.ComplishionPresentae * 100}
+                      percent={item?Math.round(item.ComplishionPresentae * 100):0}
                       radius={10}
                       borderWidth={4}
                       color={item.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}

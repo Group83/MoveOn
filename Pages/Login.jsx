@@ -74,7 +74,7 @@ export default function Login({ navigation }) {
         centerComponent={
           <Image
             source={require('../images/newlogo.jpeg')}
-            resizeMode="center"
+            resizeMode="cover"
             style={{ width: 230, alignSelf: 'center', height: 45 }}
           />
         }

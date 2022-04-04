@@ -6,9 +6,9 @@ import { Icon, Overlay, Header } from 'react-native-elements';
 
 export default function ActivityBoard(props) {
 
-  //color types
-  const colors = { 'תרגול': '#FDA551', 'תפקוד': '#F9677C', 'פנאי': '#9E82F6' };
+  //selected activity
   const [idAct, setIdAct] = useState(0);
+  const [activity, setActivity] = useState();
 
   //Events
   //DATA - url
@@ -28,6 +28,8 @@ export default function ActivityBoard(props) {
   const toggleOverlay = (e) => {
     setVisible(!visible);
     setIdAct(e.id);
+    console.log('selected = ', e);
+    setActivity(e);
   };
 
   const urlDelete = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/PatientActivity?id";
@@ -77,11 +79,12 @@ export default function ActivityBoard(props) {
         res.map((event, key) => {
           let obj = {
             id: event.IdPatientActivity,
+            name:event.ActivityName,
             key: key,
             description: event.ActivityName,
             startDate: new Date(event.StartPatientActivity),
             endDate: new Date(event.EndPatientActivity),
-            color: (event.ActivityClassification=='פנאי'?'#9E82F6':event.ActivityClassification=='תרגול'?'#FDA551':'#F9677C'),
+            color: (event.ActivityClassification == 'פנאי' ? '#9E82F6' : event.ActivityClassification == 'תרגול' ? '#FDA551' : '#F9677C'),
             type: event.ActivityClassification,
             link: event.ActivityLink,
             about: event.DescriptionActivity,
@@ -112,102 +115,113 @@ export default function ActivityBoard(props) {
 
     <View style={styles.topContainer}>
 
-    <Header
-      leftComponent={<View>
-        <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
-          <Icon name='arrow-back-ios' color='black' size={25} />
-        </TouchableOpacity>
-      </View>}
-      containerStyle={{
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-        justifyContent: 'space-around',
-      }}
-    />
-
-    <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
-      <Text style={styles.title}>מרשם עיסוקים</Text>
-
-      <View style={styles.iconContainerStyle}>
-        <Button
-          title="יומי"
-          buttonStyle={{
-            backgroundColor: '#E5E5E5',
-            borderColor: '#E5E5E5',
-            borderWidth: 1,
-          }}
-          titleStyle={{
-            fontSize: 20,
-            color: 'black'
-          }}
-          containerStyle={{
-            marginHorizontal: 3,
-            width: 205,
-            height: 50
-          }}
-          onPress={() => SetDaysNumber(1)}
-        />
-
-        <Button
-          title="שבועי"
-          buttonStyle={{
-            backgroundColor: '#E5E5E5',
-            borderColor: '#E5E5E5',
-            borderWidth: 1,
-          }}
-          titleStyle={{
-            fontSize: 20,
-            color: 'black'
-          }}
-          containerStyle={{
-            marginHorizontal: 3,
-            width: 205,
-            height: 50
-          }}
-          onPress={() => SetDaysNumber(7)}
-        />
-      </View>
-
-      <View style={styles.container}>
-        <WeekView
-          startHour={7}
-          timeStep={30}
-          events={myEvents}
-          selectedDate={new Date()}
-          numberOfDays={daysNumber} //מספר הימים המוצגים
-          showTitle={true}
-          headerStyle={{ backgroundColor: '#EFEFEF', borderColor: '#EFEFEF' }}
-          hoursInDisplay={8} //מקטין את המרווחים בין השעות
-          TodayHeaderComponent={MyTodayComponent}
-          formatDateHeader="ddd DD"
-          //fixedHorizontally={true}
-          weekStartsOn={6}
-          onEventPress={toggleOverlay} //לחיצה על אירוע
-          onGridClick={(pressEvent,startHour, date) => { props.navigation.navigate('Add Activity', { Date: date, StartHour: startHour, patient: props.route.params.patient, terapistId:props.route.params.patient.terapistId }) }} //לחיצה לשיבוץ פעילות
-        />
-      </View>
-
-      <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-        <Icon name='warning' color='#ff4500' size={30} />
-        <Text style={styles.textSecondary}>
-          האם למחוק את הפעילות ?
-        </Text>
-        <Button
-          title="מחק"
-          buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
-          titleStyle={{ color: 'white', marginHorizontal: 20 }}
-          onPress={deleteActivity}
-        />
-      </Overlay>
-
-      <Button
-        title="אישור"
-        buttonStyle={styles.buttonStyle}
-        titleStyle={styles.titleStyle}
-        containerStyle={styles.containerStyle}
-        onPress={() => props.navigation.navigate('Patient Page', { patient: props.route.params.patient })}
+      <Header
+        leftComponent={<View>
+          <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
+            <Icon name='arrow-back-ios' color='black' size={25} />
+          </TouchableOpacity>
+        </View>}
+        containerStyle={{
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          justifyContent: 'space-around',
+        }}
       />
 
-    </ImageBackground>
+      <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
+        <Text style={styles.title}>מרשם עיסוקים</Text>
+
+        <View style={styles.iconContainerStyle}>
+          <Button
+            title="יומי"
+            buttonStyle={{
+              backgroundColor: '#E5E5E5',
+              borderColor: '#E5E5E5',
+              borderWidth: 1,
+            }}
+            titleStyle={{
+              fontSize: 20,
+              color: 'black'
+            }}
+            containerStyle={{
+              marginHorizontal: 3,
+              width: 205,
+              height: 50
+            }}
+            onPress={() => SetDaysNumber(1)}
+          />
+
+          <Button
+            title="שבועי"
+            buttonStyle={{
+              backgroundColor: '#E5E5E5',
+              borderColor: '#E5E5E5',
+              borderWidth: 1,
+            }}
+            titleStyle={{
+              fontSize: 20,
+              color: 'black'
+            }}
+            containerStyle={{
+              marginHorizontal: 3,
+              width: 205,
+              height: 50
+            }}
+            onPress={() => SetDaysNumber(7)}
+          />
+        </View>
+
+        <View style={styles.container}>
+          <WeekView
+            startHour={7}
+            timeStep={30}
+            events={myEvents}
+            selectedDate={new Date()}
+            numberOfDays={daysNumber} //מספר הימים המוצגים
+            showTitle={true}
+            headerStyle={{ backgroundColor: '#EFEFEF', borderColor: '#EFEFEF' }}
+            hoursInDisplay={8} //מקטין את המרווחים בין השעות
+            TodayHeaderComponent={MyTodayComponent}
+            formatDateHeader="ddd DD"
+            //fixedHorizontally={true}
+            weekStartsOn={6}
+            onEventPress={toggleOverlay} //לחיצה על אירוע
+            onGridClick={(pressEvent, startHour, date) => { props.navigation.navigate('Add Activity', { Date: date, StartHour: startHour, patient: props.route.params.patient, terapistId: props.route.params.patient.terapistId }) }} //לחיצה לשיבוץ פעילות
+          />
+        </View>
+
+        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+          <Text style={styles.texttitle}>
+            {activity?activity.name:''}
+          </Text>
+          <Text style={styles.textSecondary}>אודות : 
+            {activity?activity.about:''}
+          </Text>
+          <Text style={styles.textSecondary}>סטים :
+            {activity?activity.sets:''}
+          </Text>
+          <Text style={styles.textSecondary}>חזרות : 
+            {activity?activity.repetition:''}
+          </Text>
+          <Text style={styles.textDelete}>
+            האם למחוק את הפעילות ?
+          </Text>
+          <Button
+            title="מחק"
+            buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
+            titleStyle={{ color: 'white', marginHorizontal: 20 }}
+            onPress={deleteActivity}
+          />
+        </Overlay>
+
+        <Button
+          title="אישור"
+          buttonStyle={styles.buttonStyle}
+          titleStyle={styles.titleStyle}
+          containerStyle={styles.containerStyle}
+          onPress={() => props.navigation.navigate('Patient Page', { patient: props.route.params.patient })}
+        />
+
+      </ImageBackground>
     </View>
   )
 }
@@ -218,9 +232,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  textSecondary: {
+  texttitle: {
+    marginTop: 7,
+    textAlign: 'right',
+    fontSize: 20,
+    fontWeight:'500',
     marginBottom: 10,
-    marginTop: 10,
+  },
+
+  textSecondary: {
+    marginTop: 7,
+    textAlign: 'right',
+    fontSize: 17,
+  },
+
+  textDelete: {
+    marginBottom: 10,
+    marginTop: 20,
     textAlign: 'center',
     fontSize: 17,
   },

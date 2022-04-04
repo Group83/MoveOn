@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import * as Progress from 'react-native-progress';
 
-
 export default function PatientPage(props) {
 
   const [patient, setPatient] = useState(props.route.params.patient);
@@ -102,7 +101,7 @@ export default function PatientPage(props) {
       console.log('OK Reviews', res);
       if (res) {
         var obj = res.map(review => review);
-        console.log(obj);
+        //console.log(obj);
         SetReviews(obj);
       } else {
         console.log('Reviews in empty');
@@ -188,15 +187,15 @@ export default function PatientPage(props) {
                   <Text style={{ fontSize: 15, textAlign: 'center', marginTop: 12 }}>סה"כ ביצועים :</Text>
                 </View>
                 <View style={{ marginTop: 15 }}>
-                  <ProgressCircle
-                    percent={patient.ComplishionPresentae * 100}
+                  {/* <ProgressCircle
+                    percent={Math.round(patient.ComplishionPresentae * 100)}
                     radius={52}
                     borderWidth={18}
                     color={patient.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
                     shadowColor="#EFEFEF"
                     bgColor="#fff"
                     outerCircleStyle={{ marginLeft: 42 }}
-                  />
+                  /> */}
                   <Text
                     style={[StyleSheet.absoluteFillObject, { fontSize: 20, fontWeight: '900', textAlign: 'center', marginTop: 40 }]}
                   >{totalPercent}%</Text>
@@ -205,15 +204,15 @@ export default function PatientPage(props) {
               <View style={styles.precent}>
                 <View style={{ backgroundColor: '#FDA551', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#FDA551', marginLeft: 2 }}>
                   <Text style={{ textAlign: 'center', top: -20 }}>תרגול</Text>
-                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tirgul ? tirgul * 100 : 0}%</Text>
+                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tirgul ? Math.round(tirgul * 100) : 0}%</Text>
                 </View>
                 <View style={{ backgroundColor: '#F9677C', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#F9677C', marginLeft: 3 }}>
                   <Text style={{ textAlign: 'center', top: -20 }}>תפקוד</Text>
-                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tifkud ? tifkud * 100 : 0}%</Text>
+                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tifkud ? Math.round(tifkud * 100) : 0}%</Text>
                 </View>
                 <View style={{ backgroundColor: '#9E82F6', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#9E82F6', marginLeft: 3 }}>
                   <Text style={{ textAlign: 'center', top: -20 }}>פנאי</Text>
-                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{pnai ? pnai * 100 : 0}%</Text>
+                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{pnai ? Math.round(pnai * 100) : 0}%</Text>
                 </View>
               </View>
               <View style={styles.fillcontainer}>
@@ -283,7 +282,14 @@ export default function PatientPage(props) {
                 <ScrollView>
                   {reviews.map((item) => {
                     return (
-                      <View style={styles.review}>
+                      <View style={{marginTop: 3,
+                        padding: 10,
+                        backgroundColor: (item.ActivityClassification=='פנאי'?'#9E82F6':item.ActivityClassification=='תרגול'?'#FDA551':'#F9677C'),
+                        display: 'flex',
+                        borderWidth: 1,
+                        borderColor: 'grey',
+                        borderRadius: 4,
+                        marginTop: 5,}}>
                         <View style={styles.container}>
                           <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(0, 9)} ,</Text>
                           <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(10, 15)}</Text>
@@ -292,6 +298,7 @@ export default function PatientPage(props) {
                         <Text style={styles.reviewText}>רמת קושי : {item.DifficultyActualPatientActivity}</Text>
                         <Text style={styles.reviewText} >דירוג : {item.LikeTheActivityActualPatientActivity}</Text>
                         <Text style={styles.reviewText}>רמת ביצוע : {item.ActualLevelOfPerformanceActualPatientActivity}</Text>
+                        <Text style={styles.reviewText}>{item.FreeNoteActualPatientActivity}</Text>
                       </View>
                     )
                   })}
