@@ -1,12 +1,14 @@
-import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, Image, TextInput } from 'react-native';
 import { Button, Icon, Overlay, Header } from 'react-native-elements';
-import React, { useEffect, useState } from 'react';
-import { TextInput } from 'react-native-paper';
+import React, { useState } from 'react';
+import { AntDesign } from '@expo/vector-icons'; 
 
 export default function Login({ navigation }) {
 
   const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
   const [passInput, setPassInput] = useState({ color: '#a9a9a9', text: '********' });
+  const [emailInputFocus, setEmailInputFocus] = useState(false);
+  const [passwordInputFocus, setPasswordInputFocus] = useState(false);
 
   //Overlay
   const [visible, setVisible] = useState(false);
@@ -65,7 +67,6 @@ export default function Login({ navigation }) {
         });
   }
 
-
   return (
 
     <View style={styles.topContainer}>
@@ -90,6 +91,25 @@ export default function Login({ navigation }) {
 
         <SafeAreaView style={{ top: -250 }}>
           <TextInput
+          onFocus={event =>  setEmailInputFocus(true)}
+          onBlur={event =>  setEmailInputFocus(false)}
+          placeholder={mailInput.text}
+          value={email}
+          onChangeText={text => setEmail(text)}
+          // secureTextEntry={true}
+          style={[styles.input,{ borderBottomColor: emailInputFocus?  '#fc7b03': '#000' }]}
+          />
+          <TextInput
+          onFocus={event =>  setPasswordInputFocus(true)}
+          onBlur={event =>  setPasswordInputFocus(false)}
+          placeholder={passInput.text}
+          value={password}
+          onChangeText={text => setPassword(text)}
+          secureTextEntry={true}
+          style={[styles.input,{ borderBottomColor: passwordInputFocus ? '#fc7b03' : '#000' }]}
+          />
+
+          {/* <TextInput
             left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
             style={styles.input}
             onChangeText={newText => setEmail(newText)}
@@ -97,6 +117,7 @@ export default function Login({ navigation }) {
             placeholderTextColor={mailInput.color}
             activeUnderlineColor="orange"
           />
+          
 
           <TextInput
             left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
@@ -110,7 +131,7 @@ export default function Login({ navigation }) {
             value={2}
             keyboardType="phone-pad"
             type="password"
-          />
+          /> */}
         </SafeAreaView>
 
         <TouchableOpacity onPress={() => {
@@ -193,7 +214,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width:'50%',
     marginHorizontal:'25%',
-    top:-65
+    top:-65,
+    borderBottomWidth: 1,
   },
 
   text: {
