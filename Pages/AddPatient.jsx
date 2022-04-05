@@ -29,11 +29,12 @@ export default function AddPatient(props) {
   //toggle Switch
   const [isEnabledMale, setIsEnabledMale] = useState(false);
   const [isEnabledFemale, setIsEnabledFemale] = useState(false);
-  const [isEnabledOther, setIsEnabled1Other] = useState(false);
+  const [isEnabledOther, setIsEnabledOther] = useState(false);
 
   const toggleSwitchMale = () => {
     setIsEnabledMale(previousState => !previousState);
-    console.log(isEnabledMale);
+    setIsEnabledFemale(false);
+    setIsEnabledOther(false);
     if (!isEnabledMale) {
       setGender('זכר');
     }
@@ -43,6 +44,8 @@ export default function AddPatient(props) {
   }
   const toggleSwitchFemale = () => {
     setIsEnabledFemale(previousState => !previousState);
+    setIsEnabledMale(false);
+    setIsEnabledOther(false);
     if (!isEnabledFemale) {
       setGender('נקבה');
     }
@@ -51,7 +54,9 @@ export default function AddPatient(props) {
     }
   }
   const toggleSwitchOther = () => {
-    setIsEnabled1Other(previousState => !previousState);
+    setIsEnabledOther(previousState => !previousState);
+    setIsEnabledFemale(false);
+    setIsEnabledMale(false);
     if (!isEnabledOther) {
       setGender('אחר');
     }
@@ -158,11 +163,10 @@ export default function AddPatient(props) {
 
   return (
 
-
     <View style={styles.topContainer}>
 
       <Header
-        leftComponent={<View>
+        rightComponent={<View>
           <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
             <Icon name='arrow-back-ios' color='black' size={25} />
           </TouchableOpacity>
@@ -277,15 +281,16 @@ const styles = StyleSheet.create({
   genderinput: {
     flexDirection: "row",
     height: 40,
-    marginHorizontal: 70,
-    marginTop: 30,
+    marginHorizontal: 200,
+    marginTop: 10,
+    marginBottom:50
   },
 
   gender: {
     fontSize: 14,
     marginTop: 10,
     marginRight: 10,
-    marginLeft: 10,
+    marginLeft: 30,
     color: '#696969'
   },
 
@@ -295,22 +300,27 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    left: 20,
+    right:420,
     flexDirection: "row",
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',
     fontSize: 40,
     color: '#000000',
+    top:20
   },
 
   input: {
     flexDirection: "row",
-    height: 40,
+    height: 65,
     marginHorizontal: 30,
-    marginVertical: 18,
-    // borderBottomWidth: 1,
-    backgroundColor: 'white'
+    marginVertical: 20,
+    backgroundColor: 'white',
+    flexShrink:1,
+    flexWrap: 'wrap',
+    width:'50%',
+    marginHorizontal:'25%',
+    top:-30
   },
 
   buttonStyle: {
@@ -334,10 +344,10 @@ const styles = StyleSheet.create({
 
   containerStyle: {
     marginHorizontal: 25,
-    marginVertical: 10,
     height: 43,
-    width: 380,
-    top: 120
+    width: '50%',
+    top: 120,
+    marginHorizontal:'25%'
   },
 
 });

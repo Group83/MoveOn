@@ -101,7 +101,7 @@ export default function SignUp(props) {
     <View style={styles.topContainer}>
 
       <Header
-        leftComponent={<View>
+        rightComponent={<View>
           <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
             <Icon name='arrow-back-ios' color='black' size={25} />
           </TouchableOpacity>
@@ -114,8 +114,8 @@ export default function SignUp(props) {
 
       <ImageBackground source={require('../images/background.png')} style={styles.image}>
 
-        <Text style={styles.title}>משתמש</Text>
-        <Text style={styles.title}>חדש</Text>
+        <Text style={styles.title1}>משתמש</Text>
+        <Text style={styles.title2}>חדש</Text>
 
         <SafeAreaView style={{ top: 50 }}>
           <TextInput
@@ -188,22 +188,38 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
 
-  title: {
-    left: 50,
+  title1: {
+    right:480,
     flexDirection: "row",
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',
     fontSize: 40,
     color: '#000000',
+    top:30
+  },
+  title2: {
+    right:540,
+    flexDirection: "row",
+    fontFamily: 'Arial',
+    fontStyle: 'normal',
+    fontWeight: 'bold',
+    fontSize: 40,
+    color: '#000000',
+    top:35
   },
 
   input: {
     flexDirection: "row",
-    height: 40,
+    height: 65,
     marginHorizontal: 30,
     marginVertical: 20,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    flexShrink:1,
+    flexWrap: 'wrap',
+    width:'50%',
+    marginHorizontal:'25%',
+    top:30
   },
 
   buttonStyle: {
@@ -227,10 +243,10 @@ const styles = StyleSheet.create({
 
   containerStyle: {
     marginHorizontal: 25,
-    marginVertical: 20,
     height: 43,
-    width: 380,
-    top: 70
+    width: '50%',
+    top: 150,
+    marginHorizontal:'25%'
   },
 
   topContainer: {

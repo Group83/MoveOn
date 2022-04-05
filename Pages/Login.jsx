@@ -102,11 +102,14 @@ export default function Login({ navigation }) {
             left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
             style={styles.input}
             onChangeText={newText => setPassword(newText)}
-            //multiline={true}
-            secureTextEntry={true}
-            placeholder={passInput.text}
-            placeholderTextColor={passInput.color}
+            // multiline={true}
+            // /secureTextEntry={true}
+            // placeholder={passInput.text}
+            // placeholderTextColor={passInput.color}
             activeUnderlineColor="orange"
+            value={2}
+            keyboardType="phone-pad"
+            type="password"
           />
         </SafeAreaView>
 
@@ -170,10 +173,9 @@ const styles = StyleSheet.create({
 
   title: {
     flex: 1,
-    width: 258,
-    height: 137,
+    width: 380,
     left: 50,
-    top: 100,
+    top: 350,
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',
@@ -183,18 +185,21 @@ const styles = StyleSheet.create({
 
   input: {
     flexDirection: "row",
-    height: 40,
+    height: 65,
     marginHorizontal: 30,
     marginVertical: 20,
     backgroundColor: 'white',
     flexShrink:1,
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    width:'50%',
+    marginHorizontal:'25%',
+    top:-65
   },
 
   text: {
-    left: 30,
-    top: -250,
+    top: -300,
     color: '#313131',
+    right:'65%'
   },
 
   buttonStyle: {
@@ -212,39 +217,40 @@ const styles = StyleSheet.create({
   },
 
   titleStyle: {
-    fontSize: 20,
+    fontSize: 23,
     color: 'black'
   },
 
   containerStyle: {
     marginHorizontal: 25,
     height: 43,
-    width: 380,
-    top: -200,
+    width: '50%',
+    top: -230,
+    marginHorizontal:'25%'
   },
 
   text1: {
-    fontSize: 10,
+    fontSize: 15,
     color: '#FFFFFF',
-    marginHorizontal: 60,
+    marginHorizontal: '13%',
   },
 
   text2: {
     fontSize: 20,
     color: '#07635D',
-    fontWeight: '400'
+    fontWeight: '400',
+    marginRight:'50%'
   },
 
   touchOp: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 0,
-    top: -50,
+    top: -90,
     backgroundColor: '#D3DE32',
     borderRadius: 5,
-    width: 380,
+    width: '50%',
     height: 40,
-    margin: 25,
+    marginHorizontal: '25%',
   },
 
   iconContainerStyle: {

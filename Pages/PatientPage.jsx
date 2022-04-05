@@ -50,8 +50,8 @@ export default function PatientPage(props) {
 
     types.map((item) => {
       //get type percent
-      console.log(patient.IdPatient);
-      console.log(item);
+      // console.log(patient.IdPatient);
+      // console.log(item);
       let id = patient.IdPatient;
       fetch(apiUrlpercent + '=' + id + '&clasification=' + item, {
         method: 'GET',
@@ -116,13 +116,13 @@ export default function PatientPage(props) {
 
   const headerfunc = () => {
 
-    var update = (isEnabledUpdate?1:0);
-    var alert = (isEnabledAlert?1:0);
-    var activ = (isEnabledActiv?1:0);
+    var update = (isEnabledUpdate ? 1 : 0);
+    var alert = (isEnabledAlert ? 1 : 0);
+    var activ = (isEnabledActiv ? 1 : 0);
 
-    console.log('exit update : ', update);
-    console.log('exit alert : ', alert);
-    console.log('exit activ : ', activ);
+    // console.log('exit update : ', update);
+    // console.log('exit alert : ', alert);
+    // console.log('exit activ : ', activ);
 
     //insert premosions to data
     let updatearr = [{ IdPatient: patient.IdPatient, PatientStatus: activ, UpdatePermissionPatient: update, ReceiveAlertsPermissionPatient: alert, IdTherapist: terapistId }];
@@ -138,7 +138,7 @@ export default function PatientPage(props) {
     })
       .then(res => {
         console.log('OK Permissions !');
-        props.navigation.navigate('Dashboard', { id: terapistId, name: props.route.params.name, back: true});
+        props.navigation.navigate('Dashboard', { id: terapistId, name: props.route.params.name, back: true });
       }).catch(error => {
         console.log('err PUT =', error)
       })
@@ -149,7 +149,7 @@ export default function PatientPage(props) {
     <View style={styles.topContainer}>
 
       <Header
-        leftComponent={<View>
+        rightComponent={<View>
           <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
             <Icon name='arrow-back-ios' color='black' size={25} />
           </TouchableOpacity>
@@ -173,8 +173,8 @@ export default function PatientPage(props) {
                 <Text style={styles.name}>#{patient.IdPatient}</Text>
               </View>
               <View style={styles.left1}>
-                <Icon name={patient.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={40} style={{ paddingLeft: 25 }} />
-                <Icon name={patient.RelativeMood == 'DOUN' ? 'south' : 'north'} size={35} color={patient.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
+                <Icon name={patient.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={60} style={{ paddingLeft: 25 }} />
+                <Icon name={patient.RelativeMood == 'DOUN' ? 'south' : 'north'} size={60} color={patient.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
               </View>
             </View>
             <View style={styles.left2}>
@@ -187,15 +187,16 @@ export default function PatientPage(props) {
                   <Text style={{ fontSize: 15, textAlign: 'center', marginTop: 12 }}>סה"כ ביצועים :</Text>
                 </View>
                 <View style={{ marginTop: 15 }}>
-                  {/* <ProgressCircle
+                  <ProgressCircle
                     percent={Math.round(patient.ComplishionPresentae * 100)}
                     radius={52}
                     borderWidth={18}
                     color={patient.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
+                    //linear-gradient(to right, #1EA896 ${fillPercentage}%, #E8EBF8 10%)
                     shadowColor="#EFEFEF"
                     bgColor="#fff"
                     outerCircleStyle={{ marginLeft: 42 }}
-                  /> */}
+                  />
                   <Text
                     style={[StyleSheet.absoluteFillObject, { fontSize: 20, fontWeight: '900', textAlign: 'center', marginTop: 40 }]}
                   >{totalPercent}%</Text>
@@ -266,7 +267,7 @@ export default function PatientPage(props) {
 
             <View style={styles.board}>
               <TouchableOpacity style={styles.touchOp} onPress={() => {
-                props.navigation.navigate('Activity Board', { patient: patient, back: false, terapistId:terapistId });
+                props.navigation.navigate('Activity Board', { patient: patient, back: false, terapistId: terapistId });
               }}>
                 <Text style={{ marginRight: 57, marginLeft: 10, fontSize: 17 }}>מרשם העיסוקים</Text>
                 <Icon name='event-note' />
@@ -282,14 +283,16 @@ export default function PatientPage(props) {
                 <ScrollView>
                   {reviews.map((item) => {
                     return (
-                      <View style={{marginTop: 3,
+                      <View style={{
+                        marginTop: 3,
                         padding: 10,
-                        backgroundColor: (item.ActivityClassification=='פנאי'?'#9E82F6':item.ActivityClassification=='תרגול'?'#FDA551':'#F9677C'),
+                        backgroundColor: (item.ActivityClassification == 'פנאי' ? '#9E82F6' : item.ActivityClassification == 'תרגול' ? '#FDA551' : '#F9677C'),
                         display: 'flex',
                         borderWidth: 1,
                         borderColor: 'grey',
                         borderRadius: 4,
-                        marginTop: 5,}}>
+                        marginTop: 5,
+                      }}>
                         <View style={styles.container}>
                           <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(0, 9)} ,</Text>
                           <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(10, 15)}</Text>
@@ -376,8 +379,8 @@ const styles = StyleSheet.create({
 
   left4: {
     backgroundColor: '#EFEFEF',
-    height: 95,
-    width: 210,
+    height: 110,
+    width: '100%',
     marginTop: 3,
     top: 10,
     borderWidth: 1,
@@ -387,8 +390,8 @@ const styles = StyleSheet.create({
 
   left3: {
     backgroundColor: '#EFEFEF',
-    height: 180,
-    width: 210,
+    height: 200,
+    width: '100%',
     marginTop: 3,
     top: 10,
     borderWidth: 1,
@@ -398,8 +401,8 @@ const styles = StyleSheet.create({
 
   left2: {
     backgroundColor: '#EFEFEF',
-    height: 400,
-    width: 210,
+    height: 450,
+    width: '100%',
     marginTop: 20,
     top: 10,
     borderWidth: 1,
@@ -408,7 +411,7 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontSize: 25,
+    fontSize: 40,
     fontWeight: 'bold',
     paddingTop: 15,
     paddingLeft: 10,
@@ -481,20 +484,20 @@ const styles = StyleSheet.create({
 
   leftcontainer: {
     display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    height: 800,
-    width: 210,
-    marginHorizontal: 2,
-
+    // backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor:'red',
+    height: 1000,
+    width: '47%',
+    marginHorizontal:10,
   },
 
   rightcontainer: {
     display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    height: 800,
-    width: 210,
-    marginHorizontal: 2,
-    top: 60
+    // backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor:'red',
+    height: 1000,
+    width: '47%',
+    marginHorizontal:10,
   },
 
 });

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
-import { Icon, Overlay, Header} from 'react-native-elements';
+import { Icon, Overlay, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import { TextInput } from 'react-native-paper';
@@ -71,7 +71,7 @@ export default function Dashboard(props) {
     <View style={styles.topContainer}>
 
       <Header
-        leftComponent={<View>
+        rightComponent={<View>
           <TouchableOpacity style={{ marginTop: 6, marginRight: 20 }} onPress={headerfunc}>
             <Icon name='arrow-back-ios' color='black' size={25} />
           </TouchableOpacity>
@@ -88,21 +88,13 @@ export default function Dashboard(props) {
       >
 
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>שלום {props.route.params.name},</Text>
+          <Text style={styles.title}>שלום  {props.route.params.name},</Text>
         </View>
 
         <View style={styles.centerContainer}>
           <View>
-            <TouchableOpacity style={styles.touchOp} onPress={() => {
-              props.navigation.navigate('Add Patient', { idTerapist: idTerapist, name: props.route.params.name, back: false });
-            }}>
-              <Icon name='add' />
-              <Text style={{ marginRight: 20, marginLeft: 20, fontSize: 17 }}>הוסף מטופל חדש</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.Searchbar}>
             <TextInput
-              left={<TextInput.Icon name="magnify" color="grey" size={20} />}
+              left={<TextInput.Icon name="magnify" color="grey" size={25} />}
               style={styles.searchinput}
               onChangeText={onChangeSearch}
               placeholder="מספר מטופל"
@@ -110,18 +102,26 @@ export default function Dashboard(props) {
               activeUnderlineColor="orange"
             />
           </View>
+          <View>
+            <TouchableOpacity style={styles.touchOp} onPress={() => {
+              props.navigation.navigate('Add Patient', { idTerapist: idTerapist, name: props.route.params.name, back: false });
+            }}>
+              <Icon name='add' style={{ marginLeft: 20 }} />
+              <Text style={{ marginLeft: 50, fontSize: 19 }}>הוסף מטופל חדש</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.dashboardContainer}>
 
           <View style={styles.col}>
             <View style={styles.coltitle}>
-              <Text style={{ fontSize: 14, marginTop: 18, marginHorizontal: 5 }}>מספר</Text>
+              <Text style={{ fontSize: 18, marginTop: 18, marginHorizontal: 40 }}>מספר</Text>
               {patients.length > 0 && patients.map((item) => {
                 return (
                   <View style={styles.row}>
                     <Text
-                      style={{ fontSize: 12, marginLeft: 5, marginTop: 15 }}>
+                      style={{ fontSize: 15, marginTop: 8, marginHorizontal: 20 }}>
                       #{item?.IdPatient}
                     </Text>
                   </View>
@@ -133,11 +133,11 @@ export default function Dashboard(props) {
 
           <View style={styles.col}>
             <View style={styles.coltitle}>
-              <Text style={{ fontSize: 14, marginTop: 18, marginHorizontal: 2 }}>כינוי</Text>
+              <Text style={{ fontSize: 18, marginTop: 18, marginHorizontal: 50 }}>כינוי</Text>
               {patients.length > 0 && patients.map((item) => {
                 return (
                   <View style={styles.row}>
-                    <Text style={{ fontSize: 12, marginLeft: 2, marginTop: 15 }}>{item?.NicknamePatient}</Text>
+                    <Text style={{ fontSize: 15, marginHorizontal: 18, marginTop: 5}}>{item?.NicknamePatient}</Text>
                   </View>
                 )
               })}
@@ -148,21 +148,21 @@ export default function Dashboard(props) {
           <View style={styles.col}>
             <View style={styles.coltitle}>
               <Text
-                style={{ fontSize: 14, marginTop: 16, marginHorizontal: 2 }}>רמת ביצוע</Text>
+                style={{ fontSize: 18, marginTop: 14, marginHorizontal: 25 }}>רמת ביצוע</Text>
               {patients.length > 0 && patients.map((item) => {
 
                 return (
                   <View style={styles.circlerow}>
                     <ProgressCircle
-                      percent={item?Math.round(item.ComplishionPresentae * 100):0}
-                      radius={10}
+                      percent={item ? Math.round(item.ComplishionPresentae * 100) : 0}
+                      radius={12}
                       borderWidth={4}
                       color={item.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
                       shadowColor="lightgrey"
                       bgColor="#fff"
                     >
                     </ProgressCircle>
-                    <Text style={{ fontSize: 12, marginLeft: 5 }}>{item?.ComplishionPresentae * 100}%</Text>
+                    <Text style={{ fontSize: 15, marginLeft: 10 }}>{item?.ComplishionPresentae * 100}%</Text>
                   </View>
                 )
               })}
@@ -173,13 +173,13 @@ export default function Dashboard(props) {
 
           <View style={styles.col}>
             <View style={styles.coltitle}>
-              <Text style={{ fontSize: 14, marginTop: 16, marginHorizontal: 2 }}>מצב רוח</Text>
+              <Text style={{ fontSize: 18, marginTop: 14, marginHorizontal: 25 }}>מצב רוח</Text>
               {patients.length > 0 && patients.map((item) => {
                 return (
-                  <View style={styles.row}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 11, marginLeft: 8 }}>
+                  <View style={styles.rowmood}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, marginLeft: 35 }}>
+                      <Icon name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={23} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
                       <Icon name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
-                      <Icon name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={20} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
                     </View>
                   </View>
                 )
@@ -192,9 +192,9 @@ export default function Dashboard(props) {
             <View style={styles.coltitle} />
             {patients.length > 0 && patients.map((item) => {
               return (
-                <View style={styles.row}>
-                  <TouchableOpacity style={{ marginTop: 6, marginRight: 20 }} onPress={toggleOverlay}>
-                    <Icon name='warning' color='gold' size={22} />
+                <View style={styles.rowmood}>
+                  <TouchableOpacity style={{marginHorizontal: 20 }} onPress={toggleOverlay}>
+                    <Icon name='warning' color='gold' size={25} />
                   </TouchableOpacity>
                   <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
                     <Icon name='warning' color='gold' />
@@ -215,7 +215,7 @@ export default function Dashboard(props) {
                   <TouchableOpacity style={styles.show} onPress={() => {
                     props.navigation.navigate('Patient Page', { patient: item, terapistId: idTerapist, name: props.route.params.name });
                   }}>
-                    <Text style={{ fontSize: 12, marginLeft: 20 }}>הצג</Text>
+                    <Text style={{ fontSize: 15, marginLeft: '35%' }}>הצג</Text>
                   </TouchableOpacity>
                 </View>
               )
@@ -239,8 +239,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 50,
     backgroundColor: '#EFEFEF',
-    marginLeft: 10,
-    width: 200,
+    marginLeft: 25,
+    width: 300,
+    fontSize: 18,
   },
 
   circlerow: {
@@ -248,18 +249,32 @@ const styles = StyleSheet.create({
     height: 30,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 12
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    marginTop: 7.5,
+    marginHorizontal: 35
   },
 
   textSecondary: {
-    marginBottom: 10,
+    marginBottom: 8,
     textAlign: 'center',
-    fontSize: 17,
+    fontSize: 20,
+    marginTop:5
   },
 
   row: {
-    width: 60,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    width: '65%',
     height: 30,
+    marginLeft: 20,
+    marginTop: 8
+  },
+
+  rowmood: {
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    width: '65%',
+    height: 30,
+    marginLeft: 20,
+    marginTop: 7
   },
 
   show: {
@@ -267,8 +282,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#EFEFEF',
-    height: 20,
-    marginTop: 8,
+    height: 22,
     borderWidth: 1,
     borderRadius: 10,
     borderColor: '#EFEFEF',
@@ -276,58 +290,50 @@ const styles = StyleSheet.create({
 
   coltitle: {
     backgroundColor: '#F5F5F5',
-    height: 35,
+    height: 40,
     borderBottomWidth: 1,
   },
 
   col: {
     display: 'flex',
-    backgroundColor: 'white',
-    height: 600,
-    width: 70,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    height: 630,
+    width: '30%',
   },
 
   dashboardContainer: {
     display: 'flex',
-    backgroundColor: '#EFEFEF',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
     height: 600,
-    width: 420,
-    marginHorizontal: 2,
+    width: 435,
+    marginHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20
-  },
-
-  title2Container: {
-    display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    height: 50,
-    width: 420,
-    marginHorizontal: 2,
+    marginTop: 30
   },
 
   centerContainer: {
     display: 'flex',
     backgroundColor: 'rgba(0, 0, 0, 0)',
     height: 70,
-    width: 420,
-    marginHorizontal: 2,
+    width: '95%',
+    marginHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 40
   },
 
   titleContainer: {
     display: 'flex',
     backgroundColor: 'rgba(0, 0, 0, 0)',
     height: 50,
-    width: 420,
-    marginHorizontal: 2,
-    marginTop: 20
+    width: 375,
+    marginHorizontal: 0,
+    marginTop: 150
   },
 
   title: {
-    left: 20,
+    left: 25,
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',
@@ -346,10 +352,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#EFEFEF',
     height: 50,
-    width: 200,
+    width: 300,
     borderWidth: 1,
     borderRadius: 10,
     borderColor: '#EFEFEF',
+    marginLeft: 120,
   },
 
 });
