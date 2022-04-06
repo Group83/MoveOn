@@ -189,7 +189,7 @@ export default function AddActivity(props) {
     <View style={styles.topContainer}>
 
     <Header
-      leftComponent={<View>
+      rightComponent={<View>
         <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
           <Icon name='arrow-back-ios' color='black' size={25} />
         </TouchableOpacity>
@@ -207,10 +207,11 @@ export default function AddActivity(props) {
         {/* left container */}
         <View style={styles.leftcontainer}>
           <SelectDropdown
-            rowTextStyle={{ fontSize: 16 }}
+            rowTextStyle={{ fontSize: 20 }}
             data={activityType}
             defaultButtonText={'לחץ לבחירת סוג פעילות'}
-            buttonStyle={{ height: 40, width: 200, borderColor: "#FFBD73", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 3, marginTop: 15, backgroundColor: 'rgba(255, 189, 115, 0.27)' }}
+            buttonTextStyle={{fontSize: 22 }}
+            buttonStyle={{ height: 50, width: 350, borderColor: "#FFBD73", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 20, marginTop: 20, backgroundColor: 'rgba(255, 189, 115, 0.27)' }}
             onSelect={changeActivityType}
             buttonTextAfterSelection={(selectedItem, index) => {
               return selectedItem
@@ -234,7 +235,6 @@ export default function AddActivity(props) {
             placeholder="כתובת סרטון"
             placeholderTextColor="#a9a9a9"
             activeUnderlineColor="orange"
-            multiline={true}
           />
           <TextInput
             defaultValue={fillAbout}
@@ -310,7 +310,7 @@ export default function AddActivity(props) {
         </View>
       </View>
       <Button
-        title="אישור"
+        title="שמור"
         buttonStyle={styles.buttonStyle}
         titleStyle={styles.titleStyle}
         containerStyle={styles.containerStyle}
@@ -328,14 +328,14 @@ const styles = StyleSheet.create({
   },
 
   toggleinput: {
-    marginRight: 15,
+    marginHorizontal: 15,
     marginTop: 5,
-    fontSize: 15
+    fontSize: 18
   },
 
   toggleRequired: {
     flexDirection: "row",
-    marginTop: 15,
+    marginTop: 30,
     marginLeft: 15
   },
 
@@ -347,31 +347,33 @@ const styles = StyleSheet.create({
 
   searchinput: {
     flexDirection: "row",
-    height: 40,
-    marginHorizontal: 0,
+    height: 50,
+    marginHorizontal: 8,
     marginVertical: 0,
     backgroundColor: 'white',
     marginTop: 25
   },
 
   activity: {
-    marginTop: 3,
+    marginTop: 5,
     padding: 30,
     backgroundColor: 'rgba(255, 189, 115, 0.27)',
     display: 'flex',
     borderWidth: 1,
     borderColor: '#FFBD73',
+    textAlign:'left',
+    fontSize:18
   },
 
   Searchbar: {
-    top: 10,
-    margin: 3,
+    top: 20,
+    marginHorizontal: 8,
   },
 
   inputDisc: {
     flexDirection: "row",
-    height: 170,
-    width: 190,
+    height: 210,
+    width: 350,
     top: 10,
     marginTop: 10,
     left: 10,
@@ -380,27 +382,30 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
+    marginHorizontal:8
   },
 
   input: {
     flexDirection: "row",
-    height: 40,
-    width: 190,
+    height: 60,
+    width: 350,
     top: 10,
-    marginTop: 5,
+    marginTop: 10,
     left: 10,
     borderBottomWidth: 1,
     backgroundColor: 'white',
     borderWidth: 1,
     borderRadius: 5,
     borderColor: 'white',
+    marginHorizontal:8
   },
 
   text: {
-    fontSize: 18,
-    left: 10,
+    fontSize: 22,
     top: 20,
+    textAlign:'left',
+    marginHorizontal:20
   },
 
   container: {
@@ -414,9 +419,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EFEFEF',
     borderRadius: 5,
-    height: 550,
-    width: 210,
-    marginHorizontal: 2,
+    height: 750,
+    width: '47%',
+    marginLeft: 20,
     top: 40
   },
 
@@ -426,18 +431,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EFEFEF',
     borderRadius: 5,
-    height: 550,
-    width: 210,
-    marginHorizontal: 2,
+    height: 750,
+    width: '45%',
+    marginLeft: 20,
     top: 40
   },
 
   scrollView: {
     backgroundColor: '#EFEFEF',
-    height: 425,
-    width: 200,
-    marginHorizontal: 1,
-    top: 10,
+    height: 600,
+    width: 330,
+    marginHorizontal: 10,
+    top: 15,
     borderWidth: 1,
     borderColor: '#EFEFEF',
     borderRadius: 5,
@@ -450,7 +455,7 @@ const styles = StyleSheet.create({
 
   title: {
     top: -10,
-    left: 70,
+    right: '35%',
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',
@@ -473,14 +478,14 @@ const styles = StyleSheet.create({
   },
 
   titleStyle: {
-    fontSize: 20,
+    fontSize: 22,
     color: 'black'
   },
 
   containerStyle: {
-    marginHorizontal: 25,
-    width: 380,
-    top: 60,
+    marginHorizontal: 20,
+    width: '95%',
+    top: 70,
   },
 
 });

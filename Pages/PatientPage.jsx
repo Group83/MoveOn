@@ -3,6 +3,7 @@ import { Icon, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import * as Progress from 'react-native-progress';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function PatientPage(props) {
 
@@ -120,10 +121,6 @@ export default function PatientPage(props) {
     var alert = (isEnabledAlert ? 1 : 0);
     var activ = (isEnabledActiv ? 1 : 0);
 
-    // console.log('exit update : ', update);
-    // console.log('exit alert : ', alert);
-    // console.log('exit activ : ', activ);
-
     //insert premosions to data
     let updatearr = [{ IdPatient: patient.IdPatient, PatientStatus: activ, UpdatePermissionPatient: update, ReceiveAlertsPermissionPatient: alert, IdTherapist: terapistId }];
     console.log('update payient = ', updatearr[0]);
@@ -173,59 +170,63 @@ export default function PatientPage(props) {
                 <Text style={styles.name}>#{patient.IdPatient}</Text>
               </View>
               <View style={styles.left1}>
-                <Icon name={patient.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={60} style={{ paddingLeft: 25 }} />
+                <Icon name={patient.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={60} style={{ paddingLeft: 70 }} />
                 <Icon name={patient.RelativeMood == 'DOUN' ? 'south' : 'north'} size={60} color={patient.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
               </View>
             </View>
             <View style={styles.left2}>
               <View style={styles.touchOp}>
-                <Text style={{ fontSize: 20, marginRight: 40, marginLeft: 10 }}>מצב התקדמות</Text>
+                <Text style={{ fontSize: 25, marginRight: 150, marginLeft: 30 }}>מצב התקדמות</Text>
                 <Icon name='stacked-line-chart' size={35} />
               </View>
-              <View style={{ marginLeft: 8, backgroundColor: 'white', height: 170, width: 190, marginTop: 30, borderWidth: 1, borderColor: 'white', borderRadius: 15 }}>
+              <View style={{ marginLeft: 8, backgroundColor: 'white', height: 270, width: 290, marginTop: 30, borderWidth: 1, borderColor: 'white', borderRadius: 15, marginLeft: 40 }}>
                 <View>
-                  <Text style={{ fontSize: 15, textAlign: 'center', marginTop: 12 }}>סה"כ ביצועים :</Text>
+                  <Text style={{ fontSize: 20, textAlign: 'center', marginTop: 12 }}>סה"כ ביצועים :</Text>
                 </View>
-                <View style={{ marginTop: 15 }}>
-                  <ProgressCircle
-                    percent={Math.round(patient.ComplishionPresentae * 100)}
-                    radius={52}
-                    borderWidth={18}
-                    color={patient.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
-                    //linear-gradient(to right, #1EA896 ${fillPercentage}%, #E8EBF8 10%)
-                    shadowColor="#EFEFEF"
-                    bgColor="#fff"
-                    outerCircleStyle={{ marginLeft: 42 }}
-                  />
-                  <Text
-                    style={[StyleSheet.absoluteFillObject, { fontSize: 20, fontWeight: '900', textAlign: 'center', marginTop: 40 }]}
-                  >{totalPercent}%</Text>
+                <View style={{ marginTop: 20, transform: [{ rotate: '180deg' }] }}>
+                  <LinearGradient
+                    colors={[' #ed83f2', ' #dafc74', ' #ed4a7b']}>
+                    <ProgressCircle //change color and radius
+                      percent={Math.round(patient.ComplishionPresentae * 100)}
+                      radius={90}
+                      borderWidth={30}
+                      // color={patient.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
+                      color={(fillPercentage) => 'linear-gradient(blue, red)'}
+                      //linear-gradient(to right, #1EA896 ${fillPercentage}%, #E8EBF8 10%)
+                      shadowColor="#EFEFEF"
+                      bgColor="#fff"
+                      outerCircleStyle={{ marginLeft: 50 }}
+                    />
+                  </LinearGradient>
                 </View>
+                <Text
+                  style={[StyleSheet.absoluteFillObject, { fontSize: 30, fontWeight: '900', textAlign: 'center', marginTop: '45%' }]}
+                >{totalPercent}%</Text>
               </View>
               <View style={styles.precent}>
-                <View style={{ backgroundColor: '#FDA551', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#FDA551', marginLeft: 2 }}>
-                  <Text style={{ textAlign: 'center', top: -20 }}>תרגול</Text>
-                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tirgul ? Math.round(tirgul * 100) : 0}%</Text>
+                <View style={{ backgroundColor: '#FDA551', height: 80, width: 100, borderRadius: 15, borderWidth: 1, borderColor: '#FDA551', marginHorizontal: 10 }}>
+                  <Text style={{ textAlign: 'center', top: -25, fontSize: 20 }}>תרגול</Text>
+                  <Text style={{ textAlign: 'center', top: 2, fontSize: 25, fontWeight: '500' }}>{tirgul ? Math.round(tirgul * 100) : 0}%</Text>
                 </View>
-                <View style={{ backgroundColor: '#F9677C', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#F9677C', marginLeft: 3 }}>
-                  <Text style={{ textAlign: 'center', top: -20 }}>תפקוד</Text>
-                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{tifkud ? Math.round(tifkud * 100) : 0}%</Text>
+                <View style={{ backgroundColor: '#F9677C', height: 80, width: 100, borderRadius: 15, borderWidth: 1, borderColor: '#F9677C', marginHorizontal: 10 }}>
+                  <Text style={{ textAlign: 'center', top: -25, fontSize: 20 }}>תפקוד</Text>
+                  <Text style={{ textAlign: 'center', top: 2, fontSize: 25, fontWeight: '500' }}>{tifkud ? Math.round(tifkud * 100) : 0}%</Text>
                 </View>
-                <View style={{ backgroundColor: '#9E82F6', height: 50, width: 65, borderRadius: 15, borderWidth: 1, borderColor: '#9E82F6', marginLeft: 3 }}>
-                  <Text style={{ textAlign: 'center', top: -20 }}>פנאי</Text>
-                  <Text style={{ textAlign: 'center', top: -1, fontSize: 20, fontWeight: '500' }}>{pnai ? Math.round(pnai * 100) : 0}%</Text>
+                <View style={{ backgroundColor: '#9E82F6', height: 80, width: 100, borderRadius: 15, borderWidth: 1, borderColor: '#9E82F6', marginHorizontal: 10 }}>
+                  <Text style={{ textAlign: 'center', top: -25, fontSize: 20 }}>פנאי</Text>
+                  <Text style={{ textAlign: 'center', top: 2, fontSize: 25, fontWeight: '500' }}>{pnai ? Math.round(pnai * 100) : 0}%</Text>
                 </View>
               </View>
               <View style={styles.fillcontainer}>
-                <Progress.Bar progress={tirgul ? tirgul : 0} width={65} color={tirgul < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginLeft={2} />
-                <Progress.Bar progress={tifkud ? tifkud : 0} width={65} color={tifkud < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginLeft={3} />
-                <Progress.Bar progress={pnai ? pnai : 0} width={65} color={pnai < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginLeft={3} />
+                <Progress.Bar progress={tirgul ? tirgul : 0} width={90} color={tirgul < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginHorizontal={15} />
+                <Progress.Bar progress={tifkud ? tifkud : 0} width={90} color={tifkud < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginHorizontal={15} />
+                <Progress.Bar progress={pnai ? pnai : 0} width={90} color={pnai < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginHorizontal={15} />
               </View>
 
             </View>
 
             <View style={styles.left3}>
-              <Text style={{ fontSize: 20, paddingLeft: 10, paddingTop: 20, paddingBottom: 10 }}>הרשאות :</Text>
+              <Text style={{ fontSize: 23, paddingLeft: 10, paddingTop: 20, paddingBottom: 10, textAlign: 'left' }}>הרשאות: </Text>
               <View style={styles.toggle}>
                 <Text style={styles.toggleinput}>עדכון מרשם עיסוקים</Text>
                 <Switch
@@ -269,15 +270,15 @@ export default function PatientPage(props) {
               <TouchableOpacity style={styles.touchOp} onPress={() => {
                 props.navigation.navigate('Activity Board', { patient: patient, back: false, terapistId: terapistId });
               }}>
-                <Text style={{ marginRight: 57, marginLeft: 10, fontSize: 17 }}>מרשם העיסוקים</Text>
-                <Icon name='event-note' />
+                <Text style={{ marginRight: 150, marginLeft: 20, fontSize: 23 }}>מרשם העיסוקים</Text>
+                <Icon name='event-note' size={30} />
               </TouchableOpacity>
             </View>
 
             <View style={styles.rateContainer}>
               <View style={styles.touchOp}>
-                <Text style={{ fontSize: 20, marginRight: 45, marginLeft: 10 }}>משו"ב פעילויות</Text>
-                <Icon name='note' />
+                <Text style={{ fontSize: 23, marginRight: 155, marginLeft: 20 }}>משו"ב פעילויות</Text>
+                <Icon name='note' size={30} />
               </View>
               <View style={styles.scrollView}>
                 <ScrollView>
@@ -286,7 +287,7 @@ export default function PatientPage(props) {
                       <View style={{
                         marginTop: 3,
                         padding: 10,
-                        backgroundColor: (item.ActivityClassification == 'פנאי' ? '#9E82F6' : item.ActivityClassification == 'תרגול' ? '#FDA551' : '#F9677C'),
+                        backgroundColor: (item.ActivityClasification == 'פנאי' ? 'rgba(158, 130, 246, 0.57)' : item.ActivityClassification == 'תרגול' ? 'rgba(253, 165, 81, 0.69)' : 'rgba(249, 103, 124, 0.63)'),
                         display: 'flex',
                         borderWidth: 1,
                         borderColor: 'grey',
@@ -294,13 +295,13 @@ export default function PatientPage(props) {
                         marginTop: 5,
                       }}>
                         <View style={styles.container}>
-                          <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(0, 9)} ,</Text>
+                          <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(0, 9)},</Text>
                           <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(10, 15)}</Text>
                         </View>
                         <Text style={styles.reviewtitle}>{item.ActivityName}</Text>
-                        <Text style={styles.reviewText}>רמת קושי : {item.DifficultyActualPatientActivity}</Text>
-                        <Text style={styles.reviewText} >דירוג : {item.LikeTheActivityActualPatientActivity}</Text>
-                        <Text style={styles.reviewText}>רמת ביצוע : {item.ActualLevelOfPerformanceActualPatientActivity}</Text>
+                        <Text style={styles.reviewText}>רמת קושי: {item.DifficultyActualPatientActivity}</Text>
+                        <Text style={styles.reviewText} >דירוג: {item.LikeTheActivityActualPatientActivity}</Text>
+                        <Text style={styles.reviewText}>רמת ביצוע: {item.ActualLevelOfPerformanceActualPatientActivity}</Text>
                         <Text style={styles.reviewText}>{item.FreeNoteActualPatientActivity}</Text>
                       </View>
                     )
@@ -312,7 +313,7 @@ export default function PatientPage(props) {
           </View>
         </View>
       </ImageBackground >
-    </View>
+    </View >
   )
 }
 
@@ -325,25 +326,26 @@ const styles = StyleSheet.create({
   reviewDate: {
     marginTop: 5,
     color: 'black',
-    fontSize: 10,
-    marginHorizontal: 2
+    fontSize: 15,
+    marginHorizontal: 2,
   },
 
   reviewtitle: {
-    textAlign: 'right',
+    textAlign: 'left',
     marginHorizontal: 5,
     marginTop: 8,
     marginBottom: 8,
     fontWeight: '500',
-    fontSize: 18,
-    color: 'black'
+    fontSize: 22,
+    color: 'black',
   },
 
   reviewText: {
-    textAlign: 'right',
+    textAlign: 'left',
     marginHorizontal: 5,
     marginTop: 5,
-    color: 'black'
+    color: 'black',
+    fontSize: 17,
   },
 
   toggleActiv: {
@@ -359,7 +361,7 @@ const styles = StyleSheet.create({
   toggleinput: {
     marginRight: 15,
     marginTop: 5,
-    fontSize: 16,
+    fontSize: 20,
     marginLeft: 10
   },
 
@@ -380,7 +382,7 @@ const styles = StyleSheet.create({
   left4: {
     backgroundColor: '#EFEFEF',
     height: 110,
-    width: '100%',
+    width: '98%',
     marginTop: 3,
     top: 10,
     borderWidth: 1,
@@ -391,7 +393,7 @@ const styles = StyleSheet.create({
   left3: {
     backgroundColor: '#EFEFEF',
     height: 200,
-    width: '100%',
+    width: '98%',
     marginTop: 3,
     top: 10,
     borderWidth: 1,
@@ -401,8 +403,8 @@ const styles = StyleSheet.create({
 
   left2: {
     backgroundColor: '#EFEFEF',
-    height: 450,
-    width: '100%',
+    height: 520,
+    width: '98%',
     marginTop: 20,
     top: 10,
     borderWidth: 1,
@@ -414,7 +416,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     paddingTop: 15,
-    paddingLeft: 10,
+    paddingLeft: 30,
   },
 
   left1: {
@@ -425,10 +427,10 @@ const styles = StyleSheet.create({
 
   scrollView: {
     backgroundColor: '#EFEFEF',
-    height: 620,
-    width: 200,
-    marginHorizontal: 1,
-    top: 10,
+    height: 850,
+    width: '95%',
+    marginHorizontal: 10,
+    top: 15,
     borderWidth: 1,
     borderColor: '#EFEFEF',
     borderRadius: 5,
@@ -447,8 +449,8 @@ const styles = StyleSheet.create({
 
   rateContainer: {
     backgroundColor: '#EFEFEF',
-    height: 685,
-    width: 210,
+    height: 920,
+    width: '95%',
     marginTop: 5,
     borderWidth: 1,
     borderRadius: 10,
@@ -457,8 +459,8 @@ const styles = StyleSheet.create({
 
   board: {
     backgroundColor: '#EFEFEF',
-    height: 50,
-    width: 210,
+    height: 60,
+    width: '95%',
     marginTop: 5,
     borderWidth: 1,
     borderRadius: 10,
@@ -484,20 +486,18 @@ const styles = StyleSheet.create({
 
   leftcontainer: {
     display: 'flex',
-    // backgroundColor: 'rgba(0, 0, 0, 0)',
-    backgroundColor:'red',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
     height: 1000,
     width: '47%',
-    marginHorizontal:10,
+    marginLeft: 25,
   },
 
   rightcontainer: {
     display: 'flex',
-    // backgroundColor: 'rgba(0, 0, 0, 0)',
-    backgroundColor:'red',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
     height: 1000,
     width: '47%',
-    marginHorizontal:10,
+    marginLeft: 20,
   },
 
 });

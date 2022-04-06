@@ -116,7 +116,7 @@ export default function ActivityBoard(props) {
     <View style={styles.topContainer}>
 
       <Header
-        leftComponent={<View>
+        rightComponent={<View>
           <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
             <Icon name='arrow-back-ios' color='black' size={25} />
           </TouchableOpacity>
@@ -128,7 +128,7 @@ export default function ActivityBoard(props) {
       />
 
       <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
-        <Text style={styles.title}>מרשם עיסוקים</Text>
+        <Text style={styles.title}>{props.route.params.patient.NicknamePatient} : מרשם עיסוקים</Text>
 
         <View style={styles.iconContainerStyle}>
           <Button
@@ -139,12 +139,12 @@ export default function ActivityBoard(props) {
               borderWidth: 1,
             }}
             titleStyle={{
-              fontSize: 20,
+              fontSize: 22,
               color: 'black'
             }}
             containerStyle={{
-              marginHorizontal: 3,
-              width: 205,
+              marginHorizontal: 8,
+              width: 390,
               height: 50
             }}
             onPress={() => SetDaysNumber(1)}
@@ -158,12 +158,12 @@ export default function ActivityBoard(props) {
               borderWidth: 1,
             }}
             titleStyle={{
-              fontSize: 20,
+              fontSize: 22,
               color: 'black'
             }}
             containerStyle={{
-              marginHorizontal: 3,
-              width: 205,
+              marginHorizontal: 8,
+              width: 390,
               height: 50
             }}
             onPress={() => SetDaysNumber(7)}
@@ -182,8 +182,8 @@ export default function ActivityBoard(props) {
             hoursInDisplay={8} //מקטין את המרווחים בין השעות
             TodayHeaderComponent={MyTodayComponent}
             formatDateHeader="ddd DD"
-            //fixedHorizontally={true}
-            weekStartsOn={6}
+            // fixedHorizontally={true}
+            weekStartsOn={0}
             onEventPress={toggleOverlay} //לחיצה על אירוע
             onGridClick={(pressEvent, startHour, date) => { props.navigation.navigate('Add Activity', { Date: date, StartHour: startHour, patient: props.route.params.patient, terapistId: props.route.params.patient.terapistId }) }} //לחיצה לשיבוץ פעילות
           />
@@ -208,13 +208,13 @@ export default function ActivityBoard(props) {
           <Button
             title="מחק"
             buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
-            titleStyle={{ color: 'white', marginHorizontal: 20 }}
+            titleStyle={{ color: 'white', marginHorizontal: 20, fontSize:20 }}
             onPress={deleteActivity}
           />
         </Overlay>
 
         <Button
-          title="אישור"
+          title="שמור"
           buttonStyle={styles.buttonStyle}
           titleStyle={styles.titleStyle}
           containerStyle={styles.containerStyle}
@@ -234,8 +234,8 @@ const styles = StyleSheet.create({
 
   texttitle: {
     marginTop: 7,
-    textAlign: 'right',
-    fontSize: 20,
+    textAlign: 'left',
+    fontSize: 22,
     fontWeight:'500',
     marginBottom: 10,
   },
@@ -243,21 +243,22 @@ const styles = StyleSheet.create({
   textSecondary: {
     marginTop: 7,
     textAlign: 'right',
-    fontSize: 17,
+    fontSize: 20,
+    textAlign:'left'
   },
 
   textDelete: {
     marginBottom: 10,
     marginTop: 20,
     textAlign: 'center',
-    fontSize: 17,
+    fontSize: 20,
   },
 
   container: {
     backgroundColor: '#fff',
-    height: 600,
-    top: 8,
-    marginHorizontal: 5,
+    height: 800,
+    top: 15,
+    marginHorizontal: 10,
     shadowColor: 'black',
     shadowOpacity: 0.8,
     elevation: 6,
@@ -273,8 +274,8 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    top: -15,
-    left: 90,
+    top: -30,
+    right: '35%',
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',
@@ -297,14 +298,14 @@ const styles = StyleSheet.create({
   },
 
   titleStyle: {
-    fontSize: 20,
+    fontSize: 22,
     color: 'black'
   },
 
   containerStyle: {
     marginHorizontal: 20,
-    width: 380,
-    top: 20,
+    width: '95%',
+    top: 30,
   },
 
   iconContainerStyle: {

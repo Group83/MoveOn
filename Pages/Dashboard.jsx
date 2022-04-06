@@ -117,9 +117,9 @@ export default function Dashboard(props) {
           <View style={styles.col}>
             <View style={styles.coltitle}>
               <Text style={{ fontSize: 18, marginTop: 18, marginHorizontal: 40 }}>מספר</Text>
-              {patients.length > 0 && patients.map((item) => {
+              {patients.length > 0 && patients.map((item, key) => {
                 return (
-                  <View style={styles.row}>
+                  <View style={styles.row} id={key}>
                     <Text
                       style={{ fontSize: 15, marginTop: 8, marginHorizontal: 20 }}>
                       #{item?.IdPatient}
@@ -134,9 +134,9 @@ export default function Dashboard(props) {
           <View style={styles.col}>
             <View style={styles.coltitle}>
               <Text style={{ fontSize: 18, marginTop: 18, marginHorizontal: 50 }}>כינוי</Text>
-              {patients.length > 0 && patients.map((item) => {
+              {patients.length > 0 && patients.map((item, key) => {
                 return (
-                  <View style={styles.row}>
+                  <View style={styles.row} id={key}>
                     <Text style={{ fontSize: 15, marginHorizontal: 18, marginTop: 5}}>{item?.NicknamePatient}</Text>
                   </View>
                 )
@@ -149,10 +149,10 @@ export default function Dashboard(props) {
             <View style={styles.coltitle}>
               <Text
                 style={{ fontSize: 18, marginTop: 14, marginHorizontal: 25 }}>רמת ביצוע</Text>
-              {patients.length > 0 && patients.map((item) => {
+              {patients.length > 0 && patients.map((item, key) => {
 
                 return (
-                  <View style={styles.circlerow}>
+                  <View style={styles.circlerow} id={key}>
                     <ProgressCircle
                       percent={item ? Math.round(item.ComplishionPresentae * 100) : 0}
                       radius={12}
@@ -162,7 +162,7 @@ export default function Dashboard(props) {
                       bgColor="#fff"
                     >
                     </ProgressCircle>
-                    <Text style={{ fontSize: 15, marginLeft: 10 }}>{item?.ComplishionPresentae * 100}%</Text>
+                    <Text style={{ fontSize: 15, marginLeft: 10, transform: [{ rotate: '180deg'}]  }}>{item?.ComplishionPresentae * 100}%</Text>
                   </View>
                 )
               })}
@@ -174,9 +174,9 @@ export default function Dashboard(props) {
           <View style={styles.col}>
             <View style={styles.coltitle}>
               <Text style={{ fontSize: 18, marginTop: 14, marginHorizontal: 25 }}>מצב רוח</Text>
-              {patients.length > 0 && patients.map((item) => {
+              {patients.length > 0 && patients.map((item, key) => {
                 return (
-                  <View style={styles.rowmood}>
+                  <View style={styles.rowmood} id={key}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, marginLeft: 35 }}>
                       <Icon name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={23} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
                       <Icon name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
@@ -190,9 +190,9 @@ export default function Dashboard(props) {
 
           <View style={styles.col}>
             <View style={styles.coltitle} />
-            {patients.length > 0 && patients.map((item) => {
+            {patients.length > 0 && patients.map((item, key) => {
               return (
-                <View style={styles.rowmood}>
+                <View style={styles.rowmood} id={key}>
                   <TouchableOpacity style={{marginHorizontal: 20 }} onPress={toggleOverlay}>
                     <Icon name='warning' color='gold' size={25} />
                   </TouchableOpacity>
@@ -209,9 +209,9 @@ export default function Dashboard(props) {
 
           <View style={styles.col}>
             <View style={styles.coltitle} />
-            {patients.length > 0 && patients.map((item) => {
+            {patients.length > 0 && patients.map((item, key) => {
               return (
-                <View style={styles.row}>
+                <View style={styles.row} id={key}>
                   <TouchableOpacity style={styles.show} onPress={() => {
                     props.navigation.navigate('Patient Page', { patient: item, terapistId: idTerapist, name: props.route.params.name });
                   }}>
@@ -251,7 +251,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0)',
     marginTop: 7.5,
-    marginHorizontal: 35
+    marginHorizontal: 35,
+    transform: [{ rotate: '180deg'}] 
   },
 
   textSecondary: {
