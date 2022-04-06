@@ -28,7 +28,6 @@ export default function ActivityBoard(props) {
   const toggleOverlay = (e) => {
     setVisible(!visible);
     setIdAct(e.id);
-    console.log('selected = ', e);
     setActivity(e);
   };
 
@@ -75,7 +74,6 @@ export default function ActivityBoard(props) {
       console.log('OK Events');
       var arr = [];
       if (res) {
-        console.log(res);
         res.map((event, key) => {
           let obj = {
             id: event.IdPatientActivity,
@@ -93,7 +91,6 @@ export default function ActivityBoard(props) {
             repetition: event.RepetitionPatientActivity,
             sets: event.SetsPatientActivity,
           };
-          console.log(obj);
           arr = [...arr, obj];
         });
         setMyEvents(arr);

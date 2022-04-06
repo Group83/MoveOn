@@ -11,16 +11,18 @@ LogBox.ignoreLogs([
 
 export default function AddActivity(props) {
 
+  const [back, setBack] = useState(true);
+
   //set date and time
   const time = moment(props.route.params.Date).format("YYYY-MM-DDTHH:mm");
-  console.log('---------------------------------')
-  console.log('time = ', time);
+  // console.log('---------------------------------')
+  // console.log('time = ', time);
   const sec = parseInt(time.substring(14, 16));
-  console.log('sec = ',sec);
+  // console.log('sec = ', sec);
   const newSecStart = (sec < 30 ? '00' : '30');
-  console.log('newSecStart = ',newSecStart);
+  // console.log('newSecStart = ', newSecStart);
   const startTime = time.substring(0, 14) + newSecStart;
-  console.log('startTime = ',startTime);
+  // console.log('startTime = ', startTime);
   const endTime = moment(startTime, "YYYY-MM-DDThh:mm").add(30, 'minutes').format('YYYY-MM-DDThh:mm');
   const idPatient = props.route.params.patient.IdPatient;
 
@@ -33,7 +35,7 @@ export default function AddActivity(props) {
 
   //Search Bar
   const onChangeSearch = query => {
-    console.log(query);
+
     if (query) {
       var filterData = DataActivities.filter(item => item.ActivityName.includes(query));
       setActivityes(filterData);
@@ -113,8 +115,6 @@ export default function AddActivity(props) {
       DescriptionActivity: about
     }];
 
-    console.log(obj);
-
     //send activity to DB
     fetch(apiUrlAddActivity, {
       method: 'PUT',
@@ -129,8 +129,8 @@ export default function AddActivity(props) {
       })
       .then(
         (result) => {
-          props.navigation.navigate('Activity Board', { patient: props.route.params.patient, back: true });
-          //alert('הפעילות נוספה בהצלחה');
+          setBack(previousState => !previousState);
+          props.navigation.navigate('Activity Board', { patient: props.route.params.patient, back: back, terapistId:props.route.params.patient.terapistId });
         }, error => {
           console.log("err post=", error);
         })
@@ -151,7 +151,7 @@ export default function AddActivity(props) {
 
   //render exist activityes
   const changeActivityType = type => {
-    console.log(type);
+
     setType(type);
 
     //get type activity
@@ -164,7 +164,7 @@ export default function AddActivity(props) {
     }).then(
       (response) => response.json()
     ).then((res) => {
-      console.log('OK Activityes', res);
+      console.log('OK Activityes');
       if (res) {
         var obj = res.map(activity => activity);
         SetDataActivities(obj);
@@ -188,135 +188,135 @@ export default function AddActivity(props) {
 
     <View style={styles.topContainer}>
 
-    <Header
-      rightComponent={<View>
-        <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
-          <Icon name='arrow-back-ios' color='black' size={25} />
-        </TouchableOpacity>
-      </View>}
-      containerStyle={{
-        backgroundColor: 'rgba(0, 0, 0, 0)',
-        justifyContent: 'space-around',
-      }}
-    />
+      <Header
+        rightComponent={<View>
+          <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
+            <Icon name='arrow-back-ios' color='black' size={25} />
+          </TouchableOpacity>
+        </View>}
+        containerStyle={{
+          backgroundColor: 'rgba(0, 0, 0, 0)',
+          justifyContent: 'space-around',
+        }}
+      />
 
-    <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
-      <Text style={styles.title}>פעילות חדשה</Text>
-      <View style={styles.container}>
+      <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
+        <Text style={styles.title}>פעילות חדשה</Text>
+        <View style={styles.container}>
 
-        {/* left container */}
-        <View style={styles.leftcontainer}>
-          <SelectDropdown
-            rowTextStyle={{ fontSize: 20 }}
-            data={activityType}
-            defaultButtonText={'לחץ לבחירת סוג פעילות'}
-            buttonTextStyle={{fontSize: 22 }}
-            buttonStyle={{ height: 50, width: 350, borderColor: "#FFBD73", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 20, marginTop: 20, backgroundColor: 'rgba(255, 189, 115, 0.27)' }}
-            onSelect={changeActivityType}
-            buttonTextAfterSelection={(selectedItem, index) => {
-              return selectedItem
-            }}
-            rowTextForSelection={(item, index) => {
-              return item
-            }}
-          />
-          <TextInput
-            defaultValue={fillName}
-            style={styles.input}
-            placeholder={nameInput.text}
-            onChangeText={newText => setName(newText)}
-            placeholderTextColor={nameInput.color}
-            activeUnderlineColor="orange"
-          />
-          <TextInput
-            defaultValue={fillLink}
-            style={styles.input}
-            onChangeText={newText => setLink(newText)}
-            placeholder="כתובת סרטון"
-            placeholderTextColor="#a9a9a9"
-            activeUnderlineColor="orange"
-          />
-          <TextInput
-            defaultValue={fillAbout}
-            style={styles.inputDisc}
-            onChangeText={newText => setAbout(newText)}
-            placeholder={aboutInput.text}
-            placeholderTextColor={aboutInput.color}
-            activeUnderlineColor="orange"
-            multiline={true}
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={newText => setSets(newText)}
-            placeholder="מספר סטים"
-            placeholderTextColor="#a9a9a9"
-            activeUnderlineColor="orange"
-            keyboardType="name-phone-pad"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={newText => setRepit(newText)}
-            placeholder="מספר חזרות"
-            placeholderTextColor="#a9a9a9"
-            activeUnderlineColor="orange"
-            keyboardType="name-phone-pad"
-          />
-          <View style={styles.toggleMoved}>
-            <Text style={styles.toggleinput}>פעילות ניתנת להזזה</Text>
-            <Switch
-              trackColor={{ false: "#767577", true: "#dcdcdc" }}
-              thumbColor={isEnabledMoved ? "#D3DE32" : "#f4f3f4"}
-              ios_backgroundColor="#a9a9a9"
-              onValueChange={toggleSwitchMoved}
-              value={isEnabledMoved}
+          {/* left container */}
+          <View style={styles.leftcontainer}>
+            <SelectDropdown
+              rowTextStyle={{ fontSize: 20 }}
+              data={activityType}
+              defaultButtonText={'לחץ לבחירת סוג פעילות'}
+              buttonTextStyle={{ fontSize: 22 }}
+              buttonStyle={{ height: 50, width: 350, borderColor: "#FFBD73", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 20, marginTop: 20, backgroundColor: 'rgba(255, 189, 115, 0.27)' }}
+              onSelect={changeActivityType}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return selectedItem
+              }}
+              rowTextForSelection={(item, index) => {
+                return item
+              }}
             />
-          </View>
-          <View style={styles.toggleRequired}>
-            <Text style={styles.toggleinput}>פעילות חובה</Text>
-            <Switch
-              trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
-              thumbColor={isEnabledRequired ? "#D3DE32" : "#f4f3f4"}
-              ios_backgroundColor="#a9a9a9"
-              onValueChange={toggleSwitchRequired}
-              value={isEnabledRequired}
-            />
-          </View>
-        </View>
-
-        {/* right container */}
-        <View style={styles.rightcontainer}>
-          <Text style={styles.text}>רשימת פעילויות</Text>
-          <View style={styles.Searchbar}>
             <TextInput
-              left={<TextInput.Icon name="magnify" color="grey" size={20} />}
-              style={styles.searchinput}
-              onChangeText={onChangeSearch}
-              placeholder="חיפוש"
+              defaultValue={fillName}
+              style={styles.input}
+              placeholder={nameInput.text}
+              onChangeText={newText => setName(newText)}
+              placeholderTextColor={nameInput.color}
+              activeUnderlineColor="orange"
+            />
+            <TextInput
+              defaultValue={fillLink}
+              style={styles.input}
+              onChangeText={newText => setLink(newText)}
+              placeholder="כתובת סרטון"
               placeholderTextColor="#a9a9a9"
               activeUnderlineColor="orange"
             />
-            <View style={styles.scrollView}>
-              <ScrollView>
-                {activityes.map((item, key) => {
-                  return (
-                    <TouchableOpacity onPress={() => fillActivity(item)}>
-                      <Text style={styles.activity}>{item.ActivityName}</Text>
-                    </TouchableOpacity>
-                  )
-                })}
-              </ScrollView>
+            <TextInput
+              defaultValue={fillAbout}
+              style={styles.inputDisc}
+              onChangeText={newText => setAbout(newText)}
+              placeholder={aboutInput.text}
+              placeholderTextColor={aboutInput.color}
+              activeUnderlineColor="orange"
+              multiline={true}
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={newText => setSets(newText)}
+              placeholder="מספר סטים"
+              placeholderTextColor="#a9a9a9"
+              activeUnderlineColor="orange"
+              keyboardType="name-phone-pad"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={newText => setRepit(newText)}
+              placeholder="מספר חזרות"
+              placeholderTextColor="#a9a9a9"
+              activeUnderlineColor="orange"
+              keyboardType="name-phone-pad"
+            />
+            <View style={styles.toggleMoved}>
+              <Text style={styles.toggleinput}>פעילות ניתנת להזזה</Text>
+              <Switch
+                trackColor={{ false: "#767577", true: "#dcdcdc" }}
+                thumbColor={isEnabledMoved ? "#D3DE32" : "#f4f3f4"}
+                ios_backgroundColor="#a9a9a9"
+                onValueChange={toggleSwitchMoved}
+                value={isEnabledMoved}
+              />
+            </View>
+            <View style={styles.toggleRequired}>
+              <Text style={styles.toggleinput}>פעילות חובה</Text>
+              <Switch
+                trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
+                thumbColor={isEnabledRequired ? "#D3DE32" : "#f4f3f4"}
+                ios_backgroundColor="#a9a9a9"
+                onValueChange={toggleSwitchRequired}
+                value={isEnabledRequired}
+              />
+            </View>
+          </View>
+
+          {/* right container */}
+          <View style={styles.rightcontainer}>
+            <Text style={styles.text}>רשימת פעילויות</Text>
+            <View style={styles.Searchbar}>
+              <TextInput
+                left={<TextInput.Icon name="magnify" color="grey" size={20} />}
+                style={styles.searchinput}
+                onChangeText={onChangeSearch}
+                placeholder="חיפוש"
+                placeholderTextColor="#a9a9a9"
+                activeUnderlineColor="orange"
+              />
+              <View style={styles.scrollView}>
+                <ScrollView>
+                  {activityes.map((item, key) => {
+                    return (
+                      <TouchableOpacity onPress={() => fillActivity(item)}>
+                        <Text style={styles.activity}>{item.ActivityName}</Text>
+                      </TouchableOpacity>
+                    )
+                  })}
+                </ScrollView>
+              </View>
             </View>
           </View>
         </View>
-      </View>
-      <Button
-        title="שמור"
-        buttonStyle={styles.buttonStyle}
-        titleStyle={styles.titleStyle}
-        containerStyle={styles.containerStyle}
-        onPress={addActivity}
-      />
-    </ImageBackground>
+        <Button
+          title="שמור"
+          buttonStyle={styles.buttonStyle}
+          titleStyle={styles.titleStyle}
+          containerStyle={styles.containerStyle}
+          onPress={addActivity}
+        />
+      </ImageBackground>
     </View>
   )
 }
@@ -361,8 +361,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     borderWidth: 1,
     borderColor: '#FFBD73',
-    textAlign:'left',
-    fontSize:18
+    textAlign: 'left',
+    fontSize: 18
   },
 
   Searchbar: {
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: 'white',
     textAlign: 'center',
-    marginHorizontal:8
+    marginHorizontal: 8
   },
 
   input: {
@@ -398,14 +398,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     borderColor: 'white',
-    marginHorizontal:8
+    marginHorizontal: 8
   },
 
   text: {
     fontSize: 22,
     top: 20,
-    textAlign:'left',
-    marginHorizontal:20
+    textAlign: 'left',
+    marginHorizontal: 20
   },
 
   container: {

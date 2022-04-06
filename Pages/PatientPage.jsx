@@ -3,7 +3,8 @@ import { Icon, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import * as Progress from 'react-native-progress';
-import LinearGradient from 'react-native-linear-gradient';
+import { GradientCircularProgress } from "react-native-circular-gradient-progress";
+
 
 export default function PatientPage(props) {
 
@@ -183,22 +184,19 @@ export default function PatientPage(props) {
                 <View>
                   <Text style={{ fontSize: 20, textAlign: 'center', marginTop: 12 }}>סה"כ ביצועים :</Text>
                 </View>
-                <View style={{ marginTop: 20, transform: [{ rotate: '180deg' }] }}>
-                  <LinearGradient
-                    colors={[' #ed83f2', ' #dafc74', ' #ed4a7b']}>
-                    <ProgressCircle //change color and radius
-                      percent={Math.round(patient.ComplishionPresentae * 100)}
-                      radius={90}
-                      borderWidth={30}
-                      // color={patient.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
-                      color={(fillPercentage) => 'linear-gradient(blue, red)'}
-                      //linear-gradient(to right, #1EA896 ${fillPercentage}%, #E8EBF8 10%)
-                      shadowColor="#EFEFEF"
-                      bgColor="#fff"
-                      outerCircleStyle={{ marginLeft: 50 }}
-                    />
-                  </LinearGradient>
+                <View style={{ marginTop: 20, marginLeft:55}}>
+                <GradientCircularProgress
+                    startColor='red'
+                    size={180}
+                    progress={Math.round(patient.ComplishionPresentae * 100)}
+                    // progress={100}
+                    endColor='lawngreen'
+                    strokeWidth={10}
+                    emptyColor='#F5F5F5'
+                    middleColor='sandybrown'
+                  />
                 </View>
+
                 <Text
                   style={[StyleSheet.absoluteFillObject, { fontSize: 30, fontWeight: '900', textAlign: 'center', marginTop: '45%' }]}
                 >{totalPercent}%</Text>
