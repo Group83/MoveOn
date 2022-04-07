@@ -10,7 +10,7 @@ export default function PatientPage(props) {
 
   const [patient, setPatient] = useState(props.route.params.patient);
   const terapistId = props.route.params.terapistId
-  //console.log(patient);
+  const terapistName = props.route.params.name
   const totalPercent = patient.ComplishionPresentae * 100;
 
   //Reviews from DATA
@@ -64,7 +64,7 @@ export default function PatientPage(props) {
       }).then(
         (response) => response.json()
       ).then((res) => {
-        console.log('OK Percent', item, res);
+        console.log('OK Percent');
         if (res) {
           var obj = res.map(percent => percent);
           obj.map((percent) => {
@@ -100,7 +100,7 @@ export default function PatientPage(props) {
       (response) => response.json()
     ).then((res) => {
       // result data
-      console.log('OK Reviews', res);
+      console.log('OK Reviews');
       if (res) {
         var obj = res.map(review => review);
         //console.log(obj);
@@ -124,7 +124,7 @@ export default function PatientPage(props) {
 
     //insert premosions to data
     let updatearr = [{ IdPatient: patient.IdPatient, PatientStatus: activ, UpdatePermissionPatient: update, ReceiveAlertsPermissionPatient: alert, IdTherapist: terapistId }];
-    console.log('update payient = ', updatearr[0]);
+    // console.log('update payient = ', updatearr[0]);
 
     fetch(apiUrlpermissions, {
       method: 'PUT',
@@ -136,7 +136,7 @@ export default function PatientPage(props) {
     })
       .then(res => {
         console.log('OK Permissions !');
-        props.navigation.navigate('Dashboard', { id: terapistId, name: props.route.params.name, back: true });
+        props.navigation.navigate('Dashboard', { id: terapistId, name: terapistName, back: true });
       }).catch(error => {
         console.log('err PUT =', error)
       })
@@ -184,8 +184,8 @@ export default function PatientPage(props) {
                 <View>
                   <Text style={{ fontSize: 20, textAlign: 'center', marginTop: 12 }}>סה"כ ביצועים :</Text>
                 </View>
-                <View style={{ marginTop: 20, marginLeft:55}}>
-                <GradientCircularProgress
+                <View style={{ marginTop: 20, marginLeft: 55 }}>
+                  <GradientCircularProgress
                     startColor='red'
                     size={180}
                     progress={Math.round(patient.ComplishionPresentae * 100)}
@@ -280,9 +280,9 @@ export default function PatientPage(props) {
               </View>
               <View style={styles.scrollView}>
                 <ScrollView>
-                  {reviews.map((item) => {
+                  {reviews.map((item, key) => {
                     return (
-                      <View style={{
+                      <View id={key} style={{
                         marginTop: 3,
                         padding: 10,
                         backgroundColor: (item.ActivityClasification == 'פנאי' ? 'rgba(158, 130, 246, 0.57)' : item.ActivityClassification == 'תרגול' ? 'rgba(253, 165, 81, 0.69)' : 'rgba(249, 103, 124, 0.63)'),
@@ -292,7 +292,7 @@ export default function PatientPage(props) {
                         borderRadius: 4,
                         marginTop: 5,
                       }}>
-                        <View style={styles.container}>
+                        <View id={key} style={styles.container}>
                           <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(0, 9)},</Text>
                           <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(10, 15)}</Text>
                         </View>

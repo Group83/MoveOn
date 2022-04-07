@@ -16,7 +16,7 @@ export default function AddPatient(props) {
 
   //Terapist id
   const idTerapist = props.route.params.idTerapist;
-  const nameTerapist = props.route.params.nameTerapist;
+  const nameTerapist = props.route.params.name;
 
   //Patient
   const [name, setName] = useState('');
@@ -71,11 +71,6 @@ export default function AddPatient(props) {
   //add patient button
   const addPatient = () => {
 
-    console.log(email);
-    console.log(name);
-    console.log(phone);
-    console.log(gender);
-
     //check empty fields
     //Check for the Name TextInput
     if (!name.trim()) {
@@ -123,7 +118,6 @@ export default function AddPatient(props) {
 
       //set patient object
       let obj = [{ NicknamePatient: name, PasswordPatient: password1, EmailPatient: email, PhoneNumberPatient: phone, PatientStatus: 1, PatientGender: gender, UpdatePermissionPatient: 0, ReceiveAlertsPermissionPatient: 1, IdTherapist: idTerapist }];
-      console.log(obj);
 
       //send terapist to DB
       fetch(apiUrl, {
@@ -140,7 +134,7 @@ export default function AddPatient(props) {
         .then(
           (result) => {
 
-            console.log(result);
+            console.log('OK new patient');
             
             //if email exist
             if (result==1) {

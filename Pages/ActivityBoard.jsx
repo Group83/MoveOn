@@ -125,7 +125,7 @@ export default function ActivityBoard(props) {
       />
 
       <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
-        <Text style={styles.title}>{props.route.params.patient.NicknamePatient} : מרשם עיסוקים</Text>
+        <Text style={styles.title}>{props.route.params.patient.NicknamePatient} - מרשם עיסוקים</Text>
 
         <View style={styles.iconContainerStyle}>
           <Button

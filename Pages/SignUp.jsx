@@ -76,12 +76,12 @@ export default function SignUp(props) {
         .then(
           (result) => {
 
-            console.log(result);
+            console.log('OK new user');
 
             //if email exist
             if (result == 1) {
               alert('המשתמש נוצר בהצלחה');
-              navigation.navigate('Log in');
+              props.navigation.navigate('Log in');
             } else {
               alert('כתובת האיימל כבר קיימת במערכת');
             }

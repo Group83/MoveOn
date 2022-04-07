@@ -53,7 +53,7 @@ export default function Dashboard(props) {
 
   //Search Bar
   const onChangeSearch = query => {
-    console.log(query);
+
     if (query) {
       var filterData = DataPatients.filter(item => item.IdPatient.toString().includes(query));
       setPatients(filterData);
@@ -121,6 +121,7 @@ export default function Dashboard(props) {
                 return (
                   <View style={styles.row} id={key}>
                     <Text
+                      id={key}
                       style={{ fontSize: 15, marginTop: 8, marginHorizontal: 20 }}>
                       #{item?.IdPatient}
                     </Text>
@@ -137,7 +138,7 @@ export default function Dashboard(props) {
               {patients.length > 0 && patients.map((item, key) => {
                 return (
                   <View style={styles.row} id={key}>
-                    <Text style={{ fontSize: 15, marginHorizontal: 18, marginTop: 5}}>{item?.NicknamePatient}</Text>
+                    <Text id={key} style={{ fontSize: 15, marginHorizontal: 18, marginTop: 5 }}>{item?.NicknamePatient}</Text>
                   </View>
                 )
               })}
@@ -154,6 +155,7 @@ export default function Dashboard(props) {
                 return (
                   <View style={styles.circlerow} id={key}>
                     <ProgressCircle
+                      id={key}
                       percent={item ? Math.round(item.ComplishionPresentae * 100) : 0}
                       radius={12}
                       borderWidth={4}
@@ -162,7 +164,7 @@ export default function Dashboard(props) {
                       bgColor="#fff"
                     >
                     </ProgressCircle>
-                    <Text style={{ fontSize: 15, marginLeft: 10, transform: [{ rotate: '180deg'}]  }}>{item?.ComplishionPresentae * 100}%</Text>
+                    <Text id={key} style={{ fontSize: 15, marginLeft: 10, transform: [{ rotate: '180deg' }] }}>{item?.ComplishionPresentae * 100}%</Text>
                   </View>
                 )
               })}
@@ -177,7 +179,7 @@ export default function Dashboard(props) {
               {patients.length > 0 && patients.map((item, key) => {
                 return (
                   <View style={styles.rowmood} id={key}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, marginLeft: 35 }}>
+                    <View id={key} style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, marginLeft: 35 }}>
                       <Icon name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={23} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
                       <Icon name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
                     </View>
@@ -193,12 +195,12 @@ export default function Dashboard(props) {
             {patients.length > 0 && patients.map((item, key) => {
               return (
                 <View style={styles.rowmood} id={key}>
-                  <TouchableOpacity style={{marginHorizontal: 20 }} onPress={toggleOverlay}>
+                  <TouchableOpacity id={key} style={{ marginHorizontal: 20 }} onPress={toggleOverlay}>
                     <Icon name='warning' color='gold' size={25} />
                   </TouchableOpacity>
-                  <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+                  <Overlay id={key} isVisible={visible} onBackdropPress={toggleOverlay}>
                     <Icon name='warning' color='gold' />
-                    <Text style={styles.textSecondary}>
+                    <Text id={key} style={styles.textSecondary}>
                       סומנו מספר פעילויות ברצף !
                     </Text>
                   </Overlay>
@@ -212,7 +214,7 @@ export default function Dashboard(props) {
             {patients.length > 0 && patients.map((item, key) => {
               return (
                 <View style={styles.row} id={key}>
-                  <TouchableOpacity style={styles.show} onPress={() => {
+                  <TouchableOpacity id={key} style={styles.show} onPress={() => {
                     props.navigation.navigate('Patient Page', { patient: item, terapistId: idTerapist, name: props.route.params.name });
                   }}>
                     <Text style={{ fontSize: 15, marginLeft: '35%' }}>הצג</Text>
@@ -252,14 +254,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0)',
     marginTop: 7.5,
     marginHorizontal: 35,
-    transform: [{ rotate: '180deg'}] 
+    transform: [{ rotate: '180deg' }]
   },
 
   textSecondary: {
     marginBottom: 8,
     textAlign: 'center',
     fontSize: 20,
-    marginTop:5
+    marginTop: 5
   },
 
   row: {

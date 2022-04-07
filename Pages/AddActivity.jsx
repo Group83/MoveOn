@@ -299,7 +299,7 @@ export default function AddActivity(props) {
                 <ScrollView>
                   {activityes.map((item, key) => {
                     return (
-                      <TouchableOpacity onPress={() => fillActivity(item)}>
+                      <TouchableOpacity id={key} onPress={() => fillActivity(item)}>
                         <Text style={styles.activity}>{item.ActivityName}</Text>
                       </TouchableOpacity>
                     )
