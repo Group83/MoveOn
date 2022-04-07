@@ -83,7 +83,7 @@ export default function Dashboard(props) {
       />
 
       <ImageBackground
-        source={require('../images/background1.png')}
+        source={require('../images/background1.jpeg')}
         resizeMode="cover" style={styles.image}
       >
 

@@ -171,7 +171,7 @@ export default function AddPatient(props) {
         }}
       />
 
-      <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require('../images/background1.jpeg')} resizeMode="cover" style={styles.image}>
         <Text style={styles.title}>מטופל חדש</Text>
 
         <SafeAreaView style={{ top: 90 }}>

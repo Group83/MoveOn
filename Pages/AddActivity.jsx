@@ -200,7 +200,7 @@ export default function AddActivity(props) {
         }}
       />
 
-      <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require('../images/background2.jpeg')} resizeMode="cover" style={styles.image}>
         <Text style={styles.title}>פעילות חדשה</Text>
         <View style={styles.container}>
 

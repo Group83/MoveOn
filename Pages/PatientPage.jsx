@@ -158,7 +158,7 @@ export default function PatientPage(props) {
         }}
       />
 
-      <ImageBackground source={require('../images/background1.png')} resizeMode="cover" style={styles.image}>
+      <ImageBackground source={require('../images/background1.jpeg')} resizeMode="cover" style={styles.image}>
 
         <View style={styles.container}>
 
