@@ -81,7 +81,7 @@ export default function Login({ navigation }) {
         }}
       />
 
-      <ImageBackground source={require('../images/background.jpeg')} resizeMode='stretch' style={styles.image}>
+      <ImageBackground source={require('../images/background.png')} resizeMode='stretch' style={styles.image}>
 
         <Text style={styles.title}>כניסה לחשבון</Text>
 

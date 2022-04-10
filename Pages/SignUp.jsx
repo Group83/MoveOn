@@ -108,7 +108,7 @@ export default function SignUp(props) {
         }}
       />
 
-      <ImageBackground source={require('../images/background.jpeg')} style={styles.image}>
+      <ImageBackground source={require('../images/background.png')} style={styles.image}>
 
         <Text style={styles.title1}>משתמש</Text>
         <Text style={styles.title2}>חדש</Text>
