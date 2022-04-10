@@ -1,7 +1,6 @@
-import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, TextInput } from 'react-native';
 import { Button } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
-import { TextInput } from 'react-native-paper';
 import { Header, Icon } from 'react-native-elements';
 
 export default function SignUp(props) {
@@ -11,7 +10,6 @@ export default function SignUp(props) {
   const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
   const [pass1Input, setPass1Input] = useState({ color: '#a9a9a9', text: 'סיסמה' });
   const [pass2Input, setPass2Input] = useState({ color: '#a9a9a9', text: 'אימות סיסמה' });
-  const myTextInput = React.createRef();
 
   //Terapist
   const [name, setName] = useState("");
@@ -119,47 +117,39 @@ export default function SignUp(props) {
 
         <SafeAreaView style={{ top: 50 }}>
           <TextInput
-            left={<TextInput.Icon name="account-outline" color="grey" size={20} />}
-            style={styles.input} cc
+            style={styles.input}
             onChangeText={newText => setName(newText)}
             placeholder={nameInput.text}
-            keyboardType="default"
             placeholderTextColor={nameInput.color}
-            activeUnderlineColor="orange"
+            textAlign='right'
           />
 
           <TextInput
-            left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
-            activeUnderlineColor="orange"
             style={styles.input}
             onChangeText={newText => setEmail(newText)}
             placeholder={mailInput.text}
             placeholderTextColor={mailInput.color}
-            keyboardType="email-address"
+            textAlign='right'
           />
 
           <TextInput
-            left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
-            activeUnderlineColor="orange"
             style={styles.input}
             onChangeText={newText => setPassword1(newText)}
             placeholder={pass1Input.text}
-            keyboardType="ascii-capable"
             secureTextEntry={true}
             placeholderTextColor={pass1Input.color}
+            textAlign='right'
           />
 
           <TextInput
-            left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
-            activeUnderlineColor="orange"
             style={styles.input}
             onChangeText={newText => setPassword2(newText)}
             placeholder={pass2Input.text}
-            keyboardType="ascii-capable"
             secureTextEntry={true}
             placeholderTextColor={pass2Input.color}
-            ref={myTextInput}
+            textAlign='right'
           />
+
         </SafeAreaView>
 
         <Button
@@ -198,6 +188,7 @@ const styles = StyleSheet.create({
     color: '#000000',
     top:30
   },
+  
   title2: {
     right:540,
     flexDirection: "row",
@@ -219,7 +210,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width:'50%',
     marginHorizontal:'25%',
-    top:30
+    top:30,
+    borderBottomWidth: 1,
   },
 
   buttonStyle: {

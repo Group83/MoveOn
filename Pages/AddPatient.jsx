@@ -1,7 +1,6 @@
-import { View, Text, ImageBackground, StyleSheet, SafeAreaView, Switch, TouchableOpacity } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, SafeAreaView, Switch, TouchableOpacity, TextInput } from 'react-native';
 import { Button, Icon, Header } from 'react-native-elements';
 import React, {useState } from 'react';
-import { TextInput } from 'react-native-paper';
 
 
 export default function AddPatient(props) {
@@ -12,7 +11,6 @@ export default function AddPatient(props) {
   const [phoneInput, setPhoneInput] = useState({ color: '#a9a9a9', text: '0500000000' });
   const [pass1Input, setPass1Input] = useState({ color: '#a9a9a9', text: 'סיסמה' });
   const [pass2Input, setPass2Input] = useState({ color: '#a9a9a9', text: 'אימות סיסמה' });
-  const myTextInput = React.createRef();
 
   //Terapist id
   const idTerapist = props.route.params.idTerapist;
@@ -180,8 +178,7 @@ export default function AddPatient(props) {
             onChangeText={newText => setName(newText)}
             placeholder={nameInput.text}
             placeholderTextColor={nameInput.color}
-            left={<TextInput.Icon name="account-outline" color="grey" size={20} />}
-            activeUnderlineColor="orange"
+            textAlign='right'
           />
 
           <TextInput
@@ -189,8 +186,7 @@ export default function AddPatient(props) {
             onChangeText={newText => setEmail(newText)}
             placeholder={mailInput.text}
             placeholderTextColor={mailInput.color}
-            left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
-            activeUnderlineColor="orange"
+            textAlign='right'
           />
 
           <TextInput
@@ -198,9 +194,7 @@ export default function AddPatient(props) {
             onChangeText={newText => setPhone(newText)}
             placeholder={phoneInput.text}
             placeholderTextColor={phoneInput.color}
-            left={<TextInput.Icon name="phone-outline" color="grey" size={20} />}
-            activeUnderlineColor="orange"
-            keyboardType="name-phone-pad"
+            textAlign='right'
           />
 
           <View style={styles.genderinput}>
@@ -235,8 +229,7 @@ export default function AddPatient(props) {
             onChangeText={newText => setPassword1(newText)}
             placeholder={pass1Input.text}
             placeholderTextColor={pass1Input.color}
-            left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
-            activeUnderlineColor="orange"
+            textAlign='right'
             secureTextEntry={true}
           />
 
@@ -245,10 +238,8 @@ export default function AddPatient(props) {
             onChangeText={newText => setPassword2(newText)}
             placeholder={pass2Input.text}
             placeholderTextColor={pass2Input.color}
-            left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
-            activeUnderlineColor="orange"
+            textAlign='right'
             secureTextEntry={true}
-            ref={myTextInput}
           />
 
         </SafeAreaView>
@@ -276,8 +267,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 40,
     marginHorizontal: 200,
-    marginTop: 10,
-    marginBottom:50
+    marginTop: 15,
+    marginBottom:40
   },
 
   gender: {
@@ -294,14 +285,14 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    right:420,
+    right:425,
     flexDirection: "row",
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',
     fontSize: 40,
     color: '#000000',
-    top:20
+    top:40
   },
 
   input: {
@@ -314,7 +305,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width:'50%',
     marginHorizontal:'25%',
-    top:-30
+    top:-30,
+    borderBottomWidth: 1,
   },
 
   buttonStyle: {

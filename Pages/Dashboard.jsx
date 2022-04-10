@@ -180,8 +180,8 @@ export default function Dashboard(props) {
                 return (
                   <View style={styles.rowmood} id={key}>
                     <View id={key} style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, marginLeft: 35 }}>
-                      <Icon name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={23} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
-                      <Icon name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
+                      <Icon id={key} name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={23} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
+                      <Icon id={key} name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
                     </View>
                   </View>
                 )
@@ -196,10 +196,10 @@ export default function Dashboard(props) {
               return (
                 <View style={styles.rowmood} id={key}>
                   <TouchableOpacity id={key} style={{ marginHorizontal: 20 }} onPress={toggleOverlay}>
-                    <Icon name='warning' color='gold' size={25} />
+                    <Icon id={key} name='warning' color='gold' size={25} />
                   </TouchableOpacity>
                   <Overlay id={key} isVisible={visible} onBackdropPress={toggleOverlay}>
-                    <Icon name='warning' color='gold' />
+                    <Icon id={key} name='warning' color='gold' />
                     <Text id={key} style={styles.textSecondary}>
                       סומנו מספר פעילויות ברצף !
                     </Text>
@@ -217,7 +217,7 @@ export default function Dashboard(props) {
                   <TouchableOpacity id={key} style={styles.show} onPress={() => {
                     props.navigation.navigate('Patient Page', { patient: item, terapistId: idTerapist, name: props.route.params.name });
                   }}>
-                    <Text style={{ fontSize: 15, marginLeft: '35%' }}>הצג</Text>
+                    <Text id={key} style={{ fontSize: 15, marginLeft: '35%' }}>הצג</Text>
                   </TouchableOpacity>
                 </View>
               )

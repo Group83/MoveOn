@@ -1,7 +1,6 @@
-import { View, Text, StyleSheet, ImageBackground, ScrollView, Switch, LogBox, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, Switch, LogBox, TouchableOpacity, TextInput } from 'react-native';
 import { Button, Icon, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
-import { TextInput } from 'react-native-paper';
 import SelectDropdown from 'react-native-select-dropdown';
 import moment from 'moment';
 
@@ -130,7 +129,7 @@ export default function AddActivity(props) {
       .then(
         (result) => {
           setBack(previousState => !previousState);
-          props.navigation.navigate('Activity Board', { patient: props.route.params.patient, back: back, terapistId:props.route.params.patient.terapistId });
+          props.navigation.navigate('Activity Board', { patient: props.route.params.patient, back: back, terapistId: props.route.params.patient.terapistId });
         }, error => {
           console.log("err post=", error);
         })
@@ -211,7 +210,7 @@ export default function AddActivity(props) {
               data={activityType}
               defaultButtonText={'לחץ לבחירת סוג פעילות'}
               buttonTextStyle={{ fontSize: 22 }}
-              buttonStyle={{ height: 50, width: 350, borderColor: "#FFBD73", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 20, marginTop: 20, backgroundColor: 'rgba(255, 189, 115, 0.27)' }}
+              buttonStyle={{ height: 50, width: 350, borderColor: "black", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 20, marginTop: 20, backgroundColor: 'rgba(211, 222, 50, 0.8)' }}
               onSelect={changeActivityType}
               buttonTextAfterSelection={(selectedItem, index) => {
                 return selectedItem
@@ -226,7 +225,7 @@ export default function AddActivity(props) {
               placeholder={nameInput.text}
               onChangeText={newText => setName(newText)}
               placeholderTextColor={nameInput.color}
-              activeUnderlineColor="orange"
+              textAlign='right'
             />
             <TextInput
               defaultValue={fillLink}
@@ -234,7 +233,7 @@ export default function AddActivity(props) {
               onChangeText={newText => setLink(newText)}
               placeholder="כתובת סרטון"
               placeholderTextColor="#a9a9a9"
-              activeUnderlineColor="orange"
+              textAlign='right'
             />
             <TextInput
               defaultValue={fillAbout}
@@ -242,7 +241,7 @@ export default function AddActivity(props) {
               onChangeText={newText => setAbout(newText)}
               placeholder={aboutInput.text}
               placeholderTextColor={aboutInput.color}
-              activeUnderlineColor="orange"
+              textAlign='right'
               multiline={true}
             />
             <TextInput
@@ -250,16 +249,14 @@ export default function AddActivity(props) {
               onChangeText={newText => setSets(newText)}
               placeholder="מספר סטים"
               placeholderTextColor="#a9a9a9"
-              activeUnderlineColor="orange"
-              keyboardType="name-phone-pad"
+              textAlign='right'
             />
             <TextInput
               style={styles.input}
               onChangeText={newText => setRepit(newText)}
               placeholder="מספר חזרות"
               placeholderTextColor="#a9a9a9"
-              activeUnderlineColor="orange"
-              keyboardType="name-phone-pad"
+              textAlign='right'
             />
             <View style={styles.toggleMoved}>
               <Text style={styles.toggleinput}>פעילות ניתנת להזזה</Text>
@@ -287,14 +284,15 @@ export default function AddActivity(props) {
           <View style={styles.rightcontainer}>
             <Text style={styles.text}>רשימת פעילויות</Text>
             <View style={styles.Searchbar}>
-              <TextInput
-                left={<TextInput.Icon name="magnify" color="grey" size={20} />}
-                style={styles.searchinput}
-                onChangeText={onChangeSearch}
-                placeholder="חיפוש"
-                placeholderTextColor="#a9a9a9"
-                activeUnderlineColor="orange"
-              />
+              <View style={styles.searchSection}>
+                <Icon style={styles.searchIcon} name="search" size={27} color="#000" />
+                <TextInput
+                  style={styles.searchinput}
+                  onChangeText={onChangeSearch}
+                  placeholder="חיפוש"
+                  textAlign='right'
+                />
+              </View>
               <View style={styles.scrollView}>
                 <ScrollView>
                   {activityes.map((item, key) => {
@@ -323,6 +321,14 @@ export default function AddActivity(props) {
 
 const styles = StyleSheet.create({
 
+  searchSection: {
+    flexDirection: 'row',
+  },
+
+  searchIcon: {
+    marginTop: 40
+  },
+
   topContainer: {
     flex: 1,
   },
@@ -341,7 +347,7 @@ const styles = StyleSheet.create({
 
   toggleMoved: {
     flexDirection: "row",
-    marginTop: 30,
+    marginTop: 40,
     marginLeft: 15
   },
 
@@ -349,18 +355,22 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 50,
     marginHorizontal: 8,
-    marginVertical: 0,
     backgroundColor: 'white',
-    marginTop: 25
+    marginTop: 25,
+    flexShrink: 1,
+    flexWrap: 'wrap',
+    width: '90%',
+    borderBottomWidth: 1,
   },
 
   activity: {
     marginTop: 5,
     padding: 30,
-    backgroundColor: 'rgba(255, 189, 115, 0.27)',
+    backgroundColor: 'rgba(211, 222, 50, 0.3)',
     display: 'flex',
-    borderWidth: 1,
-    borderColor: '#FFBD73',
+    borderWidth: 0.3,
+    borderRadius:10,
+    borderColor: 'black',
     textAlign: 'left',
     fontSize: 18
   },
@@ -375,14 +385,12 @@ const styles = StyleSheet.create({
     height: 210,
     width: 350,
     top: 10,
-    marginTop: 10,
+    marginTop: 20,
     left: 10,
     borderBottomWidth: 1,
     backgroundColor: 'white',
-    borderWidth: 1,
     borderRadius: 5,
-    borderColor: 'white',
-    textAlign: 'center',
+    borderColor: 'black',
     marginHorizontal: 8
   },
 
@@ -393,12 +401,10 @@ const styles = StyleSheet.create({
     top: 10,
     marginTop: 10,
     left: 10,
-    borderBottomWidth: 1,
     backgroundColor: 'white',
-    borderWidth: 1,
     borderRadius: 5,
-    borderColor: 'white',
-    marginHorizontal: 8
+    marginHorizontal: 8,
+    borderBottomWidth: 1
   },
 
   text: {
@@ -415,10 +421,10 @@ const styles = StyleSheet.create({
 
   leftcontainer: {
     display: 'flex',
-    backgroundColor: '#EFEFEF',
-    borderWidth: 1,
-    borderColor: '#EFEFEF',
-    borderRadius: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    // borderWidth: 1,
+    // borderColor: 'white',
+    // borderRadius: 5,
     height: 750,
     width: '47%',
     marginLeft: 20,
@@ -427,10 +433,10 @@ const styles = StyleSheet.create({
 
   rightcontainer: {
     display: 'flex',
-    backgroundColor: '#EFEFEF',
-    borderWidth: 1,
-    borderColor: '#EFEFEF',
-    borderRadius: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    // borderWidth: 1,
+    // borderColor: 'white',
+    // borderRadius: 5,
     height: 750,
     width: '45%',
     marginLeft: 20,
@@ -438,7 +444,7 @@ const styles = StyleSheet.create({
   },
 
   scrollView: {
-    backgroundColor: '#EFEFEF',
+    backgroundColor: 'white',
     height: 600,
     width: 330,
     marginHorizontal: 10,

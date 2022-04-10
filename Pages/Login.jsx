@@ -1,12 +1,13 @@
-import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, Image, TextInput } from 'react-native';
 import { Button, Icon, Overlay, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
-import { TextInput } from 'react-native-paper';
 
 export default function Login({ navigation }) {
 
   const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
   const [passInput, setPassInput] = useState({ color: '#a9a9a9', text: '********' });
+  const [emailInputFocus, setEmailInputFocus] = useState(false);
+  const [passwordInputFocus, setPasswordInputFocus] = useState(false);
 
   //Overlay
   const [visible, setVisible] = useState(false);
@@ -88,25 +89,34 @@ export default function Login({ navigation }) {
         <Text style={styles.title}>כניסה לחשבון</Text>
 
         <SafeAreaView style={{ top: -250 }}>
-          <TextInput
-            left={<TextInput.Icon name="email-outline" color="grey" size={20} />}
-            style={styles.input}
-            onChangeText={newText => setEmail(newText)}
-            placeholder={mailInput.text}
-            placeholderTextColor={mailInput.color}
-            activeUnderlineColor="orange"
-          />
 
-          <TextInput
-            left={<TextInput.Icon name="key-outline" color="grey" size={20} />}
-            style={styles.input}
-            onChangeText={newText => setPassword(newText)}
-            //multiline={true}
-            secureTextEntry={true}
-            placeholder={passInput.text}
-            placeholderTextColor={passInput.color}
-            activeUnderlineColor="orange"
-          />
+          <View style={styles.searchSection}>
+            <Icon style={styles.searchIcon} name="email" size={27} color="#000" />
+            <TextInput
+              style={[styles.inputEmail, { borderBottomColor: emailInputFocus ? '#fc7b03' : '#000' }]}
+              onChangeText={newText => setEmail(newText)}
+              placeholder={mailInput.text}
+              placeholderTextColor={mailInput.color}
+              textAlign='right'
+              onFocus={event => setEmailInputFocus(true)}
+              onBlur={event => setEmailInputFocus(false)}
+            />
+          </View>
+
+          <View style={styles.searchSection}>
+            <Icon style={styles.searchIcon} name="vpn-key" size={27} color="#000" />
+            <TextInput
+              style={[styles.inputPass, { borderBottomColor: passwordInputFocus ? '#fc7b03' : '#000' }]}
+              onChangeText={newText => setPassword(newText)}
+              placeholder={passInput.text}
+              placeholderTextColor={passInput.color}
+              textAlign='right'
+              secureTextEntry={true}
+              onFocus={event => setPasswordInputFocus(true)}
+              onBlur={event => setPasswordInputFocus(false)}
+            />
+          </View>
+
         </SafeAreaView>
 
         <TouchableOpacity onPress={() => {
@@ -151,6 +161,16 @@ export default function Login({ navigation }) {
 
 const styles = StyleSheet.create({
 
+  searchSection: {
+    flexDirection: 'row',
+  },
+
+  searchIcon: {
+    marginLeft: 160,
+    marginRight: 20,
+    marginTop: 40
+  },
+
   topContainer: {
     flex: 1,
   },
@@ -179,24 +199,34 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
 
-  input: {
+  inputEmail: {
     flexDirection: "row",
     height: 65,
-    marginHorizontal: 30,
     marginVertical: 20,
     backgroundColor: 'white',
-    flexShrink:1,
+    flexShrink: 1,
     flexWrap: 'wrap',
-    width:'50%',
-    marginHorizontal:'25%',
-    top:-65,
+    width: '50%',
+    marginBottom: 30,
+    borderBottomWidth: 1,
+  },
+
+  inputPass: {
+    flexDirection: "row",
+    height: 65,
+    marginVertical: 20,
+    backgroundColor: 'white',
+    flexShrink: 1,
+    flexWrap: 'wrap',
+    width: '50%',
+    marginBottom: 90,
     borderBottomWidth: 1,
   },
 
   text: {
     top: -300,
     color: '#313131',
-    right:'65%'
+    right: '65%'
   },
 
   buttonStyle: {
@@ -223,7 +253,7 @@ const styles = StyleSheet.create({
     height: 43,
     width: '50%',
     top: -230,
-    marginHorizontal:'25%'
+    marginHorizontal: '25%'
   },
 
   text1: {
@@ -236,7 +266,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#07635D',
     fontWeight: '400',
-    marginRight:'50%'
+    marginRight: '50%'
   },
 
   touchOp: {
