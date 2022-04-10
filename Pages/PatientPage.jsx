@@ -283,7 +283,7 @@ export default function PatientPage(props) {
                       <View id={key} style={{
                         marginTop: 3,
                         padding: 10,
-                        backgroundColor: (item.ActivityClasification == 'פנאי' ? 'rgba(158, 130, 246, 0.57)' : item.ActivityClassification == 'תרגול' ? 'orange' : 'rgba(249, 103, 124, 0.63)'),
+                        backgroundColor: (item.ActivityClasification == 'פנאי' ? 'rgba(158, 130, 246, 0.57)' : item.ActivityClasification == 'תפקוד' ? 'rgba(249, 103, 124, 0.63)' : 'rgba(253, 165, 81, 0.7)'),
                         display: 'flex',
                         borderWidth: 1,
                         borderColor: 'grey',
