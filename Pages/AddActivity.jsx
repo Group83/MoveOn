@@ -4,31 +4,20 @@ import React, { useEffect, useState } from 'react';
 import SelectDropdown from 'react-native-select-dropdown';
 import moment from 'moment';
 
-LogBox.ignoreLogs([
-  'Non-serializable values were found in the navigation state',
-]);
-
 export default function AddActivity(props) {
 
-  const [back, setBack] = useState(true);
-
-  //set date and time
+  //SET DATE&TIME
   const time = moment(props.route.params.Date).format("YYYY-MM-DDTHH:mm");
-  // console.log('---------------------------------')
-  // console.log('time = ', time);
   const sec = parseInt(time.substring(14, 16));
-  // console.log('sec = ', sec);
   const newSecStart = (sec < 30 ? '00' : '30');
-  // console.log('newSecStart = ', newSecStart);
   const startTime = time.substring(0, 14) + newSecStart;
-  // console.log('startTime = ', startTime);
   const endTime = moment(startTime, "YYYY-MM-DDThh:mm").add(30, 'minutes').format('YYYY-MM-DDThh:mm');
   const idPatient = props.route.params.patient.IdPatient;
 
-  //select options
+  //Select options
   const activityType = ["תרגול", "פנאי", "תפקוד"]
 
-  //Data Activity List
+  //Activity List - from DATA and after SEARCH
   const [DataActivities, SetDataActivities] = useState([]);
   const [activityes, setActivityes] = useState([]);
 
@@ -44,7 +33,7 @@ export default function AddActivity(props) {
     }
   }
 
-  //Activity
+  //Activity variables
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
   const [about, setAbout] = useState('');
@@ -55,16 +44,16 @@ export default function AddActivity(props) {
   const [isEnabledMoved, setIsEnabledMoved] = useState(0);
   const [isEnabledRequired, setIsEnabledRequired] = useState(0);
 
-  //exist Activity
+  //Activity object from data to list
   const [fillName, setFillName] = useState();
   const [fillLink, setFillLink] = useState();
   const [fillAbout, setFillAbout] = useState();
 
-  //input
+  //Input variables
   const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם הפעילות' });
   const [aboutInput, setAboutInput] = useState({ color: '#a9a9a9', text: 'אודות' });
 
-  //toggleSwitch
+  //Toggle Switch
   const toggleSwitchMoved = () => {
     setIsEnabledMoved(previousState => !previousState);
   }
@@ -72,32 +61,35 @@ export default function AddActivity(props) {
     setIsEnabledRequired(previousState => !previousState);
   }
 
+  //DATA - url
+  //activityes
   const apiUrlAddActivity = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/PatientActivity";
+  //events
+  const apiUrlEvents = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Activity?activityClassification";
 
-  const addActivity = () => {
+  const addToBoard = () => {
+
     //check empty fields
-    //Check for the Name TextInput
-    if (!name.trim()) {
+    if (!name.trim()) { //Check for the Name TextInput
       let newobj = { color: 'red', text: 'נראה שחסרה שם פעילות' };
       setNameInput(newobj)
       return;
     }
-    //Check for the about TextInput
-    if (!about.trim()) {
+    if (!about.trim()) { //Check for the about TextInput
       let newobj = { color: 'red', text: 'נראה שחסר טקסט אודות' };
       setAboutInput(newobj)
       return;
     }
-    //Check for the about TextInput
-    if (!type.trim()) {
+    if (!type.trim()) { //Check for the about TextInput
       alert('נראה שלא בחרת סוג פעילות');
       return;
     }
 
+    //SET promossions
     let moved = (isEnabledMoved ? 1 : 0);
     let required = (isEnabledRequired ? 1 : 0);
 
-    //set patient object
+    //SET activity object
     let obj = [{
       StartPatientActivity: startTime,
       EndPatientActivity: endTime,
@@ -114,7 +106,7 @@ export default function AddActivity(props) {
       DescriptionActivity: about
     }];
 
-    //send activity to DB
+    //PUT activity to DB
     fetch(apiUrlAddActivity, {
       method: 'PUT',
       body: JSON.stringify(obj[0]),
@@ -128,14 +120,14 @@ export default function AddActivity(props) {
       })
       .then(
         (result) => {
-          setBack(previousState => !previousState);
+          let back = obj;
           props.navigation.navigate('Activity Board', { patient: props.route.params.patient, back: back, terapistId: props.route.params.patient.terapistId });
         }, error => {
           console.log("err post=", error);
         })
   }
 
-  //fill exists activity
+  //fill inputs with exist activity data
   const fillActivity = (e) => {
     setFillName(e.ActivityName);
     setName(e.ActivityName);
@@ -146,14 +138,12 @@ export default function AddActivity(props) {
     setIdActivity(e.IdActivity);
   }
 
-  const apiUrlEvents = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Activity?activityClassification";
-
-  //render exist activityes
+  //render exist selected type activityes
   const changeActivityType = type => {
 
-    setType(type);
+    setType(type); //selected type
 
-    //get type activity
+    //GET selected type activityes nfrom DB
     fetch(apiUrlEvents + "=" + type, {
       method: 'GET',
       headers: new Headers({
@@ -175,12 +165,10 @@ export default function AddActivity(props) {
     }).catch((error) => {
       console.log("err GET Activityes=", error);
     }).done();
-
   }
 
   const headerfunc = () => {
     props.navigation.goBack();
-    //props.navigation.navigate('Activity Board', { patient: props.route.params.patient, back: false, terapistId:props.route.params.patient.IdTherapist});
   }
 
   return (
@@ -229,11 +217,12 @@ export default function AddActivity(props) {
             />
             <TextInput
               defaultValue={fillLink}
-              style={styles.input}
+              style={styles.inputLink}
               onChangeText={newText => setLink(newText)}
               placeholder="כתובת סרטון"
               placeholderTextColor="#a9a9a9"
               textAlign='right'
+              multiline={true}
             />
             <TextInput
               defaultValue={fillAbout}
@@ -298,7 +287,7 @@ export default function AddActivity(props) {
                   {activityes.map((item, key) => {
                     return (
                       <TouchableOpacity id={key} onPress={() => fillActivity(item)}>
-                        <Text style={styles.activity}>{item.ActivityName}</Text>
+                        <Text id={key} style={styles.activity}>{item.ActivityName}</Text>
                       </TouchableOpacity>
                     )
                   })}
@@ -312,7 +301,7 @@ export default function AddActivity(props) {
           buttonStyle={styles.buttonStyle}
           titleStyle={styles.titleStyle}
           containerStyle={styles.containerStyle}
-          onPress={addActivity}
+          onPress={() => setback(back?0:1), addToBoard}
         />
       </ImageBackground>
     </View>
@@ -347,8 +336,8 @@ const styles = StyleSheet.create({
 
   toggleMoved: {
     flexDirection: "row",
-    marginTop: 40,
-    marginLeft: 15
+    marginTop: 55,
+    marginLeft: 15,
   },
 
   searchinput: {
@@ -361,6 +350,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: '90%',
     borderBottomWidth: 1,
+    fontSize:18
   },
 
   activity: {
@@ -369,7 +359,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(211, 222, 50, 0.3)',
     display: 'flex',
     borderWidth: 0.3,
-    borderRadius:10,
+    borderRadius: 10,
     borderColor: 'black',
     textAlign: 'left',
     fontSize: 18
@@ -382,7 +372,7 @@ const styles = StyleSheet.create({
 
   inputDisc: {
     flexDirection: "row",
-    height: 210,
+    height: 180,
     width: 350,
     top: 10,
     marginTop: 20,
@@ -391,7 +381,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     borderColor: 'black',
-    marginHorizontal: 8
+    marginHorizontal: 8,
+    fontSize:18
   },
 
   input: {
@@ -404,7 +395,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     marginHorizontal: 8,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    fontSize:18
+  },
+
+  inputLink: {
+    flexDirection: "row",
+    height: 90,
+    width: 350,
+    top: 10,
+    marginTop: 10,
+    left: 10,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    marginHorizontal: 8,
+    borderBottomWidth: 1,
+    fontSize:18
   },
 
   text: {

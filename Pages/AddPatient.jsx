@@ -5,18 +5,19 @@ import React, {useState } from 'react';
 
 export default function AddPatient(props) {
 
-  //input
+  //Input variables
   const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם המטופל' });
   const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
   const [phoneInput, setPhoneInput] = useState({ color: '#a9a9a9', text: '0500000000' });
   const [pass1Input, setPass1Input] = useState({ color: '#a9a9a9', text: 'סיסמה' });
   const [pass2Input, setPass2Input] = useState({ color: '#a9a9a9', text: 'אימות סיסמה' });
+  const myTextInput = React.createRef();
 
-  //Terapist id
+  //SET terapist variables from dashboard
   const idTerapist = props.route.params.idTerapist;
   const nameTerapist = props.route.params.name;
 
-  //Patient
+  //Patient variables
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const [email, setEmail] = useState('');
@@ -24,11 +25,10 @@ export default function AddPatient(props) {
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
 
-  //toggle Switch
+  //Toggle Switch
   const [isEnabledMale, setIsEnabledMale] = useState(false);
   const [isEnabledFemale, setIsEnabledFemale] = useState(false);
   const [isEnabledOther, setIsEnabledOther] = useState(false);
-
   const toggleSwitchMale = () => {
     setIsEnabledMale(previousState => !previousState);
     setIsEnabledFemale(false);
@@ -66,47 +66,41 @@ export default function AddPatient(props) {
   //DATA - url
   const apiUrl = "https://proj.ruppin.ac.il//igroup83/test2/tar6/api/Patient";
 
-  //add patient button
+  //Add patient button
   const addPatient = () => {
 
     //check empty fields
-    //Check for the Name TextInput
-    if (!name.trim()) {
+    if (!name.trim()) { //Check for the Name TextInput
       let newobj = { color: 'red', text: 'נראה שחסר שם מטופל' };
       setNameInput(newobj)
       return;
     }
-    //Check for the Email TextInput
-    if (!email.trim()) {
+    if (!email.trim()) { //Check for the Email TextInput
       let newobj = { color: 'red', text: 'נראה שחסרה כתובת אימייל' };
       setMailInput(newobj)
       return;
     }
-    //Check for the Phone TextInput
-    if (!phone.trim()) {
+    if (!phone.trim()) { //Check for the Phone TextInput
       let newobj = { color: 'red', text: 'נראה שחסר מספר טלפון' };
       setPhoneInput(newobj)
       return;
     }
-    //Check for the Gender TextInput
-    if (!gender.trim()) {
+    if (!gender.trim()) { //Check for the Gender TextInput
       alert('עלייך לסמן זכר, נקבה או אחר');
       return;
     }
-    //Check for the Password TextInput
-    if (!password1.trim()) {
+    if (!password1.trim()) { //Check for the Password TextInput
       let newobj = { color: 'red', text: 'נראה שחסרה סיסמה' };
       setPass1Input(newobj)
       return;
     }
-    //Check for the Password TextInput
-    if (!password2.trim()) {
+    if (!password2.trim()) { //Check for the Password TextInput
       let newobj = { color: 'red', text: 'עליך לאמת את הסיסמה שהזנת' };
       setPass2Input(newobj)
       return;
     }
 
-    //check password
+    //Check matching passwords
     if (password1 !== password2) {
       let newobj = { color: 'red', text: 'הסיסמה אינה זהה לסיסמה שבחרת' };
       setPass2Input(newobj)
@@ -114,10 +108,10 @@ export default function AddPatient(props) {
     }
     else {
 
-      //set patient object
+      //SET patient object
       let obj = [{ NicknamePatient: name, PasswordPatient: password1, EmailPatient: email, PhoneNumberPatient: phone, PatientStatus: 1, PatientGender: gender, UpdatePermissionPatient: 0, ReceiveAlertsPermissionPatient: 1, IdTherapist: idTerapist }];
 
-      //send terapist to DB
+      //POST patient to DB
       fetch(apiUrl, {
         method: 'POST',
         body: JSON.stringify(obj[0]),
@@ -134,18 +128,17 @@ export default function AddPatient(props) {
 
             console.log('OK new patient');
             
-            //if email exist
+            //check if email exist in data
             if (result==1) {
-              alert('המשתמש נוצר בהצלחה');
+              alert('המשתמש נוצר בהצלחה'); //not exist
               props.navigation.navigate('Dashboard', { id: idTerapist, name: nameTerapist, back: true });
-            } else {
+            }else { //exist
               alert('כתובת האיימל כבר קיימת במערכת');
             }
 
           }, error => {
             console.log("err post=", error);
           })
-
     }
   }
 
@@ -240,6 +233,7 @@ export default function AddPatient(props) {
             placeholderTextColor={pass2Input.color}
             textAlign='right'
             secureTextEntry={true}
+            ref={myTextInput}
           />
 
         </SafeAreaView>
@@ -266,16 +260,16 @@ const styles = StyleSheet.create({
   genderinput: {
     flexDirection: "row",
     height: 40,
-    marginHorizontal: 200,
+    marginHorizontal: 195,
     marginTop: 15,
     marginBottom:40
   },
 
   gender: {
-    fontSize: 14,
+    fontSize: 18,
     marginTop: 10,
     marginRight: 10,
-    marginLeft: 30,
+    marginLeft: 25,
     color: '#696969'
   },
 
@@ -307,6 +301,7 @@ const styles = StyleSheet.create({
     marginHorizontal:'25%',
     top:-30,
     borderBottomWidth: 1,
+    fontSize:18
   },
 
   buttonStyle: {

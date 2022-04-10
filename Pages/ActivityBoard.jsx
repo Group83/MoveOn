@@ -6,22 +6,27 @@ import { Icon, Overlay, Header } from 'react-native-elements';
 
 export default function ActivityBoard(props) {
 
-  //selected activity
+  //selected activity - on press activity
   const [idAct, setIdAct] = useState(0);
   const [activity, setActivity] = useState();
 
-  //Events
   //DATA - url
+  //events
   const apiUrlEvents = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/PatientActivity?id";
+  //delete
+  const urlDelete = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/PatientActivity?id";
+
+  //Events list fron DATA
   const [myEvents, setMyEvents] = useState([]);
 
-  //Number of days in calender
+  //Number of days in calender - changed on press
   const [daysNumber, SetDaysNumber] = useState(7);
   const MyTodayComponent = ({ formattedDate, textStyle }) => (
     <Text style={[textStyle, { fontWeight: 'bold' }]}>{formattedDate}</Text>
   );
 
-  const [back, setBack] = useState(props.route.params.back);
+  //after delete activity to refresh page 
+  const [back, setBack] = useState(true);
 
   //Overlay
   const [visible, setVisible] = useState(false);
@@ -31,13 +36,12 @@ export default function ActivityBoard(props) {
     setActivity(e);
   };
 
-  const urlDelete = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/PatientActivity?id";
-
+  //DELETE activity
   const deleteActivity = () => {
 
-    setVisible(!visible);
+    setVisible(!visible); //for overlay
 
-    //delete activity from data
+    //DELETE activity from data
     fetch(urlDelete + "=" + idAct, {
       method: 'DELETE',
       headers: new Headers({
@@ -53,15 +57,17 @@ export default function ActivityBoard(props) {
       console.log("err GET Activityes=", error);
     }).done();
 
-    setBack(!back);
+    setBack(!back); //to refresh page
+
   }
 
   //EVERY RENDER
   useEffect(() => {
 
+    //SET id from patient page
     let id = props.route.params.patient.IdPatient;
 
-    //get events from DATA
+    //GET patient events from DATA
     fetch(apiUrlEvents + "=" + id, {
       method: 'GET',
       headers: new Headers({
@@ -75,7 +81,7 @@ export default function ActivityBoard(props) {
       var arr = [];
       if (res) {
         res.map((event, key) => {
-          let obj = {
+          let obj = { //set new object for every event to match for this calender
             id: event.IdPatientActivity,
             name:event.ActivityName,
             key: key,
@@ -91,7 +97,7 @@ export default function ActivityBoard(props) {
             repetition: event.RepetitionPatientActivity,
             sets: event.SetsPatientActivity,
           };
-          arr = [...arr, obj];
+          arr = [...arr, obj]; //add to arr
         });
         setMyEvents(arr);
       } else {

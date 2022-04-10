@@ -1,14 +1,14 @@
 import { View, Text, StyleSheet, ImageBackground, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { Icon, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
-import ProgressCircle from 'react-native-progress-circle-rtl';
 import * as Progress from 'react-native-progress';
 import { GradientCircularProgress } from "react-native-circular-gradient-progress";
 
 
 export default function PatientPage(props) {
 
-  const [patient, setPatient] = useState(props.route.params.patient);
+  //SET data from dashboard (set patient)
+  const [patient] = useState(props.route.params.patient);
   const terapistId = props.route.params.terapistId
   const terapistName = props.route.params.name
   const totalPercent = patient.ComplishionPresentae * 100;
@@ -16,44 +16,42 @@ export default function PatientPage(props) {
   //Reviews from DATA
   const [reviews, SetReviews] = useState([]);
 
-  //DATA url - reviews
-  const apiUrlReviews = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/ActualPatientActivity?id";
-
   //toggle Switch
   const [isEnabledUpdate, setIsEnableUpdate] = useState(patient.UpdatePermissionPatient);
   const [isEnabledAlert, setIsEnabledAlert] = useState(patient.ReceiveAlertsPermissionPatient);
   const [isEnabledActiv, setIsEnabledActiv] = useState(patient.PatientStatus);
-
-  //DATA url - update permissions
-  const apiUrlpermissions = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Patient";
-
   const toggleSwitchUpdate = () => {
     setIsEnableUpdate(previousState => !previousState);
   }
   const toggleSwitchAlert = () => {
     setIsEnabledAlert(previousState => !previousState);
   }
-
   const toggleSwitchActiv = () => {
     setIsEnabledActiv(previousState => !previousState);
   }
 
-  //percent
+  //Percent
   const [tirgul, setTirgul] = useState();
   const [pnai, setPnai] = useState();
   const [tifkud, setTifkud] = useState();
+
+  //Types of activities
   const [types] = useState(['תרגול', 'פנאי', 'תפקוד']);
 
-  //DATA - url percent
+  //DATA url
+  //reviews
+  const apiUrlReviews = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/ActualPatientActivity?id";
+  //pdate permissions
+  const apiUrlpermissions = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Patient";
+  //url percent
   const apiUrlpercent = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Patient?id";
 
   //EVERY RENDER
   useEffect(() => {
 
     types.map((item) => {
-      //get type percent
-      // console.log(patient.IdPatient);
-      // console.log(item);
+
+      //GET percentages of activities
       let id = patient.IdPatient;
       fetch(apiUrlpercent + '=' + id + '&clasification=' + item, {
         method: 'GET',
@@ -99,11 +97,10 @@ export default function PatientPage(props) {
     }).then(
       (response) => response.json()
     ).then((res) => {
-      // result data
+      //result from data
       console.log('OK Reviews');
       if (res) {
         var obj = res.map(review => review);
-        //console.log(obj);
         SetReviews(obj);
       } else {
         console.log('Reviews in empty');
@@ -115,17 +112,18 @@ export default function PatientPage(props) {
 
   }, [patient]);
 
-
+  //Back to dashboard function
   const headerfunc = () => {
 
+    //set all changes to permissions
     var update = (isEnabledUpdate ? 1 : 0);
     var alert = (isEnabledAlert ? 1 : 0);
     var activ = (isEnabledActiv ? 1 : 0);
 
-    //insert premosions to data
+    //SET new object with update permissions
     let updatearr = [{ IdPatient: patient.IdPatient, PatientStatus: activ, UpdatePermissionPatient: update, ReceiveAlertsPermissionPatient: alert, IdTherapist: terapistId }];
-    // console.log('update payient = ', updatearr[0]);
 
+    //PUT object with update permissions
     fetch(apiUrlpermissions, {
       method: 'PUT',
       body: JSON.stringify(updatearr[0]),
@@ -136,7 +134,7 @@ export default function PatientPage(props) {
     })
       .then(res => {
         console.log('OK Permissions !');
-        props.navigation.navigate('Dashboard', { id: terapistId, name: terapistName, back: true });
+        props.navigation.navigate('Dashboard', { id: terapistId, name: terapistName, back: updatearr });
       }).catch(error => {
         console.log('err PUT =', error)
       })

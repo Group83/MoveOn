@@ -6,13 +6,13 @@ import { TextInput } from 'react-native-paper';
 
 export default function Dashboard(props) {
 
-  //Terapist id
+  //Terapist id fron log in page
   const idTerapist = props.route.params.id;
 
-  //Back
+  //Back (to refresh page after add new patient)
   const back = props.route.params.back;
 
-  //Patients list from DATA
+  //Patients lists - from DATA and after SEARCH
   const [DataPatients, setDataPatients] = useState([]);
   const [patients, setPatients] = useState([]);
 
@@ -22,7 +22,7 @@ export default function Dashboard(props) {
   //EVERY RENDER
   useEffect(() => {
 
-    //get all terapist patients from DB
+    //GET all patients from DB
     fetch(apiUrlPatients + "=" + idTerapist, {
       method: 'GET',
       headers: new Headers({
@@ -36,6 +36,7 @@ export default function Dashboard(props) {
       .then(
         (result) => {
           var obj = result.map(patient => patient);
+          console.log(obj);
           setPatients(obj);
           setDataPatients(obj);
         },
@@ -56,10 +57,10 @@ export default function Dashboard(props) {
 
     if (query) {
       var filterData = DataPatients.filter(item => item.IdPatient.toString().includes(query));
-      setPatients(filterData);
+      setPatients(filterData); //set to view only filter patients
     }
     else {
-      setPatients(DataPatients);
+      setPatients(DataPatients); //return all the patients
     }
   }
 

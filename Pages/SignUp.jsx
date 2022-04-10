@@ -5,13 +5,14 @@ import { Header, Icon } from 'react-native-elements';
 
 export default function SignUp(props) {
 
-  //input
+  //Input variables 
   const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם משתמש' });
   const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
   const [pass1Input, setPass1Input] = useState({ color: '#a9a9a9', text: 'סיסמה' });
   const [pass2Input, setPass2Input] = useState({ color: '#a9a9a9', text: 'אימות סיסמה' });
+  const myTextInput = React.createRef();
 
-  //Terapist
+  //Terapist variables
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
@@ -20,36 +21,32 @@ export default function SignUp(props) {
   //DATA - url
   const apiUrl = "https://proj.ruppin.ac.il//igroup83/test2/tar6/api/Terapist";
 
-  //connect button
+  //Connect button
   const connect = () => {
 
     //check empty fields
-    //Check for the Name TextInput
-    if (!name.trim()) {
+    if (!name.trim()) { //Check for the Name TextInput
       let newobj = { color: 'red', text: 'נראה שחסר שם משתמש' };
       setNameInput(newobj)
       return;
     }
-    //Check for the Email TextInput
-    if (!email.trim()) {
+    if (!email.trim()) { //Check for the Email TextInput
       let newobj = { color: 'red', text: 'נראה שחסרה כתובת אימייל' };
       setMailInput(newobj)
       return;
     }
-    //Check for the Password TextInput
-    if (!password1.trim()) {
+    if (!password1.trim()) { //Check for the Password TextInput
       let newobj = { color: 'red', text: 'נראה שחסרה סיסמה' };
       setPass1Input(newobj);
       return;
     }
-    //Check for the Password TextInput
-    if (!password2.trim()) {
+    if (!password2.trim()) { //Check for the Password TextInput
       let newobj = { color: 'red', text: 'עליך לאמת את הסיסמה שבחרת' };
       setPass2Input(newobj)
       return;
     }
 
-    //check password
+    //Check matching passwords
     if (password1 !== password2) {
       let newobj = { color: 'red', text: 'הסיסמה אינה זהה לסיסמה שבחרת' };
       setPass2Input(newobj)
@@ -57,9 +54,10 @@ export default function SignUp(props) {
     }
     else {
 
+      //build a new terapist object
       let obj = [{ NicknameTherapist: name, EmailTherapist: email, PasswordTherapist: password1 }];
 
-      //send terapist to DB
+      //send terapist object to DB
       fetch(apiUrl, {
         method: 'POST',
         body: JSON.stringify(obj[0]),
@@ -76,11 +74,11 @@ export default function SignUp(props) {
 
             console.log('OK new user');
 
-            //if email exist
-            if (result == 1) {
+            //check if the email alredy exist
+            if (result == 1) { //not exist
               alert('המשתמש נוצר בהצלחה');
               props.navigation.navigate('Log in');
-            } else {
+            } else { //exist
               alert('כתובת האיימל כבר קיימת במערכת');
             }
 
@@ -148,6 +146,7 @@ export default function SignUp(props) {
             secureTextEntry={true}
             placeholderTextColor={pass2Input.color}
             textAlign='right'
+            ref={myTextInput}
           />
 
         </SafeAreaView>
@@ -212,6 +211,7 @@ const styles = StyleSheet.create({
     marginHorizontal:'25%',
     top:30,
     borderBottomWidth: 1,
+    fontSize:18
   },
 
   buttonStyle: {

@@ -1,9 +1,10 @@
 import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, Image, TextInput } from 'react-native';
 import { Button, Icon, Overlay, Header } from 'react-native-elements';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 export default function Login({ navigation }) {
 
+  //Input variables
   const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
   const [passInput, setPassInput] = useState({ color: '#a9a9a9', text: '********' });
   const [emailInputFocus, setEmailInputFocus] = useState(false);
@@ -15,7 +16,7 @@ export default function Login({ navigation }) {
     setVisible(!visible);
   };
 
-  //user
+  //User 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -26,20 +27,18 @@ export default function Login({ navigation }) {
   const checkUser = () => {
 
     //check empty fields
-    //Check for the Email TextInput
-    if (!email.trim()) {
+    if (!email.trim()) { //Check for the Email TextInput
       let newobj = { color: 'red', text: 'נראה שחסרה כתובת אימייל' };
       setMailInput(newobj)
       return;
     }
-    //Check for the Name TextInput
-    if (!password.trim()) {
+    if (!password.trim()) { //Check for the Name TextInput
       let newobj = { color: 'red', text: 'נראה שחסרה סיסמה' };
       setPassInput(newobj)
       return;
     }
 
-    //get all recipes from DB
+    //GET user from DB
     fetch(apiUrl + "=" + email + "&password=" + password, {
       method: 'GET',
       headers: new Headers({
@@ -52,14 +51,12 @@ export default function Login({ navigation }) {
       })
       .then(
         (result) => {
-
-          if (result[0]) {
+          if (result[0]) { //found user
             navigation.navigate('Dashboard', { id: result[0].IdTherapist, name: result[0].NicknameTherapist });
           }
-          else {
+          else { //not found user
             toggleOverlay();
           }
-
         },
         (error) => {
           console.log("err GET=", error);
@@ -90,8 +87,8 @@ export default function Login({ navigation }) {
 
         <SafeAreaView style={{ top: -250 }}>
 
-          <View style={styles.searchSection}>
-            <Icon style={styles.searchIcon} name="email" size={27} color="#000" />
+          <View style={styles.inputSection}>
+            <Icon style={styles.icon} name="email" size={27} color="#000" />
             <TextInput
               style={[styles.inputEmail, { borderBottomColor: emailInputFocus ? '#fc7b03' : '#000' }]}
               onChangeText={newText => setEmail(newText)}
@@ -103,8 +100,8 @@ export default function Login({ navigation }) {
             />
           </View>
 
-          <View style={styles.searchSection}>
-            <Icon style={styles.searchIcon} name="vpn-key" size={27} color="#000" />
+          <View style={styles.inputSection}>
+            <Icon style={styles.icon} name="vpn-key" size={27} color="#000" />
             <TextInput
               style={[styles.inputPass, { borderBottomColor: passwordInputFocus ? '#fc7b03' : '#000' }]}
               onChangeText={newText => setPassword(newText)}
@@ -161,11 +158,11 @@ export default function Login({ navigation }) {
 
 const styles = StyleSheet.create({
 
-  searchSection: {
+  inputSection: {
     flexDirection: 'row',
   },
 
-  searchIcon: {
+  icon: {
     marginLeft: 160,
     marginRight: 20,
     marginTop: 40
@@ -209,6 +206,7 @@ const styles = StyleSheet.create({
     width: '50%',
     marginBottom: 30,
     borderBottomWidth: 1,
+    fontSize:18
   },
 
   inputPass: {
@@ -221,6 +219,7 @@ const styles = StyleSheet.create({
     width: '50%',
     marginBottom: 90,
     borderBottomWidth: 1,
+    fontSize:18
   },
 
   text: {
