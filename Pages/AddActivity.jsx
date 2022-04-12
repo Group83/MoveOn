@@ -23,7 +23,6 @@ export default function AddActivity(props) {
 
   //Search Bar
   const onChangeSearch = query => {
-
     if (query) {
       var filterData = DataActivities.filter(item => item.ActivityName.includes(query));
       setActivityes(filterData);

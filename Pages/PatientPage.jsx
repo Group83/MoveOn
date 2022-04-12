@@ -41,9 +41,9 @@ export default function PatientPage(props) {
   //DATA url
   //reviews
   const apiUrlReviews = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/ActualPatientActivity?id";
-  //pdate permissions
+  //update permissions
   const apiUrlpermissions = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Patient";
-  //url percent
+  //percent
   const apiUrlpercent = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Patient?id";
 
   //EVERY RENDER
@@ -160,8 +160,8 @@ export default function PatientPage(props) {
 
         <View style={styles.container}>
 
-          {/* leftcontainer */}
-          <View style={styles.leftcontainer}>
+          {/* rightcontainer */}
+          <View style={styles.rightcontainer}>
 
             <View style={styles.left1}>
               <View>
@@ -259,8 +259,8 @@ export default function PatientPage(props) {
             </View>
           </View>
 
-          {/* right container */}
-          <View style={styles.rightcontainer}>
+          {/* left container */}
+          <View style={styles.leftcontainer}>
 
             <View style={styles.board}>
               <TouchableOpacity style={styles.touchOp} onPress={() => {
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
 
-  leftcontainer: {
+  rightcontainer: {
     display: 'flex',
     backgroundColor: 'rgba(0, 0, 0, 0)',
     height: 1000,
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
     marginLeft: 25,
   },
 
-  rightcontainer: {
+  leftcontainer: {
     display: 'flex',
     backgroundColor: 'rgba(0, 0, 0, 0)',
     height: 1000,

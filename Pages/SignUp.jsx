@@ -81,7 +81,6 @@ export default function SignUp(props) {
             } else { //exist
               alert('כתובת האיימל כבר קיימת במערכת');
             }
-
           }, error => {
             console.log("err post=", error);
           })
