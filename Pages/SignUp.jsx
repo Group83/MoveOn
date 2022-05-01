@@ -72,7 +72,7 @@ export default function SignUp(props) {
         .then(
           (result) => {
 
-            console.log('OK new user');
+            console.log('OK new user', result);
 
             //check if the email alredy exist
             if (result == 1) { //not exist
