@@ -2,7 +2,9 @@ import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react
 import React, { useState, useEffect } from 'react';
 import { Button } from 'react-native-elements';
 import WeekView, { createFixedWeekDate } from 'react-native-week-view';
-import { Icon, Overlay, Header } from 'react-native-elements';
+import { Icon, Header } from 'react-native-elements';
+import moment from 'moment';
+import Overlay from 'react-native-modal-overlay';
 
 export default function ActivityBoard(props) {
 
@@ -51,7 +53,6 @@ export default function ActivityBoard(props) {
     }).then(res => {
       return res;
     }).then((result) => {
-      alert('הפעילות נמחקה');
       return result;
     }).catch((error) => {
       console.log("err GET Activityes=", error);
@@ -83,12 +84,12 @@ export default function ActivityBoard(props) {
         res.map((event, key) => {
           let obj = { //set new object for every event to match for this calender
             id: event.IdPatientActivity,
-            name:event.ActivityName,
+            name: event.ActivityName,
             key: key,
             description: event.ActivityName,
             startDate: new Date(event.StartPatientActivity),
             endDate: new Date(event.EndPatientActivity),
-            color: (event.ActivityClassification == 'פנאי' ? '#9E82F6' : event.ActivityClassification == 'תרגול' ? '#FDA551' : '#F9677C'),
+            color: (event.ActivityClassification == 'פנאי' ? 'rgba(158, 130, 246, 0.85)' : event.ActivityClassification == 'תרגול' ? 'rgba(253, 165, 81, 0.85)' : 'rgba(249, 103, 124, 0.85)'),
             type: event.ActivityClassification,
             link: event.ActivityLink,
             about: event.DescriptionActivity,
@@ -124,22 +125,28 @@ export default function ActivityBoard(props) {
             <Icon name='arrow-back-ios' color='black' size={25} />
           </TouchableOpacity>
         </View>}
+        centerComponent={<View style={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
+          <Text style={{ fontSize: 23, marginRight: 10, marginTop: 14 }}>{props.route.params.patient.NicknamePatient}</Text>
+          <Icon name='assignment' color='black' size={38} style={{ marginTop: 10 }} />
+        </View>}
         containerStyle={{
           backgroundColor: 'rgba(0, 0, 0, 0)',
           justifyContent: 'space-around',
         }}
       />
 
-      <ImageBackground source={require('../images/background3.jpeg')} resizeMode="cover" style={styles.image}>
-        <Text style={styles.title}>{props.route.params.patient.NicknamePatient} - מרשם עיסוקים</Text>
-
+      <ImageBackground source={require('../images/background5.jpeg')} resizeMode="cover" style={styles.image}>
         <View style={styles.iconContainerStyle}>
           <Button
             title="יומי"
             buttonStyle={{
               backgroundColor: '#E5E5E5',
-              borderColor: '#E5E5E5',
+              borderColor: 'black',
               borderWidth: 1,
+              borderRadius:10
             }}
             titleStyle={{
               fontSize: 22,
@@ -157,8 +164,9 @@ export default function ActivityBoard(props) {
             title="שבועי"
             buttonStyle={{
               backgroundColor: '#E5E5E5',
-              borderColor: '#E5E5E5',
+              borderColor: 'black',
               borderWidth: 1,
+              borderRadius:10
             }}
             titleStyle={{
               fontSize: 22,
@@ -175,6 +183,16 @@ export default function ActivityBoard(props) {
 
         <View style={styles.container}>
           <WeekView
+            local={moment.updateLocale('en', {
+              months: [
+                "ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני", "יולי",
+                "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"
+              ],
+              weekdays: [
+                'ראשון', 'שני', 'שלישי', 'רביעי'
+                , 'חמישי', 'שישי', 'שבת'
+              ]
+            })}
             startHour={7}
             timeStep={30}
             events={myEvents}
@@ -184,7 +202,7 @@ export default function ActivityBoard(props) {
             headerStyle={{ backgroundColor: '#EFEFEF', borderColor: '#EFEFEF' }}
             hoursInDisplay={8} //מקטין את המרווחים בין השעות
             TodayHeaderComponent={MyTodayComponent}
-            formatDateHeader="ddd DD"
+            formatDateHeader="dddd DD"
             // fixedHorizontally={true}
             weekStartsOn={0}
             onEventPress={toggleOverlay} //לחיצה על אירוע
@@ -192,28 +210,66 @@ export default function ActivityBoard(props) {
           />
         </View>
 
-        <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-          <Text style={styles.texttitle}>
-            {activity?activity.name:''}
-          </Text>
-          <Text style={styles.textSecondary}>אודות : 
-            {activity?activity.about:''}
-          </Text>
-          <Text style={styles.textSecondary}>סטים :
-            {activity?activity.sets:''}
-          </Text>
-          <Text style={styles.textSecondary}>חזרות : 
-            {activity?activity.repetition:''}
-          </Text>
-          <Text style={styles.textDelete}>
-            האם למחוק את הפעילות ?
-          </Text>
-          <Button
-            title="מחק"
-            buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
-            titleStyle={{ color: 'white', marginHorizontal: 20, fontSize:20 }}
-            onPress={deleteActivity}
-          />
+        <Overlay visible={visible} onBackdropPress={toggleOverlay}
+          containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', alignItems: 'center' }}
+          childrenWrapperStyle={{ backgroundColor: activity ? activity.color : 'transparent', opacityValue: 5, borderWidth: 1, borderColor: 'rgba(176, 219, 239, 0.83)', borderRadius: 15, alignItems: 'right', width: '60%' }}>
+          <TouchableOpacity onPress={toggleOverlay}>
+            <Icon name='close' size={20}
+              style={{
+                marginBottom: 8,
+              }} />
+          </TouchableOpacity>
+
+          <Text style={styles.texttitle}>{activity ? activity.name : ''}</Text>
+          <Text style={styles.Secondarytitle}>{activity ? activity.about : ''}</Text>
+
+          <View style={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}>
+            <Icon name='schedule' size={40}
+              style={{
+                marginTop: 10,
+                marginLeft: '18%',
+              }} />
+            <Text style={styles.textSecondary}>{activity ? moment(activity.startDate).format("HH:MM") : ''}</Text>
+          </View>
+
+          <View style={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}>
+            <Icon name='accessibility' size={40}
+              style={{
+                marginTop: 10,
+                marginLeft: '18%',
+              }} />
+            <Text style={styles.textSecondary}>{activity ? activity.repetition : '0'} X {activity ? activity.sets : '0'}</Text>
+          </View>
+
+          <TouchableOpacity style={{
+            display: 'flex',
+            flexDirection: 'row'
+          }} onPress={() => (activity ? activity.link ? Linking.openURL(activity.link) : '' : '')}>
+            <Icon name={activity ? activity.link ? 'videocam' : '' : ''} size={40}
+              style={{
+                marginTop: 10,
+                marginLeft: '18%',
+              }} />
+            <Text style={styles.textSecondary}>{activity ? activity.link ? ' לחץ לצפייה בסרטון' : '' : ''}</Text>
+          </TouchableOpacity>
+
+          <View style={{
+            display: 'flex',
+            flexDirection: 'row'
+          }}>
+            <Button
+              title="מחק פעילות"
+              buttonStyle={styles.deleteButton}
+              titleStyle={{ color: 'black', marginHorizontal: 20, fontSize: 20 }}
+              onPress={deleteActivity}
+            />
+          </View>
         </Overlay>
 
         <Button
@@ -231,6 +287,15 @@ export default function ActivityBoard(props) {
 
 const styles = StyleSheet.create({
 
+  deleteButton: {
+    backgroundColor: 'rgba(214, 61, 57, 1)',
+    borderColor: 'rgba(0, 0, 0, 0)',
+    borderRadius: 5,
+    borderWidth: 1,
+    marginHorizontal: '32%',
+    marginTop: '10%'
+  },
+
   topContainer: {
     flex: 1,
   },
@@ -238,16 +303,23 @@ const styles = StyleSheet.create({
   texttitle: {
     marginTop: 7,
     textAlign: 'left',
-    fontSize: 22,
-    fontWeight:'500',
+    fontSize: 24,
+    fontWeight: '500',
     marginBottom: 10,
+    marginLeft: '13%'
+  },
+
+  Secondarytitle: {
+    marginVertical: 5,
+    textAlign: 'left',
+    fontSize: 20,
+    marginLeft: '13%'
   },
 
   textSecondary: {
-    marginTop: 7,
+    marginTop: 18,
     textAlign: 'right',
     fontSize: 20,
-    textAlign:'left'
   },
 
   textDelete: {
@@ -259,9 +331,8 @@ const styles = StyleSheet.create({
 
   container: {
     backgroundColor: '#fff',
-    height: 800,
-    top: 15,
-    marginHorizontal: 10,
+    height: 880,
+    marginTop: '2%',
     shadowColor: 'black',
     shadowOpacity: 0.8,
     elevation: 6,
@@ -278,7 +349,7 @@ const styles = StyleSheet.create({
 
   title: {
     top: -30,
-    right: '35%',
+    right: '53%',
     fontFamily: 'Arial',
     fontStyle: 'normal',
     fontWeight: 'bold',
@@ -301,20 +372,19 @@ const styles = StyleSheet.create({
   },
 
   titleStyle: {
-    fontSize: 22,
+    fontSize: 24,
     color: 'black'
   },
 
   containerStyle: {
     marginHorizontal: 20,
     width: '95%',
-    top: 30,
+    marginTop: '3%',
   },
 
   iconContainerStyle: {
     flexDirection: "row",
     flexWrap: "wrap",
-    top: 10,
     marginHorizontal: 2,
   },
 

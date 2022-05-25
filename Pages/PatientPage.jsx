@@ -3,7 +3,7 @@ import { Icon, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import * as Progress from 'react-native-progress';
 import { GradientCircularProgress } from "react-native-circular-gradient-progress";
-
+import moment from 'moment';
 
 export default function PatientPage(props) {
 
@@ -187,7 +187,6 @@ export default function PatientPage(props) {
                     startColor='red'
                     size={180}
                     progress={Math.round(patient.ComplishionPresentae * 100)}
-                    // progress={100}
                     endColor='lawngreen'
                     strokeWidth={10}
                     emptyColor='#F5F5F5'
@@ -200,23 +199,23 @@ export default function PatientPage(props) {
                 >{totalPercent}%</Text>
               </View>
               <View style={styles.precent}>
-                <View style={{ backgroundColor: '#FDA551', height: 80, width: 100, borderRadius: 15, borderWidth: 1, borderColor: '#FDA551', marginHorizontal: 10 }}>
+                <View style={{ backgroundColor: 'rgba(253, 165, 81, 0.7)', height: 80, width: 100, borderRadius: 15, borderWidth: 1, borderColor: 'rgba(253, 165, 81, 0.7)', marginHorizontal: 10 }}>
                   <Text style={{ textAlign: 'center', top: -25, fontSize: 20 }}>תרגול</Text>
                   <Text style={{ textAlign: 'center', top: 2, fontSize: 25, fontWeight: '500' }}>{tirgul ? Math.round(tirgul * 100) : 0}%</Text>
                 </View>
-                <View style={{ backgroundColor: '#F9677C', height: 80, width: 100, borderRadius: 15, borderWidth: 1, borderColor: '#F9677C', marginHorizontal: 10 }}>
+                <View style={{ backgroundColor: 'rgba(249, 103, 124, 0.63)', height: 80, width: 100, borderRadius: 15, borderWidth: 1, borderColor: 'rgba(249, 103, 124, 0.63)', marginHorizontal: 10 }}>
                   <Text style={{ textAlign: 'center', top: -25, fontSize: 20 }}>תפקוד</Text>
                   <Text style={{ textAlign: 'center', top: 2, fontSize: 25, fontWeight: '500' }}>{tifkud ? Math.round(tifkud * 100) : 0}%</Text>
                 </View>
-                <View style={{ backgroundColor: '#9E82F6', height: 80, width: 100, borderRadius: 15, borderWidth: 1, borderColor: '#9E82F6', marginHorizontal: 10 }}>
+                <View style={{ backgroundColor: 'rgba(158, 130, 246, 0.57)', height: 80, width: 100, borderRadius: 15, borderWidth: 1, borderColor: 'rgba(158, 130, 246, 0.57)', marginHorizontal: 10 }}>
                   <Text style={{ textAlign: 'center', top: -25, fontSize: 20 }}>פנאי</Text>
                   <Text style={{ textAlign: 'center', top: 2, fontSize: 25, fontWeight: '500' }}>{pnai ? Math.round(pnai * 100) : 0}%</Text>
                 </View>
               </View>
               <View style={styles.fillcontainer}>
-                <Progress.Bar progress={tirgul ? tirgul : 0} width={90} color={tirgul < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginHorizontal={15} />
-                <Progress.Bar progress={tifkud ? tifkud : 0} width={90} color={tifkud < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginHorizontal={15} />
-                <Progress.Bar progress={pnai ? pnai : 0} width={90} color={pnai < 0.5 ? 'red' : 'lawngreen'} borderWidth={1} borderColor='darkgrey' marginHorizontal={15} />
+                <Progress.Bar progress={tirgul ? tirgul : 0} width={90} color={tirgul < 0.3 ? '#FF4949' : tirgul < 0.6 ?'#FF8D29' : '#8BDB81'} borderWidth={1} borderColor='darkgrey' marginHorizontal={15} />
+                <Progress.Bar progress={tifkud ? tifkud : 0} width={90} color={tifkud < 0.3 ? '#FF4949' : tifkud < 0.6 ?'#FF8D29' : '#8BDB81'} borderWidth={1} borderColor='darkgrey' marginHorizontal={15} />
+                <Progress.Bar progress={pnai ? pnai : 0} width={90} color={pnai < 0.3 ? '#FF4949' : pnai < 0.6 ?'#FF8D29' : '#8BDB81'} borderWidth={1} borderColor='darkgrey' marginHorizontal={15} />
               </View>
 
             </View>
@@ -280,7 +279,7 @@ export default function PatientPage(props) {
                 <ScrollView>
                   {reviews.map((item, key) => {
                     return (
-                      <View id={key} style={{
+                      <View key={key} style={{
                         marginTop: 3,
                         padding: 10,
                         backgroundColor: (item.ActivityClasification == 'פנאי' ? 'rgba(158, 130, 246, 0.57)' : item.ActivityClasification == 'תפקוד' ? 'rgba(249, 103, 124, 0.63)' : 'rgba(253, 165, 81, 0.7)'),
@@ -290,9 +289,9 @@ export default function PatientPage(props) {
                         borderRadius: 4,
                         marginTop: 5,
                       }}>
-                        <View id={key} style={styles.container}>
-                          <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(0, 9)},</Text>
-                          <Text style={styles.reviewDate}>{(item.StartActualPatientActivity).substring(10, 15)}</Text>
+                        <View key={key} style={styles.container}>
+                          <Text style={styles.reviewDate}>, {moment(item.StartActualPatientActivity).format("DD.MM.YYYY")}</Text>
+                          <Text style={styles.reviewDate}>{moment(item.StartActualPatientActivity).format("HH:MM")}</Text>
                         </View>
                         <Text style={styles.reviewtitle}>{item.ActivityName}</Text>
                         <Text style={styles.reviewText}>רמת קושי: {item.DifficultyActualPatientActivity}</Text>
@@ -351,7 +350,7 @@ const styles = StyleSheet.create({
 
   toggle: {
     flexDirection: "row",
-    marginTop: 18
+    marginTop: 22
   },
 
   toggleinput: {

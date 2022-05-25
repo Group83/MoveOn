@@ -3,6 +3,7 @@ import { Button, Icon, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import SelectDropdown from 'react-native-select-dropdown';
 import moment from 'moment';
+import Overlay from 'react-native-modal-overlay';
 
 export default function AddActivity(props) {
 
@@ -40,8 +41,6 @@ export default function AddActivity(props) {
   const [sets, setSets] = useState('');
   const [repit, setRepit] = useState('');
   const [type, setType] = useState('');
-  const [isEnabledMoved, setIsEnabledMoved] = useState(0);
-  const [isEnabledRequired, setIsEnabledRequired] = useState(0);
 
   //Activity object from data to list
   const [fillName, setFillName] = useState();
@@ -52,19 +51,17 @@ export default function AddActivity(props) {
   const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם הפעילות' });
   const [aboutInput, setAboutInput] = useState({ color: '#a9a9a9', text: 'אודות' });
 
-  //Toggle Switch
-  const toggleSwitchMoved = () => {
-    setIsEnabledMoved(previousState => !previousState);
-  }
-  const toggleSwitchRequired = () => {
-    setIsEnabledRequired(previousState => !previousState);
-  }
-
   //DATA - url
   //activityes
   const apiUrlAddActivity = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/PatientActivity";
   //events
   const apiUrlEvents = "https://proj.ruppin.ac.il/igroup83/test2/tar6/api/Activity?activityClassification";
+
+  //Overlay
+  const [visible, setVisible] = useState(false);
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  };
 
   const addToBoard = () => {
 
@@ -80,13 +77,9 @@ export default function AddActivity(props) {
       return;
     }
     if (!type.trim()) { //Check for the about TextInput
-      alert('נראה שלא בחרת סוג פעילות');
+      toggleOverlay();
       return;
     }
-
-    //SET promossions
-    let moved = (isEnabledMoved ? 1 : 0);
-    let required = (isEnabledRequired ? 1 : 0);
 
     //SET activity object
     let obj = [{
@@ -94,8 +87,8 @@ export default function AddActivity(props) {
       EndPatientActivity: endTime,
       RepetitionPatientActivity: repit,
       SetsPatientActivity: sets,
-      IsMoveablePatientActivity: moved,
-      IsMandatoryPatientActivity: required,
+      IsMoveablePatientActivity: 0,
+      IsMandatoryPatientActivity: 0,
       IdPatient: idPatient,
       IdActivity: idActivity,
       StatusPatientActivity: 1,
@@ -197,7 +190,7 @@ export default function AddActivity(props) {
               data={activityType}
               defaultButtonText={'לחץ לבחירת סוג פעילות'}
               buttonTextStyle={{ fontSize: 22 }}
-              buttonStyle={{ height: 50, width: 350, borderColor: "black", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 20, marginTop: 20, backgroundColor: 'rgba(211, 222, 50, 0.8)' }}
+              buttonStyle={{ height: 50, width: 350, borderColor: "black", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 20, marginTop: 20, backgroundColor: '#F0E5CF' }}
               onSelect={changeActivityType}
               buttonTextAfterSelection={(selectedItem, index) => {
                 return selectedItem
@@ -246,26 +239,6 @@ export default function AddActivity(props) {
               placeholderTextColor="#a9a9a9"
               textAlign='right'
             />
-            <View style={styles.toggleMoved}>
-              <Text style={styles.toggleinput}>פעילות ניתנת להזזה</Text>
-              <Switch
-                trackColor={{ false: "#767577", true: "#dcdcdc" }}
-                thumbColor={isEnabledMoved ? "#D3DE32" : "#f4f3f4"}
-                ios_backgroundColor="#a9a9a9"
-                onValueChange={toggleSwitchMoved}
-                value={isEnabledMoved}
-              />
-            </View>
-            <View style={styles.toggleRequired}>
-              <Text style={styles.toggleinput}>פעילות חובה</Text>
-              <Switch
-                trackColor={{ false: "#a9a9a9", true: "#dcdcdc" }}
-                thumbColor={isEnabledRequired ? "#D3DE32" : "#f4f3f4"}
-                ios_backgroundColor="#a9a9a9"
-                onValueChange={toggleSwitchRequired}
-                value={isEnabledRequired}
-              />
-            </View>
           </View>
 
           {/* right container */}
@@ -282,7 +255,7 @@ export default function AddActivity(props) {
                 />
               </View>
               <View style={styles.scrollView}>
-                <ScrollView>
+                <ScrollView style={{ backgroundColor: '#EFEFEF' }}>
                   {activityes.map((item, key) => {
                     return (
                       <TouchableOpacity id={key} onPress={() => fillActivity(item)}>
@@ -300,14 +273,35 @@ export default function AddActivity(props) {
           buttonStyle={styles.buttonStyle}
           titleStyle={styles.titleStyle}
           containerStyle={styles.containerStyle}
-          onPress={() => setback(back?0:1), addToBoard}
+          onPress={() => setback(back ? 0 : 1), addToBoard}
         />
+
+        <Overlay visible={visible} onBackdropPress={toggleOverlay}
+          containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', alignItems: 'center' }}
+          childrenWrapperStyle={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'white', borderRadius: 15, alignItems: 'center', width: '50%' }}>
+          <Text style={styles.textSecondary}>
+            נראה שלא בחרת סוג פעילות
+          </Text>
+          <Button
+            title="אישור"
+            buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
+            titleStyle={{ color: 'white', marginHorizontal: 15, fontSize: 20 }}
+            onPress={toggleOverlay}
+          />
+        </Overlay>
+
       </ImageBackground>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+
+  textSecondary: {
+    marginVertical: '5%',
+    textAlign: 'center',
+    fontSize: 20,
+  },
 
   searchSection: {
     flexDirection: 'row',
@@ -321,24 +315,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  toggleinput: {
-    marginHorizontal: 15,
-    marginTop: 5,
-    fontSize: 18
-  },
-
-  toggleRequired: {
-    flexDirection: "row",
-    marginTop: 30,
-    marginLeft: 15
-  },
-
-  toggleMoved: {
-    flexDirection: "row",
-    marginTop: 55,
-    marginLeft: 15,
-  },
-
   searchinput: {
     flexDirection: "row",
     height: 50,
@@ -348,14 +324,13 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexWrap: 'wrap',
     width: '90%',
-    borderBottomWidth: 1,
-    fontSize:18
+    fontSize: 18
   },
 
   activity: {
     marginTop: 5,
     padding: 30,
-    backgroundColor: 'rgba(211, 222, 50, 0.3)',
+    backgroundColor: 'rgba(255, 173, 96, 0.59)',
     display: 'flex',
     borderWidth: 0.3,
     borderRadius: 10,
@@ -371,17 +346,16 @@ const styles = StyleSheet.create({
 
   inputDisc: {
     flexDirection: "row",
-    height: 180,
+    height: 220,
     width: 350,
     top: 10,
-    marginTop: 20,
+    marginTop: '3%',
     left: 10,
-    borderBottomWidth: 1,
     backgroundColor: 'white',
     borderRadius: 5,
     borderColor: 'black',
     marginHorizontal: 8,
-    fontSize:18
+    fontSize: 18
   },
 
   input: {
@@ -389,27 +363,25 @@ const styles = StyleSheet.create({
     height: 60,
     width: 350,
     top: 10,
-    marginTop: 10,
+    marginTop: '5%',
     left: 10,
     backgroundColor: 'white',
     borderRadius: 5,
     marginHorizontal: 8,
-    borderBottomWidth: 1,
-    fontSize:18
+    fontSize: 18
   },
 
   inputLink: {
     flexDirection: "row",
-    height: 90,
+    height: 110,
     width: 350,
     top: 10,
-    marginTop: 10,
+    marginTop: '3%',
     left: 10,
     backgroundColor: 'white',
     borderRadius: 5,
     marginHorizontal: 8,
-    borderBottomWidth: 1,
-    fontSize:18
+    fontSize: 18
   },
 
   text: {
@@ -426,10 +398,10 @@ const styles = StyleSheet.create({
 
   leftcontainer: {
     display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    // borderWidth: 1,
-    // borderColor: 'white',
-    // borderRadius: 5,
+    backgroundColor: '#EFEFEF',
+    borderWidth: 1,
+    borderColor: '#EFEFEF',
+    borderRadius: 10,
     height: 750,
     width: '47%',
     marginLeft: 20,
@@ -438,10 +410,10 @@ const styles = StyleSheet.create({
 
   rightcontainer: {
     display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    // borderWidth: 1,
-    // borderColor: 'white',
-    // borderRadius: 5,
+    backgroundColor: '#EFEFEF',
+    borderWidth: 1,
+    borderColor: '#EFEFEF',
+    borderRadius: 10,
     height: 750,
     width: '45%',
     marginLeft: 20,

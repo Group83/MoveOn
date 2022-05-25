@@ -1,6 +1,7 @@
 import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, Image, TextInput } from 'react-native';
-import { Button, Icon, Overlay, Header } from 'react-native-elements';
+import { Button, Icon, Header } from 'react-native-elements';
 import React, { useState } from 'react';
+import Overlay from 'react-native-modal-overlay';
 
 export default function Login({ navigation }) {
 
@@ -52,7 +53,7 @@ export default function Login({ navigation }) {
       .then(
         (result) => {
           if (result[0]) { //found user
-            navigation.navigate('Dashboard', { id: result[0].IdTherapist, name: result[0].NicknameTherapist });
+            navigation.navigate('Dashboard', { id: result[0].IdTherapist, name: result[0].NicknameTherapist, back: false });
           }
           else { //not found user
             toggleOverlay();
@@ -130,15 +131,16 @@ export default function Login({ navigation }) {
             containerStyle={styles.containerStyle}
             onPress={checkUser}
           />
-          <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
-            <Icon name='warning' color='#ff4500' size={30} />
+          <Overlay visible={visible} onBackdropPress={toggleOverlay}
+            containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', alignItems: 'center' }}
+            childrenWrapperStyle={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'white', borderRadius: 15, alignItems: 'center', width: '50%' }}>
             <Text style={styles.textSecondary}>
               כתובת אימייל או הסיסמה שהזנתם אינם קיימים במערכת
             </Text>
             <Button
               title="אישור"
               buttonStyle={{ backgroundColor: 'rgba(214, 61, 57, 1)' }}
-              titleStyle={{ color: 'white', marginHorizontal: 20 }}
+              titleStyle={{ color: 'white', marginHorizontal: 15, fontSize:20 }}
               onPress={toggleOverlay}
             />
           </Overlay>
@@ -173,10 +175,9 @@ const styles = StyleSheet.create({
   },
 
   textSecondary: {
-    marginBottom: 10,
-    marginTop: 10,
+    marginVertical: '5%',
     textAlign: 'center',
-    fontSize: 17,
+    fontSize: 20,
   },
 
   image: {
@@ -206,7 +207,7 @@ const styles = StyleSheet.create({
     width: '50%',
     marginBottom: 30,
     borderBottomWidth: 1,
-    fontSize:18
+    fontSize: 18
   },
 
   inputPass: {
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
     width: '50%',
     marginBottom: 90,
     borderBottomWidth: 1,
-    fontSize:18
+    fontSize: 18
   },
 
   text: {

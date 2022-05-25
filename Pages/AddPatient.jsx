@@ -6,8 +6,7 @@ import React, {useState } from 'react';
 export default function AddPatient(props) {
 
   //Input variables
-  const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'שם המטופל' });
-  const [mailInput, setMailInput] = useState({ color: '#a9a9a9', text: 'example@gmail.com' });
+  const [nameInput, setNameInput] = useState({ color: '#a9a9a9', text: 'כינוי' });
   const [phoneInput, setPhoneInput] = useState({ color: '#a9a9a9', text: '0500000000' });
   const [pass1Input, setPass1Input] = useState({ color: '#a9a9a9', text: 'סיסמה' });
   const [pass2Input, setPass2Input] = useState({ color: '#a9a9a9', text: 'אימות סיסמה' });
@@ -20,7 +19,6 @@ export default function AddPatient(props) {
   //Patient variables
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
-  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
@@ -71,13 +69,8 @@ export default function AddPatient(props) {
 
     //check empty fields
     if (!name.trim()) { //Check for the Name TextInput
-      let newobj = { color: 'red', text: 'נראה שחסר שם מטופל' };
+      let newobj = { color: 'red', text: 'נראה שחסר כינוי' };
       setNameInput(newobj)
-      return;
-    }
-    if (!email.trim()) { //Check for the Email TextInput
-      let newobj = { color: 'red', text: 'נראה שחסרה כתובת אימייל' };
-      setMailInput(newobj)
       return;
     }
     if (!phone.trim()) { //Check for the Phone TextInput
@@ -109,7 +102,7 @@ export default function AddPatient(props) {
     else {
 
       //SET patient object
-      let obj = [{ NicknamePatient: name, PasswordPatient: password1, EmailPatient: email, PhoneNumberPatient: phone, PatientStatus: 1, PatientGender: gender, UpdatePermissionPatient: 0, ReceiveAlertsPermissionPatient: 1, IdTherapist: idTerapist }];
+      let obj = [{ NicknamePatient: name, PasswordPatient: password1, EmailPatient: name, PhoneNumberPatient: phone, PatientStatus: 1, PatientGender: gender, UpdatePermissionPatient: 0, ReceiveAlertsPermissionPatient: 1, IdTherapist: idTerapist }];
 
       //POST patient to DB
       fetch(apiUrl, {
@@ -133,7 +126,7 @@ export default function AddPatient(props) {
               alert('המשתמש נוצר בהצלחה'); //not exist
               props.navigation.navigate('Dashboard', { id: idTerapist, name: nameTerapist, back: true });
             }else { //exist
-              alert('כתובת האיימל כבר קיימת במערכת');
+              alert('הכינוי תפוס, נסה כינוי אחר');
             }
 
           }, error => {
@@ -171,14 +164,6 @@ export default function AddPatient(props) {
             onChangeText={newText => setName(newText)}
             placeholder={nameInput.text}
             placeholderTextColor={nameInput.color}
-            textAlign='right'
-          />
-
-          <TextInput
-            style={styles.input}
-            onChangeText={newText => setEmail(newText)}
-            placeholder={mailInput.text}
-            placeholderTextColor={mailInput.color}
             textAlign='right'
           />
 

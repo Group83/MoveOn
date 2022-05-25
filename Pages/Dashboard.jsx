@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
-import { Icon, Overlay, Header } from 'react-native-elements';
+import { Icon, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import { TextInput } from 'react-native-paper';
+import Overlay from 'react-native-modal-overlay';
 
 export default function Dashboard(props) {
 
@@ -72,9 +73,16 @@ export default function Dashboard(props) {
 
       <Header
         rightComponent={<View>
-          <TouchableOpacity style={{ marginTop: 6, marginRight: 20 }} onPress={headerfunc}>
+          <TouchableOpacity style={{ marginTop: '10%', marginRight: 20 }} onPress={headerfunc}>
             <Icon name='arrow-back-ios' color='black' size={25} />
           </TouchableOpacity>
+        </View>}
+        centerComponent={<View style={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
+          <Text style={{ fontSize: 23, marginRight: 10, marginTop: 14 }}>{props.route.params.name}</Text>
+          <Icon name='account-circle' color='black' size={38} style={{ marginTop: 10 }} />
         </View>}
         containerStyle={{
           backgroundColor: 'rgba(0, 0, 0, 0)',
@@ -83,13 +91,9 @@ export default function Dashboard(props) {
       />
 
       <ImageBackground
-        source={require('../images/background1.jpeg')}
+        source={require('../images/background4.jpeg')}
         resizeMode="cover" style={styles.image}
       >
-
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>שלום  {props.route.params.name},</Text>
-        </View>
 
         <View style={styles.centerContainer}>
           <View>
@@ -119,9 +123,8 @@ export default function Dashboard(props) {
               <Text style={{ fontSize: 18, marginTop: 18, marginHorizontal: 40 }}>מספר</Text>
               {patients.length > 0 && patients.map((item, key) => {
                 return (
-                  <View style={styles.row} id={key}>
+                  <View style={styles.row} key={key}>
                     <Text
-                      id={key}
                       style={{ fontSize: 15, marginTop: 8, marginHorizontal: 20 }}>
                       #{item?.IdPatient}
                     </Text>
@@ -137,8 +140,8 @@ export default function Dashboard(props) {
               <Text style={{ fontSize: 18, marginTop: 18, marginHorizontal: 50 }}>כינוי</Text>
               {patients.length > 0 && patients.map((item, key) => {
                 return (
-                  <View style={styles.row} id={key}>
-                    <Text id={key} style={{ fontSize: 15, marginHorizontal: 18, marginTop: 5 }}>{item?.NicknamePatient}</Text>
+                  <View style={styles.row} key={key}>
+                    <Text tyle={{ fontSize: 15, marginHorizontal: 18, marginTop: 5 }}>{item?.NicknamePatient}</Text>
                   </View>
                 )
               })}
@@ -153,18 +156,16 @@ export default function Dashboard(props) {
               {patients.length > 0 && patients.map((item, key) => {
 
                 return (
-                  <View style={styles.circlerow} id={key}>
+                  <View style={styles.circlerow} key={key}>
                     <ProgressCircle
-                      id={key}
                       percent={item ? Math.round(item.ComplishionPresentae * 100) : 0}
                       radius={12}
                       borderWidth={4}
                       color={item.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
                       shadowColor="lightgrey"
                       bgColor="#fff"
-                    >
-                    </ProgressCircle>
-                    <Text id={key} style={{ fontSize: 15, marginLeft: 10, transform: [{ rotate: '180deg' }] }}>{item?.ComplishionPresentae * 100}%</Text>
+                    />
+                    <Text style={{ fontSize: 15, marginLeft: 10, transform: [{ rotate: '180deg' }] }}>{item?.ComplishionPresentae * 100}%</Text>
                   </View>
                 )
               })}
@@ -178,10 +179,10 @@ export default function Dashboard(props) {
               <Text style={{ fontSize: 18, marginTop: 14, marginHorizontal: 25 }}>מצב רוח</Text>
               {patients.length > 0 && patients.map((item, key) => {
                 return (
-                  <View style={styles.rowmood} id={key}>
-                    <View id={key} style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, marginLeft: 35 }}>
-                      <Icon id={key} name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={23} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
-                      <Icon id={key} name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
+                  <View style={styles.rowmood} key={key}>
+                    <View key={key} style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, marginLeft: 35 }}>
+                      <Icon name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={23} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
+                      <Icon name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
                     </View>
                   </View>
                 )
@@ -194,13 +195,18 @@ export default function Dashboard(props) {
             <View style={styles.coltitle} />
             {patients.length > 0 && patients.map((item, key) => {
               return (
-                <View style={styles.rowmood} id={key}>
-                  <TouchableOpacity id={key} style={{ marginHorizontal: 20 }} onPress={toggleOverlay}>
-                    <Icon id={key} name='warning' color='gold' size={25} />
+                <View style={styles.rowmood} key={key}>
+                  <TouchableOpacity style={{ marginHorizontal: 20 }} onPress={toggleOverlay}>
+                    <Icon name='warning' color='gold' size={25} />
                   </TouchableOpacity>
-                  <Overlay id={key} isVisible={visible} onBackdropPress={toggleOverlay}>
-                    <Icon id={key} name='warning' color='gold' />
-                    <Text id={key} style={styles.textSecondary}>
+                  <Overlay visible={visible}
+                    onClose={()=>{setVisible(false)}}
+                    closeOnTouchOutside
+                    containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', alignItems: 'center' }}
+                    childrenWrapperStyle={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'white', borderRadius: 15, alignItems: 'center', width: '50%' }}
+                    onBackdropPress={toggleOverlay}>
+                    <Icon name='warning' color='gold' size={30}/>
+                    <Text style={styles.textSecondary}>
                       סומנו מספר פעילויות ברצף !
                     </Text>
                   </Overlay>
@@ -213,11 +219,11 @@ export default function Dashboard(props) {
             <View style={styles.coltitle} />
             {patients.length > 0 && patients.map((item, key) => {
               return (
-                <View style={styles.row} id={key}>
-                  <TouchableOpacity id={key} style={styles.show} onPress={() => {
+                <View style={styles.row} key={key}>
+                  <TouchableOpacity style={styles.show} onPress={() => {
                     props.navigation.navigate('Patient Page', { patient: item, terapistId: idTerapist, name: props.route.params.name });
                   }}>
-                    <Text id={key} style={{ fontSize: 15, marginLeft: '35%' }}>הצג</Text>
+                    <Text style={{ fontSize: 15, marginLeft: '35%' }}>הצג</Text>
                   </TouchableOpacity>
                 </View>
               )
@@ -261,7 +267,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textAlign: 'center',
     fontSize: 20,
-    marginTop: 5
+    marginVertical: '5%'
   },
 
   row: {
@@ -312,7 +318,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 30
+    marginTop: '5%'
   },
 
   centerContainer: {
@@ -323,25 +329,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 40
-  },
-
-  titleContainer: {
-    display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    height: 50,
-    width: 375,
-    marginHorizontal: 0,
-    marginTop: 150
-  },
-
-  title: {
-    left: 25,
-    fontFamily: 'Arial',
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: 40,
-    color: '#000000',
   },
 
   image: {
