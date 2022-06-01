@@ -115,7 +115,7 @@ export default function AddActivity(props) {
           let back = obj;
           props.navigation.navigate('Activity Board', { patient: props.route.params.patient, back: back, terapistId: props.route.params.patient.terapistId });
         }, error => {
-          console.log("err post=", error);
+          console.log("err put=", error);
         })
   }
 
@@ -169,9 +169,16 @@ export default function AddActivity(props) {
 
       <Header
         rightComponent={<View>
-          <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
+          <TouchableOpacity style={{ marginTop: '10%', marginLeft: 5 }} onPress={headerfunc}>
             <Icon name='arrow-back-ios' color='black' size={25} />
           </TouchableOpacity>
+        </View>}
+        centerComponent={<View style={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
+          <Text style={{ fontSize: 23, marginRight: 10, marginTop: 14 }}>פעילות חדשה</Text>
+          <Icon name='mode-edit' color='black' size={38} style={{ marginTop: 10 }} />
         </View>}
         containerStyle={{
           backgroundColor: 'rgba(0, 0, 0, 0)',
@@ -180,7 +187,7 @@ export default function AddActivity(props) {
       />
 
       <ImageBackground source={require('../images/background2.jpeg')} resizeMode="cover" style={styles.image}>
-        <Text style={styles.title}>פעילות חדשה</Text>
+
         <View style={styles.container}>
 
           {/* left container */}
@@ -188,7 +195,7 @@ export default function AddActivity(props) {
             <SelectDropdown
               rowTextStyle={{ fontSize: 20 }}
               data={activityType}
-              defaultButtonText={'לחץ לבחירת סוג פעילות'}
+              defaultButtonText={'בחר סוג פעילות'}
               buttonTextStyle={{ fontSize: 22 }}
               buttonStyle={{ height: 50, width: 350, borderColor: "black", borderWidth: 0.5, borderRadius: 5, marginHorizontal: 20, marginTop: 20, backgroundColor: '#F0E5CF' }}
               onSelect={changeActivityType}
@@ -202,7 +209,7 @@ export default function AddActivity(props) {
             <TextInput
               defaultValue={fillName}
               style={styles.input}
-              placeholder={nameInput.text}
+              placeholder={'   ' +nameInput.text}
               onChangeText={newText => setName(newText)}
               placeholderTextColor={nameInput.color}
               textAlign='right'
@@ -210,8 +217,8 @@ export default function AddActivity(props) {
             <TextInput
               defaultValue={fillLink}
               style={styles.inputLink}
-              onChangeText={newText => setLink(newText)}
-              placeholder="כתובת סרטון"
+              onChangeText={newText => setLink('   ' +newText)}
+              placeholder={'   ' +"לינק לסרטון"}
               placeholderTextColor="#a9a9a9"
               textAlign='right'
               multiline={true}
@@ -220,7 +227,7 @@ export default function AddActivity(props) {
               defaultValue={fillAbout}
               style={styles.inputDisc}
               onChangeText={newText => setAbout(newText)}
-              placeholder={aboutInput.text}
+              placeholder={'   ' +aboutInput.text}
               placeholderTextColor={aboutInput.color}
               textAlign='right'
               multiline={true}
@@ -228,14 +235,14 @@ export default function AddActivity(props) {
             <TextInput
               style={styles.input}
               onChangeText={newText => setSets(newText)}
-              placeholder="מספר סטים"
+              placeholder={'   ' +"מספר סטים"}
               placeholderTextColor="#a9a9a9"
               textAlign='right'
             />
             <TextInput
               style={styles.input}
               onChangeText={newText => setRepit(newText)}
-              placeholder="מספר חזרות"
+              placeholder={'   ' +"מספר חזרות"}
               placeholderTextColor="#a9a9a9"
               textAlign='right'
             />
@@ -250,7 +257,7 @@ export default function AddActivity(props) {
                 <TextInput
                   style={styles.searchinput}
                   onChangeText={onChangeSearch}
-                  placeholder="חיפוש"
+                  placeholder={'   ' + "חיפוש"}
                   textAlign='right'
                 />
               </View>
@@ -346,7 +353,7 @@ const styles = StyleSheet.create({
 
   inputDisc: {
     flexDirection: "row",
-    height: 220,
+    height: 300,
     width: 350,
     top: 10,
     marginTop: '3%',
@@ -355,12 +362,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: 'black',
     marginHorizontal: 8,
-    fontSize: 18
+    fontSize: 18,
   },
 
   input: {
     flexDirection: "row",
-    height: 60,
+    height: 70,
     width: 350,
     top: 10,
     marginTop: '5%',
@@ -368,12 +375,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     marginHorizontal: 8,
-    fontSize: 18
+    fontSize: 18,
   },
 
   inputLink: {
     flexDirection: "row",
-    height: 110,
+    height: 150,
     width: 350,
     top: 10,
     marginTop: '3%',
@@ -381,7 +388,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     marginHorizontal: 8,
-    fontSize: 18
+    fontSize: 18,
+    textAlign:'center',
+    justifyContent: "center"
   },
 
   text: {
@@ -392,6 +401,7 @@ const styles = StyleSheet.create({
   },
 
   container: {
+    marginTop: '3%',
     display: 'flex',
     flexDirection: 'row',
   },
@@ -402,10 +412,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EFEFEF',
     borderRadius: 10,
-    height: 750,
+    height: 900,
     width: '47%',
     marginLeft: 20,
-    top: 40
   },
 
   rightcontainer: {
@@ -414,15 +423,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EFEFEF',
     borderRadius: 10,
-    height: 750,
+    height: 900,
     width: '45%',
     marginLeft: 20,
-    top: 40
   },
 
   scrollView: {
     backgroundColor: 'white',
-    height: 600,
+    height: 730,
     width: 330,
     marginHorizontal: 10,
     top: 15,
@@ -468,7 +476,7 @@ const styles = StyleSheet.create({
   containerStyle: {
     marginHorizontal: 20,
     width: '95%',
-    top: 70,
+    marginTop: '3%'
   },
 
 });

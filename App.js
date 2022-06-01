@@ -13,6 +13,7 @@ import ActivityBoard from './Pages/ActivityBoard';
 import AddActivity from './Pages/AddActivity';
 import PatientPage from './Pages/PatientPage';
 import Dashboard from './Pages/Dashboard';
+import ResetPassword from './Pages/ResetPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,7 @@ export default function App() {
         <Stack.Screen name='Add Activity' component={AddActivity} />
         <Stack.Screen name='Patient Page' component={PatientPage} />
         <Stack.Screen name='Dashboard' component={Dashboard} />
+        <Stack.Screen name='Reset Password' component={ResetPassword} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -121,7 +121,7 @@ export default function ActivityBoard(props) {
 
       <Header
         rightComponent={<View>
-          <TouchableOpacity style={{ marginTop: 6, marginLeft: 5 }} onPress={headerfunc}>
+          <TouchableOpacity style={{ marginTop: '10%', marginLeft: 5 }} onPress={headerfunc}>
             <Icon name='arrow-back-ios' color='black' size={25} />
           </TouchableOpacity>
         </View>}
@@ -202,11 +202,13 @@ export default function ActivityBoard(props) {
             headerStyle={{ backgroundColor: '#EFEFEF', borderColor: '#EFEFEF' }}
             hoursInDisplay={8} //מקטין את המרווחים בין השעות
             TodayHeaderComponent={MyTodayComponent}
-            formatDateHeader="dddd DD"
-            // fixedHorizontally={true}
+            formatDateHeader="dddd   DD"
             weekStartsOn={0}
             onEventPress={toggleOverlay} //לחיצה על אירוע
             onGridClick={(pressEvent, startHour, date) => { props.navigation.navigate('Add Activity', { Date: date, StartHour: startHour, patient: props.route.params.patient, terapistId: props.route.params.patient.terapistId }) }} //לחיצה לשיבוץ פעילות
+            headerTextStyle={{fontSize:17}}
+            hourTextStyle={{fontSize:14}}
+            eventContainerStyle={{size:24}}
           />
         </View>
 

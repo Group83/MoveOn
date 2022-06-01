@@ -118,7 +118,7 @@ export default function Login({ navigation }) {
         </SafeAreaView>
 
         <TouchableOpacity onPress={() => {
-          navigation.navigate('Sign Up');
+          navigation.navigate('Reset Password');
         }}>
           <Text style={styles.text}>שכחתי סיסמא</Text>
         </TouchableOpacity>
@@ -244,13 +244,13 @@ const styles = StyleSheet.create({
   },
 
   titleStyle: {
-    fontSize: 23,
+    fontSize: 25,
     color: 'black'
   },
 
   containerStyle: {
     marginHorizontal: 25,
-    height: 43,
+    height: 45,
     width: '50%',
     top: -230,
     marginHorizontal: '25%'

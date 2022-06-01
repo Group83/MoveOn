@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import { Icon, Header } from 'react-native-elements';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Component } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import { TextInput } from 'react-native-paper';
 import Overlay from 'react-native-modal-overlay';
+import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
+import { set } from 'date-fns';
 
 export default function Dashboard(props) {
 
@@ -16,6 +18,8 @@ export default function Dashboard(props) {
   //Patients lists - from DATA and after SEARCH
   const [DataPatients, setDataPatients] = useState([]);
   const [patients, setPatients] = useState([]);
+  const [patientsOff, setPatientsOff] = useState([]);
+  const [off, setOff] = useState(true);
 
   //DATA - url
   const apiUrlPatients = "https://proj.ruppin.ac.il//igroup83/test2/tar6/api/Patient?id";
@@ -37,8 +41,11 @@ export default function Dashboard(props) {
       .then(
         (result) => {
           var obj = result.map(patient => patient);
-          setPatients(obj);
-          setDataPatients(obj);
+          var patientsOn = obj.filter((item) => item.PatientStatus == 1);
+          var patientsOff = obj.filter((item) => item.PatientStatus == 0);
+          setPatientsOff(patientsOff[0]);
+          setPatients(patientsOn);
+          setDataPatients(patientsOn);
         },
         (error) => {
           console.log("err post=", error);
@@ -54,7 +61,6 @@ export default function Dashboard(props) {
 
   //Search Bar
   const onChangeSearch = query => {
-
     if (query) {
       var filterData = DataPatients.filter(item => item.IdPatient.toString().includes(query));
       setPatients(filterData); //set to view only filter patients
@@ -67,6 +73,89 @@ export default function Dashboard(props) {
   const headerfunc = () => {
     props.navigation.goBack();
   }
+
+  //Table
+  const tableHead = (['מספר מטופל', 'כינוי', 'ביצועים', 'מצב רוח', '', '']);
+  const width = ([140, 170, 140, 140, 100, 110]);
+  const tableData = [];
+  for (let i = 0; i < patients.length; i += 1) {
+    const rowData = [];
+    rowData.push(
+      '#' + patients[i].IdPatient,
+      patients[i].NicknamePatient,
+      patients[i].ComplishionPresentae,
+      [patients[i].RelativeMood, patients[i].Mood],
+      patients[i].Warning,
+      patients[i]
+    );
+    tableData.push(rowData);
+  }
+  //רמת ביצוע
+  const ComplishionPresentae = (item, key) => {
+    return (
+      <View style={styles.circlerow} key={key}>
+        <ProgressCircle
+          percent={item ? Math.round(item[key] * 100) : 0}
+          radius={16}
+          borderWidth={4}
+          color={item[key] < 0.5 ? 'red' : 'lawngreen'}
+          shadowColor="lightgrey"
+          bgColor="#fff"
+        />
+        <Text style={{ fontSize: 18, marginLeft: 10, transform: [{ rotate: '180deg' }] }}>{item ? item[key] * 100 : 0}%</Text>
+      </View>
+    )
+  }
+  //מצב רוח
+  const Mood = (item, key) => {
+    return (
+      <View style={styles.rowmood} key={key}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: '25%' }}>
+          <Icon name={item[key][0] == 'DOUN' ? 'south' : 'north'} size={25} color={item[key][0] == 'DOUN' ? 'red' : '#7fff00'} />
+          <Text style={{ fontSize: 30 }}>{item[key][1] == 'SAD' ? '😥' : '😀'}</Text>
+        </View>
+      </View>
+    )
+  }
+  //התראת מצב חריג
+  const Warning = (item, key) => {
+    if (item[key] === 'worning') {
+      return (
+        <TouchableOpacity onPress={toggleOverlay}>
+          <View>
+            <Icon name='warning' color='gold' size={33} style={{ marginRight: '35%' }} />
+          </View>
+        </TouchableOpacity>
+      )
+    }
+  };
+  //כפתור הצג
+  const Botton = (item, key) => {
+    return (
+      <View key={key}>
+        <TouchableOpacity style={styles.show} onPress={() => {
+          props.navigation.navigate('Patient Page', { patient: item[key], terapistId: idTerapist, name: props.route.params.name });
+        }}>
+          <Text style={{ fontSize: 18, marginHorizontal: '35%' }}>הצג</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  const showOff = () => {
+
+    setOff(!off);
+
+    if(off){
+      let newPatient = [...DataPatients,patientsOff];
+      setPatients(newPatient);
+    }
+    else{
+      setPatients(DataPatients);
+    }
+
+  }
+
 
   return (
     <View style={styles.topContainer}>
@@ -95,7 +184,13 @@ export default function Dashboard(props) {
         resizeMode="cover" style={styles.image}
       >
 
-        <View style={styles.centerContainer}>
+        <View>
+          <TouchableOpacity style={styles.showOff} onPress={showOff}>
+            <Icon name='pending-actions' size={35} />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.firstContainer}>
           <View>
             <TextInput
               left={<TextInput.Icon name="magnify" color="grey" size={25} />}
@@ -110,125 +205,45 @@ export default function Dashboard(props) {
             <TouchableOpacity style={styles.touchOp} onPress={() => {
               props.navigation.navigate('Add Patient', { idTerapist: idTerapist, name: props.route.params.name, back: false });
             }}>
-              <Icon name='add' style={{ marginLeft: 20 }} />
+              <Icon name='person-add-alt-1' style={{ marginLeft: 20 }} />
               <Text style={{ marginLeft: 50, fontSize: 19 }}>הוסף מטופל חדש</Text>
             </TouchableOpacity>
           </View>
         </View>
 
+        {/* table */}
         <View style={styles.dashboardContainer}>
+          <Table borderStyle={{ borderWidth: 1, borderColor: 'rgba(0, 0, 0, 0)' }}>
+            <Row data={tableHead} widthArr={width} style={styles.header} textStyle={styles.headertext} />
+            <ScrollView style={{ marginTop: -1 }}>
+              {
+                tableData.map((rowData, index) => (
+                  <TableWrapper key={index} style={styles.row}>
+                    {
+                      rowData.map((cellData, cellIndex) => (
+                        <Cell style={{ width: width[cellIndex] }} key={cellIndex}
+                          data={cellIndex === 2 ? ComplishionPresentae(rowData, cellIndex) : cellIndex === 3 ? Mood(rowData, cellIndex) : cellIndex === 4 ? Warning(rowData, cellIndex) : cellIndex === 5 ? Botton(rowData, cellIndex) : cellData}
+                          textStyle={styles.tabletext}
+                        />
+                      ))
+                    }
+                  </TableWrapper>
+                ))
+              }
+            </ScrollView>
+          </Table>
 
-          <View style={styles.col}>
-            <View style={styles.coltitle}>
-              <Text style={{ fontSize: 18, marginTop: 18, marginHorizontal: 40 }}>מספר</Text>
-              {patients.length > 0 && patients.map((item, key) => {
-                return (
-                  <View style={styles.row} key={key}>
-                    <Text
-                      style={{ fontSize: 15, marginTop: 8, marginHorizontal: 20 }}>
-                      #{item?.IdPatient}
-                    </Text>
-                  </View>
-                )
-              })}
-            </View>
-
-          </View>
-
-          <View style={styles.col}>
-            <View style={styles.coltitle}>
-              <Text style={{ fontSize: 18, marginTop: 18, marginHorizontal: 50 }}>כינוי</Text>
-              {patients.length > 0 && patients.map((item, key) => {
-                return (
-                  <View style={styles.row} key={key}>
-                    <Text tyle={{ fontSize: 15, marginHorizontal: 18, marginTop: 5 }}>{item?.NicknamePatient}</Text>
-                  </View>
-                )
-              })}
-            </View>
-
-          </View>
-
-          <View style={styles.col}>
-            <View style={styles.coltitle}>
-              <Text
-                style={{ fontSize: 18, marginTop: 14, marginHorizontal: 25 }}>רמת ביצוע</Text>
-              {patients.length > 0 && patients.map((item, key) => {
-
-                return (
-                  <View style={styles.circlerow} key={key}>
-                    <ProgressCircle
-                      percent={item ? Math.round(item.ComplishionPresentae * 100) : 0}
-                      radius={12}
-                      borderWidth={4}
-                      color={item.ComplishionPresentae < 0.5 ? 'red' : 'lawngreen'}
-                      shadowColor="lightgrey"
-                      bgColor="#fff"
-                    />
-                    <Text style={{ fontSize: 15, marginLeft: 10, transform: [{ rotate: '180deg' }] }}>{item?.ComplishionPresentae * 100}%</Text>
-                  </View>
-                )
-              })}
-
-            </View>
-
-          </View>
-
-          <View style={styles.col}>
-            <View style={styles.coltitle}>
-              <Text style={{ fontSize: 18, marginTop: 14, marginHorizontal: 25 }}>מצב רוח</Text>
-              {patients.length > 0 && patients.map((item, key) => {
-                return (
-                  <View style={styles.rowmood} key={key}>
-                    <View key={key} style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2, marginLeft: 35 }}>
-                      <Icon name={item.RelativeMood == 'DOUN' ? 'south' : 'north'} size={23} color={item.RelativeMood == 'DOUN' ? 'red' : '#7fff00'} />
-                      <Icon name={item.Mood == 'SAD' ? 'sentiment-very-dissatisfied' : 'sentiment-satisfied-alt'} size={20} />
-                    </View>
-                  </View>
-                )
-              })}
-            </View>
-
-          </View>
-
-          <View style={styles.col}>
-            <View style={styles.coltitle} />
-            {patients.length > 0 && patients.map((item, key) => {
-              return (
-                <View style={styles.rowmood} key={key}>
-                  <TouchableOpacity style={{ marginHorizontal: 20 }} onPress={toggleOverlay}>
-                    <Icon name='warning' color='gold' size={25} />
-                  </TouchableOpacity>
-                  <Overlay visible={visible}
-                    onClose={()=>{setVisible(false)}}
-                    closeOnTouchOutside
-                    containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', alignItems: 'center' }}
-                    childrenWrapperStyle={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'white', borderRadius: 15, alignItems: 'center', width: '50%' }}
-                    onBackdropPress={toggleOverlay}>
-                    <Icon name='warning' color='gold' size={30}/>
-                    <Text style={styles.textSecondary}>
-                      סומנו מספר פעילויות ברצף !
-                    </Text>
-                  </Overlay>
-                </View>
-              )
-            })}
-          </View>
-
-          <View style={styles.col}>
-            <View style={styles.coltitle} />
-            {patients.length > 0 && patients.map((item, key) => {
-              return (
-                <View style={styles.row} key={key}>
-                  <TouchableOpacity style={styles.show} onPress={() => {
-                    props.navigation.navigate('Patient Page', { patient: item, terapistId: idTerapist, name: props.route.params.name });
-                  }}>
-                    <Text style={{ fontSize: 15, marginLeft: '35%' }}>הצג</Text>
-                  </TouchableOpacity>
-                </View>
-              )
-            })}
-          </View>
+          <Overlay visible={visible}
+            onClose={() => { setVisible(false) }}
+            closeOnTouchOutside
+            containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', alignItems: 'center' }}
+            childrenWrapperStyle={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'white', borderRadius: 15, alignItems: 'center', width: '50%' }}
+            onBackdropPress={toggleOverlay}>
+            <Icon name='warning' color='gold' size={30} />
+            <Text style={styles.textSecondary}>
+              סומנה פעילות לפני זמן הביצוע !
+            </Text>
+          </Overlay>
 
         </View>
 
@@ -238,6 +253,43 @@ export default function Dashboard(props) {
 }
 
 const styles = StyleSheet.create({
+
+  showOff: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    height: 40,
+    width: 40,
+    marginLeft: '3%',
+    marginBottom: '6%',
+  },
+
+  textSecondary: {
+    marginBottom: 8,
+    textAlign: 'center',
+    fontSize: 20,
+    marginVertical: '5%'
+  },
+
+  header: {
+    height: 45,
+    borderBottomWidth: 1,
+    backgroundColor: '#F5F5F5',
+    borderColor: 'rgba(0, 0, 0, 0.25)'
+  },
+
+  headertext: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: '400',
+  },
+
+  tabletext: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '200'
+  },
 
   topContainer: {
     flex: 1,
@@ -249,84 +301,48 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFEFEF',
     marginLeft: 25,
     width: 300,
-    fontSize: 18,
+    fontSize: 20,
   },
 
   circlerow: {
-    width: 60,
-    height: 30,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    marginTop: 7.5,
-    marginHorizontal: 35,
+    marginHorizontal: '25%',
     transform: [{ rotate: '180deg' }]
   },
 
-  textSecondary: {
-    marginBottom: 8,
-    textAlign: 'center',
-    fontSize: 20,
-    marginVertical: '5%'
-  },
-
   row: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    width: '65%',
-    height: 30,
-    marginLeft: 20,
-    marginTop: 8
-  },
-
-  rowmood: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    width: '65%',
-    height: 30,
-    marginLeft: 20,
-    marginTop: 7
+    flexDirection: 'row',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.25)'
   },
 
   show: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFEFEF',
-    height: 22,
+    backgroundColor: '#E5E5E5',
+    height: 30,
+    width: '90%',
     borderWidth: 1,
     borderRadius: 10,
-    borderColor: '#EFEFEF',
-  },
-
-  coltitle: {
-    backgroundColor: '#F5F5F5',
-    height: 40,
-    borderBottomWidth: 1,
-  },
-
-  col: {
-    display: 'flex',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    height: 630,
-    width: '30%',
+    borderColor: '#E5E5E5',
   },
 
   dashboardContainer: {
-    display: 'flex',
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    height: 600,
-    width: 435,
-    marginHorizontal: 20,
-    flexDirection: 'row',
+    height: 850,
+    width: '100%',
     alignItems: 'center',
     marginTop: '5%'
   },
 
-  centerContainer: {
-    display: 'flex',
+  firstContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    height: 70,
     width: '95%',
-    marginHorizontal: 20,
+    marginHorizontal: '4%',
     flexDirection: 'row',
     alignItems: 'center',
   },
