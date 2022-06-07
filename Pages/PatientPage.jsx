@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, ImageBackground, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, TouchableOpacity, Switch, LogBox } from 'react-native';
 import { Icon, Header } from 'react-native-elements';
 import React, { useEffect, useState } from 'react';
 import * as Progress from 'react-native-progress';
 import { GradientCircularProgress } from "react-native-circular-gradient-progress";
 import moment from 'moment';
+
+LogBox.ignoreAllLogs();
 
 export default function PatientPage(props) {
 
@@ -184,13 +186,13 @@ export default function PatientPage(props) {
                 </View>
                 <View style={{ marginTop: 20, marginLeft: 55 }}>
                   <GradientCircularProgress
-                    startColor='red'
+                    startColor='#ED2938'
                     size={180}
                     progress={Math.round(patient.ComplishionPresentae * 100)}
-                    endColor='lawngreen'
+                    endColor='#00FF7F'
                     strokeWidth={10}
                     emptyColor='#F5F5F5'
-                    middleColor='sandybrown'
+                    middleColor='#FAB733'
                   />
                 </View>
 
@@ -382,7 +384,7 @@ const styles = StyleSheet.create({
     top: 10,
     borderWidth: 1,
     borderColor: '#EFEFEF',
-    borderRadius: 5,
+    borderRadius: 10,
   },
 
   left3: {
@@ -393,7 +395,7 @@ const styles = StyleSheet.create({
     top: 10,
     borderWidth: 1,
     borderColor: '#EFEFEF',
-    borderRadius: 5,
+    borderRadius: 10,
   },
 
   left2: {
@@ -404,7 +406,7 @@ const styles = StyleSheet.create({
     top: 10,
     borderWidth: 1,
     borderColor: '#EFEFEF',
-    borderRadius: 5,
+    borderRadius: 10,
   },
 
   name: {
@@ -485,6 +487,7 @@ const styles = StyleSheet.create({
     height: 1000,
     width: '47%',
     marginLeft: 25,
+    top:-10
   },
 
   leftcontainer: {
@@ -493,6 +496,7 @@ const styles = StyleSheet.create({
     height: 1000,
     width: '47%',
     marginLeft: 20,
+    top:-9
   },
 
 });

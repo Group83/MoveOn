@@ -1,11 +1,12 @@
-import { View, Text, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, LogBox } from 'react-native';
 import { Icon, Header } from 'react-native-elements';
-import React, { useEffect, useState, Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProgressCircle from 'react-native-progress-circle-rtl';
 import { TextInput } from 'react-native-paper';
 import Overlay from 'react-native-modal-overlay';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
-import { set } from 'date-fns';
+
+LogBox.ignoreAllLogs();
 
 export default function Dashboard(props) {
 
@@ -41,9 +42,10 @@ export default function Dashboard(props) {
       .then(
         (result) => {
           var obj = result.map(patient => patient);
+          console.log('Patients Data : ', obj);
           var patientsOn = obj.filter((item) => item.PatientStatus == 1);
           var patientsOff = obj.filter((item) => item.PatientStatus == 0);
-          setPatientsOff(patientsOff[0]);
+          setPatientsOff(patientsOff);
           setPatients(patientsOn);
           setDataPatients(patientsOn);
         },
@@ -53,10 +55,20 @@ export default function Dashboard(props) {
 
   }, [back]);
 
-  //Overlay
-  const [visible, setVisible] = useState(false);
-  const toggleOverlay = () => {
-    setVisible(!visible);
+  //Overlay1
+  const [visible1, setVisible1] = useState(false);
+  const toggleOverlay1 = () => {
+    setVisible1(!visible1);
+  };
+  //Overlay2
+  const [visible2, setVisible2] = useState(false);
+  const toggleOverlay2 = () => {
+    setVisible2(!visible2);
+  };
+  //Overlay3
+  const [visible3, setVisible3] = useState(false);
+  const toggleOverlay3 = () => {
+    setVisible3(!visible3);
   };
 
   //Search Bar
@@ -97,7 +109,7 @@ export default function Dashboard(props) {
         <ProgressCircle
           percent={item ? Math.round(item[key] * 100) : 0}
           radius={16}
-          borderWidth={4}
+          borderWidth={6}
           color={item[key] < 0.5 ? 'red' : 'lawngreen'}
           shadowColor="lightgrey"
           bgColor="#fff"
@@ -119,11 +131,27 @@ export default function Dashboard(props) {
   }
   //התראת מצב חריג
   const Warning = (item, key) => {
-    if (item[key] === 'worning') {
+    if (item[key] === '1') {
       return (
-        <TouchableOpacity onPress={toggleOverlay}>
+        <TouchableOpacity onPress={toggleOverlay1}>
           <View>
             <Icon name='warning' color='gold' size={33} style={{ marginRight: '35%' }} />
+          </View>
+        </TouchableOpacity>
+      )
+    } else if (item[key] === '2') {
+      return (
+        <TouchableOpacity onPress={toggleOverlay2}>
+          <View>
+            <Icon name='warning' color='gold' size={33} style={{ marginRight: '35%' }} />
+          </View>
+        </TouchableOpacity>
+      )
+    } else if (item[key] === '3') {
+      return (
+        <TouchableOpacity onPress={toggleOverlay3}>
+          <View>
+            <Icon name='warning' color='#ED2938' size={33} style={{ marginRight: '35%' }} />
           </View>
         </TouchableOpacity>
       )
@@ -146,12 +174,14 @@ export default function Dashboard(props) {
 
     setOff(!off);
 
-    if(off){
-      let newPatient = [...DataPatients,patientsOff];
-      setPatients(newPatient);
+    if (off) {
+      var newArr = [...DataPatients];
+      patientsOff.forEach((patient) => newArr.push(patient));
+      setPatients(newArr);
     }
-    else{
-      setPatients(DataPatients);
+    else {
+      var filterOffData = DataPatients.filter((item) => item.PatientStatus == 1);
+      setPatients(filterOffData); //set to view only filter patients
     }
 
   }
@@ -233,15 +263,39 @@ export default function Dashboard(props) {
             </ScrollView>
           </Table>
 
-          <Overlay visible={visible}
-            onClose={() => { setVisible(false) }}
+          <Overlay visible={visible1}
+            onClose={() => { setVisible1(false) }}
             closeOnTouchOutside
             containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', alignItems: 'center' }}
             childrenWrapperStyle={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'white', borderRadius: 15, alignItems: 'center', width: '50%' }}
-            onBackdropPress={toggleOverlay}>
+            onBackdropPress={toggleOverlay1}>
             <Icon name='warning' color='gold' size={30} />
             <Text style={styles.textSecondary}>
               סומנה פעילות לפני זמן הביצוע !
+            </Text>
+          </Overlay>
+
+          <Overlay visible={visible2}
+            onClose={() => { setVisible2(false) }}
+            closeOnTouchOutside
+            containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', alignItems: 'center' }}
+            childrenWrapperStyle={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'white', borderRadius: 15, alignItems: 'center', width: '50%' }}
+            onBackdropPress={toggleOverlay2}>
+            <Icon name='warning' color='gold' size={30} />
+            <Text style={styles.textSecondary}>
+              סומנו מספר פעילויות ברצף !
+            </Text>
+          </Overlay>
+
+          <Overlay visible={visible3}
+            onClose={() => { setVisible3(false) }}
+            closeOnTouchOutside
+            containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', alignItems: 'center' }}
+            childrenWrapperStyle={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'white', borderRadius: 15, alignItems: 'center', width: '50%' }}
+            onBackdropPress={toggleOverlay3}>
+            <Icon name='warning' color='#ED2938' size={30} />
+            <Text style={styles.textSecondary}>
+              שים לב ! נראה כי זוהתה יותר מחריגה אחת.
             </Text>
           </Overlay>
 

@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, ImageBackground, ScrollView, Switch, LogBox, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, ScrollView, TouchableOpacity, TextInput, LogBox } from 'react-native';
 import { Button, Icon, Header } from 'react-native-elements';
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import SelectDropdown from 'react-native-select-dropdown';
 import moment from 'moment';
 import Overlay from 'react-native-modal-overlay';
+
+LogBox.ignoreAllLogs();
 
 export default function AddActivity(props) {
 
@@ -145,6 +147,7 @@ export default function AddActivity(props) {
     }).then(
       (response) => response.json()
     ).then((res) => {
+      //console.log(res);
       console.log('OK Activityes');
       if (res) {
         var obj = res.map(activity => activity);

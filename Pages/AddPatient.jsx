@@ -123,8 +123,8 @@ export default function AddPatient(props) {
             
             //check if email exist in data
             if (result==1) {
-              alert('המשתמש נוצר בהצלחה'); //not exist
-              props.navigation.navigate('Dashboard', { id: idTerapist, name: nameTerapist, back: true });
+              //alert('המשתמש נוצר בהצלחה'); //not exist
+              props.navigation.navigate('Dashboard', { id: idTerapist, name: nameTerapist, back: name });
             }else { //exist
               alert('הכינוי תפוס, נסה כינוי אחר');
             }

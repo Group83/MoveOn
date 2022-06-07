@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, LogBox } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Button } from 'react-native-elements';
 import WeekView, { createFixedWeekDate } from 'react-native-week-view';
 import { Icon, Header } from 'react-native-elements';
 import moment from 'moment';
 import Overlay from 'react-native-modal-overlay';
+
+LogBox.ignoreAllLogs();
 
 export default function ActivityBoard(props) {
 

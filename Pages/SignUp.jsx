@@ -1,6 +1,6 @@
 import { View, Text, ImageBackground, StyleSheet, SafeAreaView, TouchableOpacity, TextInput } from 'react-native';
 import { Button } from 'react-native-elements';
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { Header, Icon } from 'react-native-elements';
 
 export default function SignUp(props) {
