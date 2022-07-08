@@ -53,6 +53,7 @@ export default function Login({ navigation }) {
       .then(
         (result) => {
           if (result[0]) { //found user
+            console.log(result[0]);
             navigation.navigate('Dashboard', { id: result[0].IdTherapist, name: result[0].NicknameTherapist, back: false });
           }
           else { //not found user

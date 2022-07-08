@@ -202,7 +202,7 @@ export default function ActivityBoard(props) {
             numberOfDays={daysNumber} //מספר הימים המוצגים
             showTitle={true}
             headerStyle={{ backgroundColor: '#EFEFEF', borderColor: '#EFEFEF' }}
-            hoursInDisplay={8} //מקטין את המרווחים בין השעות
+            //hoursInDisplay={8} //מקטין את המרווחים בין השעות
             TodayHeaderComponent={MyTodayComponent}
             formatDateHeader="dddd   DD"
             weekStartsOn={0}

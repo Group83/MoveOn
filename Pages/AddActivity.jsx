@@ -14,7 +14,7 @@ export default function AddActivity(props) {
   const sec = parseInt(time.substring(14, 16));
   const newSecStart = (sec < 30 ? '00' : '30');
   const startTime = time.substring(0, 14) + newSecStart;
-  const endTime = moment(startTime, "YYYY-MM-DDThh:mm").add(30, 'minutes').format('YYYY-MM-DDThh:mm');
+  const endTime = moment(startTime, "YYYY-MM-DDTHH:mm").add(30, 'minutes').format('YYYY-MM-DDTHH:mm');
   const idPatient = props.route.params.patient.IdPatient;
 
   //Select options
@@ -99,6 +99,8 @@ export default function AddActivity(props) {
       ActivityClassification: type,
       DescriptionActivity: about
     }];
+
+    console.log(obj);
 
     //PUT activity to DB
     fetch(apiUrlAddActivity, {
